@@ -5,6 +5,7 @@
    Description     : This is the module for the overall fetch stage of the processor.
    Author          : Henry Wysong-Grass
    Date            : 2024-10-09
+   Tested?         : NO
 */
 `default_nettype none
 module fetch (clk, rst, PC_new, PC_p2, instruction);
