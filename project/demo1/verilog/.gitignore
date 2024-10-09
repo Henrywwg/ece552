@@ -1,0 +1,10 @@
+./__work/
+./__work/*
+./work/
+./work/*
+
+transcript
+*.wsl
+*.wpg
+*.back
+*.wlf
