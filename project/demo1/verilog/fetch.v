@@ -8,7 +8,7 @@
    Tested?         : NO
 */
 `default_nettype none
-module fetch (clk, rst, PC_new, PC_p2, instruction);
+module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    //Module Inputs
    input wire clk;
    input wire rst;
