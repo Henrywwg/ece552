@@ -98,7 +98,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          // immediate instructions use input 1
          // default rest to use input 0
          assign regDst = opcode[4:1] == 4'b0011                    ? 2'b11 :
-                           ( (opcode[4:3] == 2'b11) & |opcode[2:0] ? 2'b10  :
+                           ( ((opcode[4:3] == 2'b11) & |opcode[2:0] ) | opcode == 5'b11100? 2'b10  :
                         ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
@@ -143,7 +143,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
          assign 0ext = (opcode[4:1] == 4'b0101);
 
-         assign sign (opcode == 5'b01000) | (opcode == 5'b01001) | (opcode == 5'b10000) | (opcode == 5'b10001) | (opcode == 5'b10011) | (opcode == 5'b11011 ); 
+         assign sign (opcode[4:2] == 3'b011);
 
 
 

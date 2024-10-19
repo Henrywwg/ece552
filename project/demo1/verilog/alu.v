@@ -64,6 +64,19 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     assign temp_out = Oper[1] ? (Oper[0] ? (A^B) : (A|B)) : (Oper[0] ? (A&B) : (add_result));
     assign Out = Oper[2] ? temp_out : shift_result;
 
+
+    //bit 3 of Oper specifies if this is a logical comparison
+
+    add_result[15]
+
+    case (Oper[4:3])
+        2'b00 : single_bit_out   = Zero;
+        2'b01 : single_bit_out   = ;
+        2'b10 : single_bit_out   = ~add_result[15];
+        default : single_bit_out = Cout;
+    endcase
+
+
     ///////////////////
     // Determine Ofl //
     ///////////////////
