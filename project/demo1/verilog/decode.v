@@ -5,7 +5,7 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc , ALUOpr, RegDst, RegSrc, RegWrt);
+module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc, ALUOpr, RegDst, RegSrc, RegWrt);
 
    //Inputs
    wire input clk;
@@ -26,7 +26,6 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
    wire output sign;
    wire output [2:0]brType;
    wire output [1:0]BSrc;
-   wire output [2:0]ALUOpr;
 
    //Reg sigs
    wire output RegDst;
@@ -56,6 +55,7 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
       wire [4:0]opcode = instruction[15:11];
       wire [2:0]ALUOpr;
       wire 0ext;
+      wire [2:0]ALUOpr;
 
    ///////////////////
    //CONTROL SIGNALS//
@@ -96,45 +96,47 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
          // all comparison and Reg to Reg ALU math uses input 2
          // immediate instructions use input 1
          // default rest to use input 0
-         assign regDst = opcode[4:1] == 4'b0011                   ? 2'b11 :
-                        (((opcode[4:3] == 2'b11) & ^opcode[2:0])  ? 2'b10  :
-                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ({opcode[4:2], opcode[0]} == 4'b1001) 
-                                                                  ? 2'b01 :
-                                                                    2'b00));
+         assign regDst = opcode[4:1] == 4'b0011                    ? 2'b11 :
+                           ( (opcode[4:3] == 2'b11) & |opcode[2:0] ? 2'b10  :
+                        ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign regSrc = (opcode[5:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
+         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
                                                       (opcode == 5'b10001)       ? 2'b01 : (
-                                                      (opcode[4:1 == 4'b0010])   ? 2'b00 : 
+                                                      (opcode[4:1 == 4'b0011])   ? 2'b00 : 
                                                                                    2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
          assign ALUOpr = (opcode[4:1] == 4'b1101) ?  {opcode[0], instruction[1:0]} : 
-                         (opcode[4:2] == 3'b101)  ?  {1'b0, instruction[1:0]} : 
-                         (opcode[4:2] == 3'b010)  ?  {1'b1, instruction[1:0]} : 
+                         (opcode[4:2] == 3'b101)  ?  {1'b0, opcode[1:0]} : 
+                         (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 
                                                       3'b100;
 
-         assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
+         assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
-         //Invert Rs
-         assign InvA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
+
+         //Conditionally invert Rs
+         assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) | (opcode[4:1] == 4'b1110);
          
-         assign InvB = (opcode[3:0] == 4'b1011) ? (opcode[4] ? (&instruction[1:0] ? 1 : 0) : 1) : 0;
+         //Conditionally invert Rt
+         assign InvB =  ({opcode, instruction[1:0]} == 7'b1101111) | (opcode == 5'b01011) | (opcode == 5'b11110);
          
-         // if we are invA or B. Since Cin not used for ands, is not a problem
-         // if Cin asserted during ANDN insts
-         assign Cin = invA | invB;
+
+         // if we are invA or B. Since Cin not used for ands it is not a problem
+         // if Cin is asserted during ANDN insts
+         assign Cin = InvA | InvB;
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
-         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 111)) ? 2'b00 : (
+         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : (
                         (opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
-                        ((opcode[4:2] == 3'b100) & opcode[1:0] != 2'b10)  ? 2'b01 : (
-                        (opcode[4:0] == 5'b10010) ? 2'b11 : 0));
+                        ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))      ?  2'b01 : (
+                        (opcode[4:0] == 5'b10010)                             ?  2'b11 : 
+                                                                                 2'b10));
 
 
          //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
@@ -155,9 +157,9 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
-      regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[7:5]), .read2RegSel(instruction[10:8]), 
-                        .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(Rt), 
-                        .read2Data(Rs), .err(error));
+      regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
+                        .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(Rs), 
+                        .read2Data(Rt), .err(error));
 
 endmodule
 `default_nettype wire
