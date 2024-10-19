@@ -36,12 +36,9 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    //memory2c is Instruction Memory and outputs instruction pointed to by PC
    memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(1'b1), .wr(1'b0), .createdump(DUMP), .clk(clk), .rst(rst));
 
-
-
    ///////////
    // LOGIC //
    ///////////
-   
    //Keep PC_p2 as PC_q + 2
    assign PC_p2 = PC_q + 16'h0002;
 
