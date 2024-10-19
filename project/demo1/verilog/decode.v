@@ -34,8 +34,6 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output MemWrt;
 
 
-
-
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
@@ -45,7 +43,6 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    ///////////////////
    //CONTROL SIGNALS//
    ///////////////////
-      
       /////////////////////////////////////
       // PROGRAM COUNTER CONTROL SIGNALS //
       /////////////////////////////////////
@@ -56,7 +53,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          //11 bit ext: J, JAL
          //If opcode is 001x0, then we need to use sign extend 11 bit,
          //otherwise we can default to 8 bit extended
-         assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0111);
+         assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
 
    //ALUJump
    // all branches and JR
@@ -85,7 +82,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // immediate instructions use input 1
          // default rest to use input 0
          assign regDst = opcode[4:1] == 4'b0011                   ? 2'b11 :
-                        (((opcode[4:3] == 2'b11) & ^opcode[2:0]) ? 2'b10  :
+                        (((opcode[4:3] == 2'b11) & ^opcode[2:0])  ? 2'b10  :
                         ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ({opcode[4:2], opcode[0]} == 4'b1001) 
                                                                   ? 2'b01 :
                                                                     2'b00));
@@ -94,10 +91,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign regSrc = (opcode[5:1] == 4'b1100) | (opcode == 5'b10010)? 2'b11 : (
-                        (opcode == 5'b10001)                           ? 2'b01 : (
-                        (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
-                                                                         2'b10));
+         assign regSrc = (opcode[5:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
+                                                      (opcode == 5'b10001)       ? 2'b01 : (
+                                                      (opcode[4:1 == 4'b0010])   ? 2'b00 : 
+                                                                                   2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
@@ -116,11 +113,14 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          
          // if we are invA or B. Since Cin not used for ands, is not a problem
          // if Cin asserted during ANDN insts
-         assign Cin = invA || invB;
+         assign Cin = invA | invB;
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
-         //TODO bsrc
-         assign BSrc = ;
+         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 111)) ? 2'b00 : (
+                        (opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
+                        ((opcode[4:2] == 3'b100) & opcode[1:0] != 2'b10)  ? 2'b01 : (
+                        (opcode[4:0] == 5'b10010) ? 2'b11 : 0));
+
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
