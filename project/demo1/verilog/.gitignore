@@ -8,3 +8,6 @@ transcript
 *.wpg
 *.back
 *.wlf
+*.cr.mti
+*.mti
+*.mpf
