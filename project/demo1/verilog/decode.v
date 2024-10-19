@@ -8,20 +8,23 @@
 module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, SSrc , 0ext, ALUOpr, RegDst, RegSrc, RegWrt);
 
    //Inputs
-   wire input instruction;
+   wire input [15:0]instruction;
    
    //Outputs (all control signals)
    wire output immSrc;
    wire output ALUJump;
    wire output MemWrt;
+   
    wire output InvA;
    wire output InvB;
    wire output Cin;
    wire output sign;
+
    wire output brType;
    wire output BSrc;
    wire output 0ext;
    wire output ALUOpr;
+
    wire output RegDst;
    wire output RegSrc;
    wire output RegWrt;
@@ -48,15 +51,24 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    //ALUJump
    // all branches and JR
    // all br share opcode[4:2] so check for that
-   assign ALUJump = (opcode[4:2] == 3'b011) || (opcode[4:2] == 3'b001);
 
    //Check first 3 bits, and then check the lower 2 bits of the opcode
    // are the same using nots and xor.
-   assign MemWrt = (opcode[4:2] == 3'b100) && ~(^opcode[1:0]);
+   assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
 
-   assign invA = ;
 
-   assign RegWrt = ;
+   //Invert Rs
+   assign invA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
+
+   //Regwrt when not doing branch, J or JR, mem writes or NOPs, HALT or siic
+   assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | (opcode[4:1] == 4'b0000) | opcode[4:2] == 2'b001 |MemWrt;
+
+   //Cin if we are invA or B. Since Cin not used for ands, is not a problem
+   // if Cin asserted during ANDN insts
+   assign Cin = invA || invB;
+
+   //SLBI ANDNI XORI
+   assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
 
    
 
