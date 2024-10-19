@@ -35,7 +35,6 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     wire [OPERAND_WIDTH -1:0]B;
     wire [15:0]shift_result;
     wire [15:0]add_result;
-    //wire Cout;
     wire [OPERAND_WIDTH -1:0]temp_out;
     wire temp_sign;
     wire sign_neg;
