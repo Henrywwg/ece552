@@ -75,7 +75,5 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign sign (opcode == 5'b01000) | (opcode == 5'b01001) 
    | (opcode == 5'b10000) | (opcode == 5'b10001) | (opcode == 5'b10011) | (opcode == 5'b11011 ); 
 
-   execute
-
 endmodule
 `default_nettype wire
