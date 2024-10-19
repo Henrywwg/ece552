@@ -85,9 +85,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // immediate instructions use input 1
          // default rest to use input 0
          assign regDst = opcode[4:1] == 4'b0011                   ? 2'b11 :
-                        (((opcode[4:3] == 2'b11) & ^opcode[2:0]) ? 2'b10 :
+                        (((opcode[4:3] == 2'b11) & ^opcode[2:0]) ? 2'b10  :
                         ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ({opcode[4:2], opcode[0]} == 4'b1001) 
-                                                                  ? 2'b01 : 2'b00));
+                                                                  ? 2'b01 :
+                                                                    2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
@@ -98,11 +99,14 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
                         (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
                                                                         2'b10));
 
-<<<<<<< HEAD
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
-         assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : (opcode[4:2] == 3'b101) ? {1'b0, instruction[1:0]} : (opcode[4:2] == 3'b010) ? {1'b1, instruction[1:0]} : 3'b100;
+         assign ALUOpr = (opcode[4:1] == 4'b1101) ?  {opcode[0], instruction[1:0]} : 
+                         (opcode[4:2] == 3'b101)  ?  {1'b0, instruction[1:0]} : 
+                         (opcode[4:2] == 3'b010)  ?  {1'b1, instruction[1:0]} : 
+                                                      3'b100;
+
          assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
          //Invert Rs
@@ -126,6 +130,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
    
+>>>>>>> 0448a9134ef6f5223e317d303ac90e0b7f99e18b
 
 endmodule
 `default_nettype wire
