@@ -25,6 +25,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output RegDst;
    wire output RegSrc;
    wire output RegWrt;
+   wire output [2:0] Oper;
 
 
    ////////////////////
@@ -48,7 +49,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    //ALUJump
    // all branches and JR
    // all br share opcode[4:2] so check for that
-   assign ALUJump = (opcode[4:2] == 3'b011) || (opcode[4:2] == 3'b001);
+   assign ALUJump = (opcode[4:2] == 3'b001);
 
    //Check first 3 bits, and then check the lower 2 bits of the opcode
    // are the same using nots and xor.
@@ -58,7 +59,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
 
    assign RegWrt = ;
 
-   
+   assign sign (opcode == 5'b01000) | (opcode == 5'b01001) 
+   | (opcode == 5'b10000) | (opcode == 5'b10001) | (opcode == 5'b10011) | (opcode == 5'b11011 ); 
+
+   execute
 
 endmodule
 `default_nettype wire
