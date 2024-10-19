@@ -1,0 +1,52 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+d/home/cadiena/CS_552/ece552/project/demo1
+vexecute
+!s110 1729286517
+!i10b 1
+!s100 2Oo:K]B5Q@RL:eoMcW<[A3
+IOJS0fZ_;QA:Lik7JF@0iV3
+Z0 VDg1SIo80bB@j0V0VzS_@n1
+Z1 d/home/cadiena/CS_552/ece552/project/demo1/verilog
+w1729286489
+8/home/cadiena/CS_552/ece552/project/demo1/verilog/execute.v
+F/home/cadiena/CS_552/ece552/project/demo1/verilog/execute.v
+L0 8
+Z2 OP;L;10.7c;67
+r1
+!s85 0
+31
+!s108 1729286517.000000
+!s107 /home/cadiena/CS_552/ece552/project/demo1/verilog/execute.v|
+!s90 -reportprogress|300|-work|work|-stats=none|/home/cadiena/CS_552/ece552/project/demo1/verilog/execute.v|
+!i113 1
+Z3 o-work work
+Z4 tCvgOpt 0
+vwb
+!s110 1728516835
+!i10b 1
+!s100 5k3H_RP0ToXWDPKaDjJ8_3
+IMY_P1L2eO4@<EhV:mD0h11
+R0
+R1
+w1728516655
+8/home/cadiena/CS_552/ece552/project/demo1/verilog/wb.v
+F/home/cadiena/CS_552/ece552/project/demo1/verilog/wb.v
+L0 8
+R2
+r1
+!s85 0
+31
+!s108 1728516835.000000
+!s107 /home/cadiena/CS_552/ece552/project/demo1/verilog/wb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|/home/cadiena/CS_552/ece552/project/demo1/verilog/wb.v|
+!i113 1
+R3
+R4
