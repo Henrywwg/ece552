@@ -25,7 +25,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    wire output InvB;
    wire output Cin;
    wire output sign;
-   wire output [2:0]brType, Oper;
+   wire output [2:0]brType;
+   wire output [4:0]Oper;
    wire output [1:0]BSrc;
 
    //Reg sigs
