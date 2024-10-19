@@ -7,7 +7,22 @@
 `default_nettype none
 module decode (/* TODO: Add appropriate inputs/outputs for your decode stage here*/);
 
-   // TODO: Your code here
-   
+   wire immSrc;
+   wire ALUJump;
+   wire MemWrt;
+   wire InvA;
+   wire InvB;
+   wire Cin;
+   wire sign;
+   wire brType;
+   wire BSrc;
+   wire 0ext;
+   wire ALUOpr;
+   wire RegDst;
+   wire RegSrc;
+   wire RegWrt;
+
+      
+
 endmodule
 `default_nettype wire
