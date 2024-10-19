@@ -101,10 +101,11 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
                         (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
                                                                         2'b10));
 
+<<<<<<< HEAD
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
-         assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : 0;
+         assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : (opcode[4:2] == 3'b101) ? {1'b0, instruction[1:0]} : (opcode[4:2] == 3'b010) ? {1'b1, instruction[1:0]} : 3'b100;
          assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
          //Invert Rs

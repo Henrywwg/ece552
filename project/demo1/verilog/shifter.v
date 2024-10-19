@@ -34,10 +34,10 @@ module shifter (In, ShAmt, Oper, Out);
    wire [15:0]shiftl_layer_2;
    wire [15:0]shiftl_layer_3;
 
-   wire [15:0]shiftrA_layer_0;
-   wire [15:0]shiftrA_layer_1;
-   wire [15:0]shiftrA_layer_2;
-   wire [15:0]shiftrA_layer_3;
+   wire [15:0]rotr_layer_0;
+   wire [15:0]rotr_layer_1;
+   wire [15:0]rotr_layer_2;
+   wire [15:0]rotr_layer_3;
 
    wire [15:0]shiftrL_layer_0;
    wire [15:0]shiftrL_layer_1;
@@ -60,13 +60,13 @@ module shifter (In, ShAmt, Oper, Out);
    assign shiftl_layer_2 = ShAmt[2] ? {shiftl_layer_1[11:0], 4'b0000} : shiftl_layer_1;
    assign shiftl_layer_3 = ShAmt[3] ? {shiftl_layer_2[7:0], 8'b00000000} : shiftl_layer_2;
 
-   ////////////////////////////
-   // Shift Right Arithmetic //
-   ////////////////////////////
-   assign shiftrA_layer_0 = ShAmt[0] ? {In[15], In[15:1]} : In;
-   assign shiftrA_layer_1 = ShAmt[1] ? {{2{shiftrA_layer_0[15]}}, shiftrA_layer_0[15:2]} : shiftrA_layer_0;
-   assign shiftrA_layer_2 = ShAmt[2] ? {{4{shiftrA_layer_1[15]}}, shiftrA_layer_1[15:4]} : shiftrA_layer_1;
-   assign shiftrA_layer_3 = ShAmt[3] ? {{8{shiftrA_layer_2[15]}}, shiftrA_layer_2[15:8]} : shiftrA_layer_2;
+   //////////////////
+   // Rotate Right //
+   //////////////////
+   assign rotr_layer_0 = ShAmt[0] ? {In[0], In[15:1]} : In;
+   assign rotr_layer_1 = ShAmt[1] ? {rotr_layer_0[1:0], rotr_layer_0[15:2]} : rotr_layer_0;
+   assign rotr_layer_2 = ShAmt[2] ? {rotr_layer_1[3:0], rotr_layer_1[15:4]} : rotr_layer_1;
+   assign rotr_layer_3 = ShAmt[3] ? {rotr_layer_2[7:0], rotr_layer_2[15:8]} : rotr_layer_2;
 
    /////////////////////////
    // Shift right Logical //
@@ -79,6 +79,6 @@ module shifter (In, ShAmt, Oper, Out);
    ///////////////////////////////////
    // Choose between the operations //
    ///////////////////////////////////
-   assign Out = Oper[1] ? (Oper[0] ? shiftrL_layer_3 : shiftrA_layer_3) : (Oper[0] ? shiftl_layer_3 : rotl_layer_3);
+   assign Out = Oper[1] ? (Oper[0] ? shiftrL_layer_3 : rotr_layer_3) : (Oper[0] ? shiftl_layer_3 : rotl_layer_3);
    
 endmodule
