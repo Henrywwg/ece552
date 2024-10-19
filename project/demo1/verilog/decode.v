@@ -75,7 +75,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    //ALUJump
    // all branches and JR
    // all br share opcode[4:2] so check for that
-
+      assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
 
       //Check first 3 bits, and then check the lower 2 bits of the opcode
       // are the same using nots and xor.
