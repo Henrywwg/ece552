@@ -5,7 +5,7 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc , 0ext, ALUOpr, RegDst, RegSrc, RegWrt);
+module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc , ALUOpr, RegDst, RegSrc, RegWrt);
 
    //Inputs
    wire input clk;
@@ -24,9 +24,8 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output InvB;
    wire output Cin;
    wire output sign;
-   wire output brType;
+   wire output [2:0]brType;
    wire output [1:0]BSrc;
-   wire output 0ext;
    wire output [2:0]ALUOpr;
 
    //Reg sigs
@@ -56,6 +55,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    ////////////////////
       wire [4:0]opcode = instruction[15:11];
       wire [2:0]ALUOpr;
+      wire 0ext;
 
    ///////////////////
    //CONTROL SIGNALS//
@@ -83,14 +83,14 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
 
       //just pass the lower 2 bits of opcode
       //Needs more bits
-      assign brType = opcode[1:0];
+      assign brType = opcode[4:2] == 3'b011 ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
       //////////////////////////////
          //Regwrt when not doing branch, J or JR, mem writes or NOPs, HALT or siic
-         assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | 
-                        (opcode[4:1] == 4'b0000) | (opcode[4:2] == 2'b001) | (opcode[4:2] == 5'b10000);
+         assign RegWrt = ~((opcode[4:2] == 3'b011) | (opcode[4:1] == 4'b0001) | 
+                        (opcode[4:1] == 4'b0000) | (opcode[4:1] == 4'b0010) | (opcode[4:0] == 5'b10000));
 
          // JAL and JALR have fixed $7 value - input 3
          // all comparison and Reg to Reg ALU math uses input 2
