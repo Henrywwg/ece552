@@ -143,7 +143,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
          assign 0ext = (opcode[4:1] == 4'b0101);
 
-         assign sign = 
+         assign sign (opcode == 5'b01000) | (opcode == 5'b01001) | (opcode == 5'b10000) | (opcode == 5'b10001) | (opcode == 5'b10011) | (opcode == 5'b11011 ); 
 
 
 
