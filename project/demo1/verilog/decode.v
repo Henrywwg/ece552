@@ -25,11 +25,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output [1:0]BSrc;
    wire output 0ext;
    wire output [2:0]ALUOpr;
-
-   //Reg file sigs
-   wire output [1:0]RegDst;
-   wire output [1:0]RegSrc;
+   wire output RegDst;
+   wire output RegSrc;
    wire output RegWrt;
+   wire output [2:0] Oper;
 
    //Memory sig
    wire output MemWrt;
@@ -59,11 +58,9 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          //otherwise we can default to 8 bit extended
          assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0111);
 
-
-         // TODO ALUJMP //
-         //ALUJump
-         // all branches and JR
-         // all br share opcode[4:2] so check for that
+   //ALUJump
+   // all branches and JR
+   // all br share opcode[4:2] so check for that
 
 
       //Check first 3 bits, and then check the lower 2 bits of the opcode
@@ -121,6 +118,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // if Cin asserted during ANDN insts
          assign Cin = invA || invB;
 
+<<<<<<< HEAD
          //Rt (00) used when opcodes starts 1101 opcode or 111
          //TODO bsrc
 
@@ -131,6 +129,15 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
+=======
+   //SLBI ANDNI XORI
+   assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
+
+   assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : 0;
+   assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
+
+   
+>>>>>>> 0448a9134ef6f5223e317d303ac90e0b7f99e18b
 
 endmodule
 `default_nettype wire
