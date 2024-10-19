@@ -114,6 +114,11 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // if Cin asserted during ANDN insts
          assign Cin = invA || invB;
 
+         assign sign = (opcode == 5'b01000) | (opcode == 5'b01001) | (opcode == 5'b10000) 
+         | (opcode == 5'b10001) | (opcode == 5'b10011) 
+         | ((opcode == 5'b11011) & ((ALUOpr == 3'b100) | (ALUOper == 3'b101)))
+         | (opcode == 5'b11101) | (opcode == 5'b11110);
+
    //SLBI ANDNI XORI
    assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
 
