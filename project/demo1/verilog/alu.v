@@ -65,15 +65,24 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     assign Out = Oper[2] ? temp_out : shift_result;
 
 
-    //bit 3 of Oper specifies if this is a logical comparison
+    //Determine if signs of Rt and Rs match
+    assign same_sign = InA[15] == InB[15];
 
-    add_result[15]
+    //if true then a is positive and b is negative
+    //if false then either they have the same sign or a is negative and b is positive
+    assign aPosbNeg = ~InA[15] & InB[15];
+    // 0 1 = true
+    // 1 0 = false
+    // 1 1 = false  don't care about these
+    // 0 0 = false  don't care about these
+    
+    assign aGreaterThanb = (same_sign & ~add_result[15]) | aPosbNeg;
 
     case (Oper[4:3])
-        2'b00 : single_bit_out   = Zero;
-        2'b01 : single_bit_out   = ;
-        2'b10 : single_bit_out   = ~add_result[15];
-        default : single_bit_out = Cout;
+        2'b00 : single_bit_out   = Zero;                      //Rs == Rt
+        2'b01 : single_bit_out   = aGreaterThanb ;            //Rs <  Rt
+        2'b10 : single_bit_out   = aGreaterThanb | Zero;      //Rs <= Rt
+        default : single_bit_out = Cout;                      //Rs +  Rt generates carry
     endcase
 
 

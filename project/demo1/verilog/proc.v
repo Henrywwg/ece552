@@ -25,7 +25,8 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
 
-   
+   decode Idecoder();
+
    
 endmodule // proc
 `default_nettype wire

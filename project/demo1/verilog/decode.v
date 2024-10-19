@@ -31,7 +31,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    //Reg sigs
    wire output RegDst;
    wire output RegSrc;
-   wire output [2:0] Oper;
+   wire output [4:0] Oper;
 
    //Memory sig
    wire output MemWrt;
@@ -118,8 +118,9 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
                          (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 
                                                       3'b100;
 
-         assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
+         assign Oper[2:0] = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
+         assign Oper[4:3] = opcode [1:0];
 
          //Conditionally invert Rs
          assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) | (opcode[4:1] == 4'b1110);
