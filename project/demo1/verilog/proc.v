@@ -16,6 +16,12 @@ module proc (/*AUTOARG*/
 
    // None of the above lines can be modified
 
+   // Decode wires //
+   wire [15:0] instruction, write_data, R1, R2, five_extend, eight_extend, eleven_extend;
+   wire [2:0] write_reg, brType, Oper, RegDst, RegSrc;
+   wire [1:0] BSrc;
+   wire immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, error_decode;
+
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
    
@@ -24,7 +30,11 @@ module proc (/*AUTOARG*/
    
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-
+   decode iD (.clk(clk), .rst(rst), .error(error_decode), .instruction(instruction), 
+   .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUJump(ALUJump), .MemWrt(MemWrt),
+   .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
+   .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
+   .eleven_extend(eleven_extend), .R1(R1), .R2(R2));
    
    
 endmodule // proc

@@ -5,8 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend
-               Rs, Rt);
+module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
+               R1, R2);
 
    //Inputs
    wire input clk;
@@ -25,25 +25,20 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    wire output InvB;
    wire output Cin;
    wire output sign;
-   wire output [2:0]brType;
+   wire output [2:0]brType, Oper;
    wire output [1:0]BSrc;
 
    //Reg sigs
-   wire output RegDst;
-   wire output RegSrc;
-   wire output [2:0] Oper;
+   wire output [2:0]RegDst, RegSrc;
 
    //Memory sig
    wire output MemWrt;
 
    //Sign extend outputs
-   wire output [15:0]five_extend;
-   wire output [15:0]eight_extend;
-   wire output [15:0]eleven_extend;
+   wire output [15:0]five_extend, eight_extend, eleven_extend;
 
    //Register outputs
-   wire output [15:0]Rt;
-   wire output [15:0]Rs;
+   wire output [15:0]R1, R2;
 
    //Error flag
    wire output error;
@@ -161,8 +156,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    //INSTANTIATE REG FILE//
    ////////////////////////  
       regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
-                        .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(Rs), 
-                        .read2Data(Rt), .err(error));
+                        .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(R1), 
+                        .read2Data(R2), .err(error));
 
 endmodule
 `default_nettype wire
