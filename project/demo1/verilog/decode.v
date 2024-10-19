@@ -8,8 +8,11 @@
 module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc , 0ext, ALUOpr, RegDst, RegSrc, RegWrt);
 
    //Inputs
+   wire input clk;
+   wire input rst;
    wire input [15:0]instruction;
-   
+   wire input [2:0]write_reg;
+   wire input [15:0]write_data;
 
    //Outputs (all control signals)
    //PC sigs
@@ -32,6 +35,18 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
 
    //Memory sig
    wire output MemWrt;
+
+   //Sign extend outputs
+   wire output [15:0]five_extend;
+   wire output [15:0]eight_extend;
+   wire output [15:0]eleven_extend;
+
+   //Register outputs
+   wire output [15:0]Rt;
+   wire output [15:0]Rs;
+
+   //Error flag
+   wire output error;
 
 
    ////////////////////
@@ -68,6 +83,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
       assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
 
       //just pass the lower 2 bits of opcode
+      //Needs more bits
       assign brType = opcode[1:0];
 
       //////////////////////////////
@@ -125,10 +141,19 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
+      //Assign extends based on value of 0ext calculated above
+      assign five_extend   = 0ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign eight_extend  = 0ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      
+      //not dependent on value of 0ext
+      assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
+      regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[7:5]), .read2RegSel(instruction[10:8]), 
+                        .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(Rt), 
+                        .read2Data(Rs), .err(error));
 
 endmodule
 `default_nettype wire
