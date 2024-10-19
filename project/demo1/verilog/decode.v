@@ -23,8 +23,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output brType;
    wire output [1:0]BSrc;
    wire output 0ext;
+
    wire output [2:0]ALUOpr;
-   wire output RegDst;
+   wire output [1:0]RegDst;
+
    wire output RegSrc;
    wire output RegWrt;
 
@@ -63,18 +65,23 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign InvA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
 
    //Regwrt when not doing branch, J or JR, mem writes or NOPs, HALT or siic
-   assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | (opcode[4:1] == 4'b0000) | opcode[4:2] == 2'b001 |MemWrt;
+   assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | (opcode[4:1] == 4'b0000) | opcode[4:2] == 2'b001 | MemWrt;
 
    //Cin if we are invA or B. Since Cin not used for ands, is not a problem
    // if Cin asserted during ANDN insts
    assign Cin = invA || invB;
 
-   //SLBI ANDNI XORI
+   //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
    assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
 
    //Set Operation signal for the ALU
    assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : (opcode[4:2] == 3'b101) ? {1'b0, instruction[1:0]} : (opcode[4:2] == 3'b010) ? {1'b1, instruction[1:0]} : 3'b100;
    assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
+
+   //just pass the lower 2 bits of opcode
+   assign brType = opcode[1:0];
+
+   assign regDst = 
 
    
 
