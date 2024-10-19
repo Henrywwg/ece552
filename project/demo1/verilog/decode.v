@@ -121,6 +121,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // if Cin asserted during ANDN insts
          assign Cin = invA || invB;
 
+         //Rt (00) used when opcodes starts 1101 opcode or 111
          //TODO bsrc
 
    /////////////////////////
