@@ -25,7 +25,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output 0ext;
    wire output ALUOpr;
 
-   wire output RegDst;
+   wire output [1:0]RegDst;
    wire output RegSrc;
    wire output RegWrt;
 
@@ -58,17 +58,22 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
 
 
    //Invert Rs
-   assign invA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
+   assign InvA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
 
    //Regwrt when not doing branch, J or JR, mem writes or NOPs, HALT or siic
-   assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | (opcode[4:1] == 4'b0000) | opcode[4:2] == 2'b001 |MemWrt;
+   assign RegWrt = (opcode[4:2] == 2'b011) | (opcode[4:1] == 4'b0001) | (opcode[4:1] == 4'b0000) | opcode[4:2] == 2'b001 | MemWrt;
 
    //Cin if we are invA or B. Since Cin not used for ands, is not a problem
    // if Cin asserted during ANDN insts
    assign Cin = invA || invB;
 
-   //SLBI ANDNI XORI
+   //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
    assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
+
+   //just pass the lower 2 bits of opcode
+   assign brType = opcode[1:0];
+
+   assign regDst = 
 
    
 
