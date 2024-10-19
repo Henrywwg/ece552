@@ -21,8 +21,9 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    input wire Cin;
    input wire Sign; // Control signal for signed instructions.
    input wire ImmSrc; // Control signal to choose between Inst7 and Inst10 for branch immediate.
-   input wire TkBrch, ALUJmp; // Control signals to decide next PC value.
-   output wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
+   input wire ALUJmp; // Control signals to decide next PC value.
+   input wire [2:0]brtype; //Branch type. Determines which control signals need to be checked.
+   wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
    output wire [15:0] ALUrslt; // Result from ALU operation.
    output wire [15:0] newPC; // PC for next instruction.
 
@@ -33,7 +34,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    //////////////////
    // B select Mux //
    //////////////////
-   assign B = BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData);
+   assign B = brtype[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
 
    ///////////////////////
    // ALU instantiation //
@@ -43,7 +44,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    /////////////////////////////////
    // Branch Condition Evaluation //
    /////////////////////////////////
-
+   assign TkBrch = brtype[2] ? (brtype[1] ? (brtype[0] ? (A[15] == 0) : (A[15] == 1)) : (brtype[0] !ZF : ZF)) : 0;
 
    ////////////////////////////////////
    // Branch destination calculation //

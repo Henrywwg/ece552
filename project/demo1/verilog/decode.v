@@ -24,7 +24,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output [1:0]BSrc;
    wire output 0ext;
 
-   wire output [2:0]ALUOpr;
+   wire output [2:0]Oper;
    wire output [1:0]RegDst;
 
    wire output RegSrc;
@@ -78,8 +78,8 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : (opcode[4:2] == 3'b101) ? {1'b0, instruction[1:0]} : (opcode[4:2] == 3'b010) ? {1'b1, instruction[1:0]} : 3'b100;
    assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
-   //just pass the lower 2 bits of opcode
-   assign brType = opcode[1:0];
+   //just pass the lower 2 bits of opcode if the instruction is a branch instruction along with a third bit denoting that the inst was a branch.
+   assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
 
    assign regDst = 
 
