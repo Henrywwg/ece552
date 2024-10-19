@@ -97,7 +97,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          assign regSrc = (opcode[5:1] == 4'b1100) | (opcode == 5'b10010)? 2'b11 : (
                         (opcode == 5'b10001)                           ? 2'b01 : (
                         (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
-                                                                        2'b10));
+                                                                         2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
@@ -118,9 +118,9 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
          // if Cin asserted during ANDN insts
          assign Cin = invA || invB;
 
-<<<<<<< HEAD
          //Rt (00) used when opcodes starts 1101 opcode or 111
          //TODO bsrc
+         assign BSrc = ;
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
@@ -129,15 +129,6 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
-=======
-   //SLBI ANDNI XORI
-   assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
-
-   assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : 0;
-   assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
-
-   
->>>>>>> 0448a9134ef6f5223e317d303ac90e0b7f99e18b
 
 endmodule
 `default_nettype wire
