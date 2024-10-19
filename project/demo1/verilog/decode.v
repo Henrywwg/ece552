@@ -28,6 +28,8 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output [1:0]BSrc;
    wire output 0ext;
    wire output [2:0]ALUOpr;
+
+   //Reg sigs
    wire output RegDst;
    wire output RegSrc;
    wire output RegWrt;
