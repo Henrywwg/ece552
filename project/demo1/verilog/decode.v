@@ -5,7 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType, BSrc, ALUOpr, RegDst, RegSrc, RegWrt);
+module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend
+               Rs, Rt);
 
    //Inputs
    wire input clk;
@@ -30,7 +31,6 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
    //Reg sigs
    wire output RegDst;
    wire output RegSrc;
-   wire output RegWrt;
    wire output [2:0] Oper;
 
    //Memory sig
@@ -56,6 +56,7 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
       wire [2:0]ALUOpr;
       wire 0ext;
       wire [2:0]ALUOpr;
+      wire RegWrt;
 
    ///////////////////
    //CONTROL SIGNALS//
@@ -141,6 +142,8 @@ module decode (clk, rst, instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, si
 
          //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
          assign 0ext = (opcode[4:1] == 4'b0101);
+
+         assign sign = 
 
 
 
