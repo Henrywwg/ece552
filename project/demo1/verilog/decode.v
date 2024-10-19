@@ -9,8 +9,11 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
    Cin, sign, brType, BSrc , 0ext, ALUOpr, RegDst, RegSrc, RegWrt);
 
    //Inputs
+   wire input clk;
+   wire input rst;
    wire input [15:0]instruction;
    
+
    //Outputs (all control signals)
    //PC sigs
    wire output immSrc;
@@ -30,15 +33,18 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
    //Memory sigs
    wire output MemWrt;
 
-   //////////////////////
-   // INTERNAL SIGNALS //
-   //////////////////////
-   wire [4:0]opcode = instruction[15:11];
-   wire [2:0]ALUOpr;
 
-   /////////////////////
-   // CONTROL SIGNALS //
-   /////////////////////
+
+
+   ////////////////////
+   //INTERNAL SIGNALS//
+   ////////////////////
+      wire [4:0]opcode = instruction[15:11];
+      wire [2:0]ALUOpr;
+
+   ///////////////////
+   //CONTROL SIGNALS//
+   ///////////////////
       
       /////////////////////////////////////
       // PROGRAM COUNTER CONTROL SIGNALS //
@@ -64,11 +70,11 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
          //are the same using nots and xor.
          assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
 
-      /////////////////
-      // ALU SIGNALS //
-      /////////////////
-         //just pass the lower 2 bits of opcode
-         assign brType = opcode[1:0];
+      //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
+      assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
+
+      //just pass the lower 2 bits of opcode
+      assign brType = opcode[1:0];
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -82,7 +88,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
          // immediate instructions use input 1
          // default rest to use input 0
          assign regDst = opcode[4:1] == 4'b0011                   ? 2'b11 :
-                        (((opcode[4:3] == 2'b11) & ^opcode[2:0]) ? 2'b10  :
+                        (((opcode[4:3] == 2'b11) & ^opcode[2:0])  ? 2'b10  :
                         ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ({opcode[4:2], opcode[0]} == 4'b1001) 
                                                                   ? 2'b01 :
                                                                     2'b00));
@@ -92,9 +98,9 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
          assign regSrc = (opcode[5:1] == 4'b1100) | (opcode == 5'b10010)? 2'b11 : (
-                         (opcode == 5'b10001)                           ? 2'b01 : (
-                         (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
-                                                                          2'b10));
+                        (opcode == 5'b10001)                           ? 2'b01 : (
+                        (opcode[4:1 == 4'b0010])                       ? 2'b00 : 
+                                                                        2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
@@ -113,13 +119,20 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
          
          // if we are invA or B. Since Cin not used for ands, is not a problem
          // if Cin asserted during ANDN insts
-         assign Cin = invA || invB;
+         assign Cin = invA | invB;
 
-         assign sign = (opcode == 5'b01000) | (opcode == 5'b01001) | (opcode == 5'b10000) 
-         | (opcode == 5'b10001) | (opcode == 5'b10011) 
-         | ((opcode == 5'b11011) & ((ALUOpr == 3'b100) | (ALUOper == 3'b101)))
-         | (opcode == 5'b11101) | (opcode == 5'b11110);
+<<<<<<< HEAD
+         //Rt (00) used when opcodes starts 1101 opcode or 111
+         //TODO bsrc
 
+   /////////////////////////
+   //SIGN and ZERO EXTENDS//
+   /////////////////////////
+
+   ////////////////////////
+   //INSTANTIATE REG FILE//
+   ////////////////////////  
+=======
    //SLBI ANDNI XORI
    assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
 
@@ -127,5 +140,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB,
    assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
    
+>>>>>>> 0448a9134ef6f5223e317d303ac90e0b7f99e18b
+
 endmodule
 `default_nettype wire
