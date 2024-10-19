@@ -23,7 +23,6 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output brType;
    wire output [1:0]BSrc;
    wire output 0ext;
-   wire output [2:0]ALUOpr;
    wire output RegDst;
    wire output RegSrc;
    wire output RegWrt;
@@ -76,8 +75,10 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : 0;
    assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
-   assign sign (opcode == 5'b01000) | (opcode == 5'b01001) 
-   | (opcode == 5'b10000) | (opcode == 5'b10001) | (opcode == 5'b10011) | (opcode == 5'b11011 ); 
+   assign sign = (opcode == 5'b01000) | (opcode == 5'b01001) | (opcode == 5'b10000) 
+   | (opcode == 5'b10001) | (opcode == 5'b10011) 
+   | ((opcode == 5'b11011) & ((ALUOpr == 3'b100) | (ALUOper == 3'b101)))
+   | (opcode == 5'b11101) | (opcode == 5'b11110); 
 
 endmodule
 `default_nettype wire
