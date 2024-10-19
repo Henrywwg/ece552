@@ -23,7 +23,7 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    ///////////////////////
    // INTERNAL SIGNALS  //
    ///////////////////////
-   //PC_q stores current PC out and PC_p4 stores PC+4
+   //PC_q stores current PC out and PC_p2 stores PC+2
    wire [15:0]PC_q;
 
 
@@ -40,7 +40,7 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    // LOGIC //
    ///////////
    //Keep PC_p2 as PC_q + 2
-   assign PC_p2 = PC_q + 16'h0002;
+   cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0));
 
 
 

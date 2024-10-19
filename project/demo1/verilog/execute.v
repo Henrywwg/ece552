@@ -5,7 +5,7 @@
    Description     : This is the overall module for the execute stage of the processor.
 */
 `default_nettype none
-module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, Signed, ImmSrc, TkBrch, ALUJmp, SF, ZF, OF, CF, ALUrslt, newPC);
+module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, Sign, ImmSrc, TkBrch, ALUJmp, SF, ZF, OF, CF, ALUrslt, newPC);
 
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
    input wire [2:0] Oper; // Operand for ALU operation.
@@ -19,7 +19,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    input wire InvA; // Control signal to determine whether to invert the A input.
    input wire InvB; // Control signal to determine whether to invert the B input.
    input wire Cin;
-   input wire Signed; // Control signal for signed instructions.
+   input wire Sign; // Control signal for signed instructions.
    input wire ImmSrc; // Control signal to choose between Inst7 and Inst10 for branch immediate.
    input wire TkBrch, ALUJmp; // Control signals to decide next PC value.
    output wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
@@ -38,7 +38,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    ///////////////////////
    // ALU instantiation //
    ///////////////////////
-   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), .sign(Signed), .Out(ALUrslt), .Zero(ZF), .Ofl(OF));
+   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF), .Cout(CF));
 
    /////////////////////////////////
    // Branch Condition Evaluation //
