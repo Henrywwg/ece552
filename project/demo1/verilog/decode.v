@@ -81,9 +81,6 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
       // are the same using nots and xor.
       assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
 
-      //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
-      assign 0ext = (opcode[4:1] == 4'b0101) | (opcode[4:1] == 5'b10010);
-
       //just pass the lower 2 bits of opcode
       //Needs more bits
       assign brType = opcode[1:0];
@@ -138,6 +135,11 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
                         (opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
                         ((opcode[4:2] == 3'b100) & opcode[1:0] != 2'b10)  ? 2'b01 : (
                         (opcode[4:0] == 5'b10010) ? 2'b11 : 0));
+
+
+         //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
+         assign 0ext = (opcode[4:1] == 4'b0101);
+
 
 
    /////////////////////////
