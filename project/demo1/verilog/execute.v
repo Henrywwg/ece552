@@ -38,7 +38,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    ///////////////////////
    // ALU instantiation //
    ///////////////////////
-   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF), .Cout(CF));
+   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(ALUOper), .invA(InvA), .invB(InvB), .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF), .Cout(CF));
 
    /////////////////////////////////
    // Branch Condition Evaluation //
