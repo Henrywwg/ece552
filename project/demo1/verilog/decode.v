@@ -21,11 +21,12 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    wire output sign;
 
    wire output brType;
-   wire output BSrc;
+   wire output [1:0]BSrc;
    wire output 0ext;
-   wire output ALUOpr;
 
+   wire output [2:0]ALUOpr;
    wire output [1:0]RegDst;
+
    wire output RegSrc;
    wire output RegWrt;
 
@@ -34,6 +35,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    //INTERNAL SIGNALS//
    ////////////////////
    wire [4:0]opcode = instruction[15:11];
+   wire [2:0]ALUOpr;
 
    ///////////////////
    //CONTROL SIGNALS//
@@ -56,6 +58,7 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    // are the same using nots and xor.
    assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
 
+   assign InvB = (opcode[3:0] == 4'b1011) ? (opcode[4] ? (&instruction[1:0] ? 1 : 0) : 1) : 0;
 
    //Invert Rs
    assign InvA = ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) || (opcode[4:1] == 4'b1110);
@@ -74,6 +77,8 @@ module decode (instruction, immSrc, ALUJmp, MemWrt InvA, InvB, Cin, sign, brType
    assign brType = opcode[1:0];
 
    assign regDst = 
+   assign ALUOpr = (opcode[4:1] == 4'b1101) ? {opcode[0], instruction[1:0]} : 0;
+   assign Oper = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ((ALUOpr[1:0] == 2'b10) ? 3'b000 : ALUOpr);
 
    
 
