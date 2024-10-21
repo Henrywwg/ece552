@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, 
-   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode, SLBI);
+   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode, SLBI, mem_en);
 
    //Inputs
    input wire clk;
@@ -33,6 +33,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
 
    //Memory sigs
    output wire MemWrt;
+   output wire mem_en;
 
    //Sign extend outputs
    output wire [15:0]five_extend, eight_extend, eleven_extend;
@@ -82,6 +83,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          // Check first 3 bits, and then check the lower 2 bits of the opcode
          // are the same using nots and xor.
          assign MemWrt = ((opcode[4:2] == 3'b100) & (~^opcode[1:0]));
+         assign mem_en = (opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10);
 
 
       //////////////////////////////

@@ -24,6 +24,7 @@ module proc (/*AUTOARG*/
    wire [1:0] RegDst, RegSrc;
    wire [1:0] BSrc;
    wire immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, error_decode, createDump;
+   wire mem_en;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -40,7 +41,7 @@ module proc (/*AUTOARG*/
    .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUjump(ALUjump), .MemWrt(MemWrt),
    .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
    .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
-   .eleven_extend(eleven_extend), .R1(R1), .R2(R2), .opcode(opcode), .SLBI(SLBI));
+   .eleven_extend(eleven_extend), .R1(R1), .R2(R2), .opcode(opcode), .SLBI(SLBI), .mem_en(mem_en));
 
    execute iX (.PC(incrPC), .Oper(Oper), .A(R1), .RegData(R2), .Inst4(five_extend), .Inst7(eight_extend), 
                .Inst10(eleven_extend), .SLBI(SLBI), .BSrc(BSrc), .InvA(InvA), .InvB(InvB), .Cin(Cin), 
@@ -48,7 +49,7 @@ module proc (/*AUTOARG*/
                .opcode(opcode), .Binput(Binput), .brType(brType));
 
    memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(R2), 
-              .DUMP(createDump), .read_data(read_data), .en());
+              .DUMP(createDump), .read_data(read_data), .en(mem_en));
 
    wb iWB (.RegSrc(RegSrc), .PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
            .WData(write_data), .RegDst(RegDst), .Inst(instruction), .WRegister(write_reg));

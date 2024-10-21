@@ -28,7 +28,7 @@ module memory (clk, rst, we, address, write_data, DUMP, read_data, en);
    /////////////////////////////////
 
    //memory2c is Memory and outputs values pointed to be address
-   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(1'b1), 
+   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(en), 
                 .wr(we), .createdump(DUMP), .clk(clk), .rst(rst));
 
 
