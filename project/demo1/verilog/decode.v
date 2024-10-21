@@ -5,7 +5,7 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
+module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt, InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
                R1, R2);
 
    //Inputs
@@ -50,8 +50,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    ////////////////////
       wire [4:0]opcode = instruction[15:11];
       wire [2:0]ALUOpr;
-      wire 0ext;
-      wire [2:0]ALUOpr;
+      wire zero_ext;
       wire RegWrt;
 
    ///////////////////
@@ -139,8 +138,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
                                                                                  2'b10));
 
 
-         //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
-         assign 0ext = (opcode[4:1] == 4'b0101);
+         //Only for SLBI ANDNI XORI is zero_ext needed, default sign extend
+         assign zero_ext = (opcode[4:1] == 4'b0101);
 
          assign sign (opcode[4:2] == 3'b011);
 
@@ -149,11 +148,11 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
-      //Assign extends based on value of 0ext calculated above
-      assign five_extend   = 0ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
-      assign eight_extend  = 0ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      //Assign extends based on value of zero_ext calculated above
+      assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
       
-      //not dependent on value of 0ext
+      //not dependent on value of zero_ext
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
    ////////////////////////
