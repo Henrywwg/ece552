@@ -62,13 +62,6 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	decode
 
-} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module proc
-
-Top level modules:
-	proc
-
 } {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/register.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/register.v
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module register

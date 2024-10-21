@@ -35,7 +35,7 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .PC_new(newPC), .DUMP(createDump), .PC_p2(incrPC), .instruction(instruction));
 
-   decode iD (.clk(clk), .rst(rst), .error(error_decode), .instruction(instruction), 
+   decode iD (.clk(clk), .rst(rst), .err(error_decode), .instruction(instruction), 
    .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUJump(ALUjump), .MemWrt(MemWrt),
    .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
    .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
@@ -46,7 +46,7 @@ module proc (/*AUTOARG*/
                .sign(sign), .immSrc(immSrc), .ALUjump(ALUjump), .Xcomp(Xcomp), .newPC(newPC), 
                .opcode(opcode), .Binput(Binput));
 
-   memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(Binput), 
+   memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(R2), 
               .DUMP(createDump), .readData(read_data));
 
    wb iWB (.RegSrc(RegSrc), .PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
