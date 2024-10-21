@@ -33,7 +33,7 @@ module decode_tb();
     wire  [1:0]BSrc;
  
     //Reg sigs
-    wire  [2:0]RegDst, RegSrc;
+    wire  [1:0]RegDst, RegSrc;
  
     //Memory sig
     wire  MemWrt;
