@@ -44,7 +44,7 @@ module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
    // LOGIC //
    ///////////
    //Keep PC_p2 as PC_q + 2
-   cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0));
+   cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0), .c_out());
 
    ///////////////////////////////////////////////////////////////
    // Create HALT Singal to stop processor and dump Data Memory //
