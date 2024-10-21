@@ -30,6 +30,9 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
+
+   assign PC_mux = HALT_BIT ? PC_q : PC_new;
+
    //DFFs hold value of PC
    dff iPC[15:0](.q(PC_q), .d(HALT ? PC_q : PC_new), .clk(clk), .rst(rst));
 

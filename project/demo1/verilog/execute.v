@@ -69,7 +69,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    /////////////////////////////////
    // Branch Condition Evaluation //
    /////////////////////////////////
-   assign TkBrch = brType[2] ? (brType[1] ? (brType[0] ? (~SF | ZF) : SF) : (brType[0] ? ~ZF : ZF)) : 1'b0;
+   assign TkBrch = ({opcode[4:2], opcode[0]} == 4'b0010) | (brType[2] ? (brType[1] ? (brType[0] ? (~SF | ZF) : SF) : (brType[0] ? ~ZF : ZF)) : 1'b0);
 
    ////////////////////////////////////
    // Branch destination calculation //
