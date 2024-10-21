@@ -33,7 +33,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
    wire [15:0] tempPC; // Result of PC + Imm for branches.
    wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
-   wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
+   wire SF, ZF, OF; // Signed, Zero, Overflow for Branch Conditions.
    wire TkBrch; // Signal determined by branching logic
 
    //////////////////
@@ -46,6 +46,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    ///////////////////////
    alu ExecuteALU(.InA(A), .InB(Binput), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), 
                   .sign(sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF));
+   assign SF = ALUrslt[15];
 
    /////////////////////////////////////////////////
    // Logic for Instructions that write to Rd 
