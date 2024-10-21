@@ -105,7 +105,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          //Default rest to pulling from ALU
          assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
                                                       ((opcode == 5'b10001)       ? 2'b01 : 
-                                                      (~(opcode[4:1] == 4'b0011)   ? 2'b10 : 2'b00));
+                          ((opcode [4:1] == 4'b0000) | (opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
@@ -114,7 +114,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
                          (opcode[4:2] == 3'b101)  ?  {1'b0, opcode[1:0]} : 
                          (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 3'b100;  // default is add
 
-         assign Oper[2:0] = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
+         assign Oper[2:0] = {3{(opcode[4:1] != 4'b0000)}} & (ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr);
 
          //Conditionally invert R1 
          // all instructions where "Rs" R1 must be negative
@@ -132,7 +132,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          assign Cin = InvA | InvB;
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
-         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : 
+         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111) | (opcode[4:1] == 4'b0000))  ?  2'b00 : 
                         ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
                         ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))    ?  2'b01 : 
                         ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 2'b10));
@@ -144,7 +144,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          // sign is req for all operations where there is potential overflow
          // essentially all addition/subtraction operations except SCO
          // it's fine to assert at all time unless the instruction is SCO
-         assign sign = (opcode != 11111);
+         assign sign = (opcode != 5'b11111) & (opcode[4:1] != 4'b0000);
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
