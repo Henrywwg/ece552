@@ -20,7 +20,8 @@ module proc (/*AUTOARG*/
    wire [15:0] instruction, write_data, R1, R2, five_extend, eight_extend, eleven_extend, 
                newPC, incrPC, SLBI, Binput, Xcomp, read_data;
    wire [4:0] opcode;
-   wire [2:0] write_reg, brType, Oper, RegDst, RegSrc;
+   wire [2:0] write_reg, brType, Oper; 
+   wire [1:0] RegDst, RegSrc;
    wire [1:0] BSrc;
    wire immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, error_decode, createDump;
 
