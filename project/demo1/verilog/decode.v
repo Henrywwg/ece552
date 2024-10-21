@@ -164,7 +164,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
       //SLBI assignment
-      assign SLBI = ((R2 << 8) | {8'h00, instruction[7:0]});
+      assign SLBI = {R2[7:0], instruction[7:0]};
 
    ////////////////////////
    //INSTANTIATE REG FILE//

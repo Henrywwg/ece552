@@ -25,13 +25,17 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    ///////////////////////
    //PC_q stores current PC out and PC_p2 stores PC+2
    wire [15:0]PC_q;
-
+   wire [15:0]PC_mux;
+   wire HALT_IN, HALT_BIT, ASSERT_HALT;
 
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
+
+   assign PC_mux = HALT_BIT ? PC_q : PC_new;
+
    //DFFs hold value of PC
-   dff iPC[15:0](.q(PC_q), .d(PC_new), .clk(clk), .rst(rst));
+   dff iPC[15:0](.q(PC_q), .d(PC_mux), .clk(clk), .rst(rst));
 
    //memory2c is Instruction Memory and outputs instruction pointed to by PC
    memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(1'b1), .wr(1'b0), 
@@ -43,7 +47,12 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    //Keep PC_p2 as PC_q + 2
    cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0));
 
-
+   ////////////////
+   // HALT LOGIC //
+   ////////////////
+   dff halt_reg(.q(HALT_BIT), .d(HALT_IN), .clk(clk), .rst(rst));
+   assign HALT_IN = HALT_BIT ? HALT_BIT : (opcode == 5'b00000);
+   //assign ASSERT_HALT = HALT_BIT | HALT_IN;
 
 endmodule
 `default_nettype wire
