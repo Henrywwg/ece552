@@ -47,7 +47,7 @@ module proc (/*AUTOARG*/
                .opcode(opcode), .Binput(Binput), .brType(brType));
 
    memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(R2), 
-              .DUMP(createDump), .read_data(read_data));
+              .DUMP(createDump), .read_data(read_data), .en());
 
    wb iWB (.RegSrc(RegSrc), .PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
            .WData(write_data), .RegDst(RegDst), .Inst(instruction), .WRegister(write_reg));
