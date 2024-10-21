@@ -30,7 +30,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
    output wire [1:0]BSrc;
 
    //Reg sigs
-   output wire [2:0]RegDst, RegSrc;
+   output wire [1:0]RegDst, RegSrc;
 
    //Memory sig
    output wire MemWrt;
@@ -79,7 +79,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
 
       //just pass the lower 2 bits of opcode
       //Needs more bits
-      assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
+      assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {3'b000};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -94,7 +94,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          // default rest to use input 0
          assign RegDst = opcode[4:1] == 4'b0011                                  ? 2'b11  : 
          ( ((opcode[4:3] == 2'b11) & |opcode[2:0] )                              ? 2'b10  :
-          ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))   ? 2'b10  : 2'b00));
+          ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))   ? 2'b01  : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
@@ -141,7 +141,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          //Only for SLBI ANDNI XORI is zero_ext needed, default sign extend
          assign zero_ext = (opcode[4:1] == 4'b0101);
 
-         assign sign = (opcode[4:2] == 3'b011);
+         assign sign = (Oper[2:0] == 3'b100) | (Oper[2:0] == 3'b001);
 
 
 
