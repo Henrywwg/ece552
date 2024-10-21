@@ -39,7 +39,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    //////////////////
    // B select Mux //
    //////////////////
-   assign Binput = (brType[2] | (opcode == 11001)) ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
+   assign Binput = (brType[2] | (opcode == 5'b11001)) ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
 
    ///////////////////////
    // ALU instantiation //
