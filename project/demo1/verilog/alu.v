@@ -71,10 +71,6 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl);
     // Zero flag //
     ///////////////
     assign Zero = (|Out) ? 0 : 1;
-
-    //////////////////////
-    // OUTPUT SIGN FLAG //
-    //////////////////////
-    assign sout = Out[15];
+    
     
 endmodule
