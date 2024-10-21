@@ -51,7 +51,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
    //INTERNAL SIGNALS//
    ////////////////////
       wire [2:0]ALUOpr;
-      wire 0ext;
+      wire zero_ext;
       wire RegWrt;
 
       assign opcode = instruction[15:11];
@@ -143,8 +143,8 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
 
          assign sign = (Oper[2:0] == 3'b100) | (Oper[2:0] == 3'b001);
 
-         //Only for ANDNI XORI is 0ext needed, default sign extend
-         assign 0ext = (opcode[4:1] == 4'b0101);
+         //Only for ANDNI XORI is zero_ext needed, default sign extend
+         assign zero_ext = (opcode[4:1] == 4'b0101);
 
          // sign is req for all operations where there is potential overflow
          // essentially all addition/subtraction operations except SCO
@@ -154,11 +154,11 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
-      //Assign extends based on value of 0ext calculated above
-      assign five_extend   = 0ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
-      assign eight_extend  = 0ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      //Assign extends based on value of zero_ext calculated above
+      assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
       
-      //not dependent on value of 0ext
+      //not dependent on value of zero_ext
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
    ////////////////////////
