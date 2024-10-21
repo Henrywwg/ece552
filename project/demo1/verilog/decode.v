@@ -17,8 +17,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
 
    //Outputs (all control signals)
    //PC sigs
-   wire output immSrc;
-   wire output ALUjump;
+   output wire immSrc;
+   output wire ALUjump;
 
    //ALU sigs
    output wire InvA;
@@ -41,8 +41,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    output wire [15:0]R1, R2;
 
    //For execture stage
-   wire output [4:0]opcode;
-   wire output [15:0]SLBI;
+   output wire [4:0]opcode;
+   output wire [15:0]SLBI;
 
    //Error flag
    output wire  err;
@@ -105,7 +105,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
          //Default rest to pulling from ALU
          assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
                                                       ((opcode == 5'b10001)       ? 2'b01 : 
-                                                      ((opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
+                                                      (~(opcode[4:1] == 4'b0011)   ? 2'b10 : 2'b00));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
