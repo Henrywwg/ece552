@@ -56,7 +56,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
 		// Default to avoid latches
 		result = 16'h0000;
 
-        casex (opcode)
+        case(opcode)
             5'b11100: result = {{15{1'b0}}, ZF};
             5'b11101: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, SF};
             5'b11110: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, (SF | ZF)};
