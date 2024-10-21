@@ -5,8 +5,8 @@
    Description     : This is the overall module for the execute stage of the processor.
 */
 `default_nettype none
-module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, Sign, ImmSrc, 
-   ALUJmp, ALUrslt, newPC);
+module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
+   ALUjump, Xcomp, newPC, opcode, Binput);
 
    input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
@@ -21,15 +21,15 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    input wire InvA; // Control signal to determine whether to invert the A input.
    input wire InvB; // Control signal to determine whether to invert the B input.
    input wire Cin;
-   input wire Sign; // Control signal for signed instructions.
-   input wire ImmSrc; // Control signal to choose between Inst7 and Inst10 for branch immediate.
-   input wire ALUJmp; // Control signals to decide next PC value.
+   input wire sign; // Control signal for signed instructions.
+   input wire immSrc; // Control signal to choose between Inst7 and Inst10 for branch immediate.
+   input wire ALUjump; // Control signals to decide next PC value.
    input wire [2:0]brType; //Branch type. Determines which control signals need to be checked.
 
-   output wire [15:0] EXErslt; // Result from ALU operation.
+   output wire [15:0] Xcomp; // Result from EXECUTION stage.
    output wire [15:0] newPC; // PC for next instruction.
+   output wire [15:0] Binput; // B input to ALU. Will be assigned via Mux.
 
-   wire [15:0] B; // B input to ALU. Will be assigned via Mux.
    wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
    wire [15:0] tempPC; // Result of PC + Imm for branches.
    wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
@@ -39,13 +39,13 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    //////////////////
    // B select Mux //
    //////////////////
-   assign B = brType[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
+   assign Binput = brType[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
 
    ///////////////////////
    // ALU instantiation //
    ///////////////////////
-   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), 
-                  .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF));
+   alu ExecuteALU(.InA(A), .InB(Binput), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), 
+                  .sign(sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF));
 
    /////////////////////////////////////////////////
    // Logic for Instructions that write to Rd 
@@ -74,14 +74,14 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    ////////////////////////////////////
    // Branch destination calculation //
    ////////////////////////////////////
-   assign ImmBrnch = ImmSrc ? Inst10 : Inst7;
+   assign ImmBrnch = immSrc ? Inst10 : Inst7;
    cla_16b #(16) PCadder(.sum(tempPC), .a(PC), .b(ImmBrnch), .c_in(1'b0));
 
    ////////////////////
    // Assign Outputs //
    ////////////////////
-   assign newPC = ALUJmp ? ALUrslt : (TkBrch ? tempPC : PC);
-   assign EXErslt = result;
+   assign newPC = ALUjump ? ALUrslt : (TkBrch ? tempPC : PC);
+   assign Xcomp = result;
    
 endmodule
 `default_nettype wire

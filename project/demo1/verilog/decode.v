@@ -5,8 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, 
-   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2);
+module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUjump, MemWrt InvA, InvB, Cin, sign, 
+   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode);
 
    //Inputs
    wire input clk;
@@ -18,7 +18,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    //Outputs (all control signals)
    //PC sigs
    wire output immSrc;
-   wire output ALUJump;
+   wire output ALUjump;
 
    //ALU sigs
    wire output InvA;
@@ -41,7 +41,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    wire output [15:0]R1, R2;
 
    //For execture stage
-   wire [4:0]opcode;
+   wire output [4:0]opcode;
+   wire output [15:0]SLBI;
 
    //Error flag
    wire output error;
@@ -70,10 +71,10 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          //otherwise we can default to 8 bit extended
          assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
 
-         // ALUJump
+         // ALUjump
          // all branches and JR
          // all br share opcode[4:2] so check for that
-         assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
+         assign ALUjump = ({opcode[4:2], opcode[0]} == 4'b0011);
 
          //Check first 3 bits, and then check the lower 2 bits of the opcode
          // are the same using nots and xor.
@@ -141,7 +142,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          // sign is req for all operations where there is potential overflow
          // essentially all addition/subtraction operations except SCO
          // it's fine to assert at all time unless the instruction is SCO
-         assign sign = (opcode != 11111)
+         assign sign = (opcode != 11111);
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
@@ -152,6 +153,8 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
       
       //not dependent on value of 0ext
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
+
+      assign SLBI = ((R2 << 8) | {8'h00, instruction[7:0]});
 
    ////////////////////////
    //INSTANTIATE REG FILE//
