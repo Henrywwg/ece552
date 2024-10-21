@@ -28,7 +28,9 @@ module proc (/*AUTOARG*/
    // cases that you think are illegal in your statemachines
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = error_decode;
+   always @(*) begin
+        err = error_decode;
+   end
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .PC_new(newPC), .DUMP(createDump), .PC_p2(incrPC), .instruction(instruction));

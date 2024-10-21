@@ -1,0 +1,198 @@
+C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv {2 {vlog -work work -sv -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module decode_tb
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(91): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(119): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(149): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(178): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(208): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(238): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(266): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(295): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(325): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(354): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(384): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(412): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(444): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(474): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(503): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(532): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(561): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(591): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(619): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(650): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(679): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(712): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(740): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(768): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(796): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(829): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(859): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(887): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(916): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(947): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(975): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(1009): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(1037): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(1065): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(1093): (vlog-2643) Unterminated string literal continues onto next line.
+** Warning: C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv(1122): (vlog-2643) Unterminated string literal continues onto next line.
+
+Top level modules:
+	decode_tb
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/xor2.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/xor2.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module xor2
+
+Top level modules:
+	xor2
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/clkrst.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/clkrst.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module clkrst
+
+Top level modules:
+	clkrst
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module decode
+
+Top level modules:
+	decode
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module proc
+
+Top level modules:
+	proc
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/register.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/register.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module register
+
+Top level modules:
+	register
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module regFile
+
+Top level modules:
+	regFile
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory2c.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory2c.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module memory2c
+
+Top level modules:
+	memory2c
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory2c.syn.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory2c.syn.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module memory2c
+
+Top level modules:
+	memory2c
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/nor2.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/nor2.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module nor2
+
+Top level modules:
+	nor2
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/wb.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/wb.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module wb
+
+Top level modules:
+	wb
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/not1.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/not1.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module not1
+
+Top level modules:
+	not1
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module fetch
+
+Top level modules:
+	fetch
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module proc_hier
+
+Top level modules:
+	proc_hier
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/nand2.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/nand2.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module nand2
+
+Top level modules:
+	nand2
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/cla_4b.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/cla_4b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module cla_4b
+
+Top level modules:
+	cla_4b
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fullAdder_1b.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fullAdder_1b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module fullAdder_1b
+
+Top level modules:
+	fullAdder_1b
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/shifter.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/shifter.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module shifter
+
+Top level modules:
+	shifter
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/dff.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/dff.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module dff
+
+Top level modules:
+	dff
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/cla_16b.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/cla_16b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module cla_16b
+
+Top level modules:
+	cla_16b
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module memory
+
+Top level modules:
+	memory
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module proc_hier_bench
+
+Top level modules:
+	proc_hier_bench
+
+} {} {}} C:/Users/kearn/Downloads/ece552/project/demo1/verilog/alu.v {1 {vlog -work work -stats=none C:/Users/kearn/Downloads/ece552/project/demo1/verilog/alu.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module alu
+
+Top level modules:
+	alu
+
+} {} {}}
