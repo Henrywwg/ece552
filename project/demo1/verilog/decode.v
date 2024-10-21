@@ -5,44 +5,44 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt, InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
+module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt, InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
                R1, R2);
 
    //Inputs
-   wire input clk;
-   wire input rst;
-   wire input [15:0]instruction;
-   wire input [2:0]write_reg;
-   wire input [15:0]write_data;
+   input wire clk;
+   input wire rst;
+   input wire [15:0]instruction;
+   input wire [2:0]write_reg;
+   input wire [15:0]write_data;
 
    //Outputs (all control signals)
    //PC sigs
-   wire output immSrc;
-   wire output ALUJump;
+   output wire immSrc;
+   output wire ALUJump;
 
    //ALU sigs
-   wire output InvA;
-   wire output InvB;
-   wire output Cin;
-   wire output sign;
-   wire output [2:0]brType;
-   wire output [3:0]Oper;
-   wire output [1:0]BSrc;
+   output wire InvA;
+   output wire InvB;
+   output wire Cin;
+   output wire sign;
+   output wire [2:0]brType;
+   output wire [3:0]Oper;
+   output wire [1:0]BSrc;
 
    //Reg sigs
-   wire output [2:0]RegDst, RegSrc;
+   output wire [2:0]RegDst, RegSrc;
 
    //Memory sig
-   wire output MemWrt;
+   output wire MemWrt;
 
    //Sign extend outputs
-   wire output [15:0]five_extend, eight_extend, eleven_extend;
+   output wire [15:0]five_extend, eight_extend, eleven_extend;
 
    //Register outputs
-   wire output [15:0]R1, R2;
+   output wire [15:0]R1, R2;
 
    //Error flag
-   wire output error;
+   output wire err;
 
 
    ////////////////////
@@ -141,7 +141,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          //Only for SLBI ANDNI XORI is zero_ext needed, default sign extend
          assign zero_ext = (opcode[4:1] == 4'b0101);
 
-         assign sign (opcode[4:2] == 3'b011);
+         assign sign = (opcode[4:2] == 3'b011);
 
 
 
@@ -160,7 +160,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    ////////////////////////  
       regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
                         .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(R1), 
-                        .read2Data(R2), .err(error));
+                        .read2Data(R2), .err(err));
 
 endmodule
 `default_nettype wire
