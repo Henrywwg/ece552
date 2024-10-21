@@ -5,8 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt, InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
-               R1, R2);
+module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, 
+   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2);
 
    //Inputs
    input wire clk;
@@ -25,8 +25,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
    output wire InvB;
    output wire Cin;
    output wire sign;
-   output wire [2:0]brType;
-   output wire [3:0]Oper;
+   output wire [2:0]brType, Oper;
    output wire [1:0]BSrc;
 
    //Reg sigs
@@ -41,18 +40,21 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
    //Register outputs
    output wire [15:0]R1, R2;
 
+   //For execture stage
+   wire [4:0]opcode;
+
    //Error flag
-   output wire err;
+   output wire  err;
 
 
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
-      wire [4:0]opcode = instruction[15:11];
       wire [2:0]ALUOpr;
-      wire zero_ext;
+      wire 0ext;
       wire RegWrt;
 
+      assign opcode = instruction[15:11];
    ///////////////////
    //CONTROL SIGNALS//
    ///////////////////
@@ -68,14 +70,14 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          //otherwise we can default to 8 bit extended
          assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
 
-   //ALUJump
-   // all branches and JR
-   // all br share opcode[4:2] so check for that
-      assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
+         // ALUJump
+         // all branches and JR
+         // all br share opcode[4:2] so check for that
+         assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
 
-      //Check first 3 bits, and then check the lower 2 bits of the opcode
-      // are the same using nots and xor.
-      assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
+         //Check first 3 bits, and then check the lower 2 bits of the opcode
+         // are the same using nots and xor.
+         assign MemWrt = (opcode[4:2] == 3'b100) & (~^opcode[1:0]);
 
       //just pass the lower 2 bits of opcode
       //Needs more bits
@@ -100,34 +102,32 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
-                                                      (opcode == 5'b10001)       ? 2'b01 : (
-                               (opcode[4:1] == 4'b0000) | (opcode[4:1] == 4'b0011)   ? 2'b00 : 
-                                                                                   2'b10));
+         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
+                                                      ((opcode == 5'b10001)       ? 2'b01 : 
+                                                      ((opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
          assign ALUOpr = (opcode[4:1] == 4'b1101) ?  {opcode[0], instruction[1:0]} : 
                          (opcode[4:2] == 3'b101)  ?  {1'b0, opcode[1:0]} : 
-                         (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 
-                                                      3'b100;
+                         (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 3'b100;  // default is add
 
          assign Oper[2:0] = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
-         //If doing a comparison, specify such
-         //Comparison characterized by opcode 5'b111xx
-         assign Oper[3] = &opcode [4:2];
-
-         //Conditionally invert Rs
-         assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) | (opcode[4:1] == 4'b1110);
+         //Conditionally invert R1 
+         // all instructions where "Rs" R1 must be negative
+         // SUB & SUBI
+         assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001);
          
-         //Conditionally invert Rt
-         assign InvB =  ({opcode, instruction[1:0]} == 7'b1101111) | (opcode == 5'b01011) | (opcode == 5'b11110);
+         //Conditionally invert R2
+         // all instructions where B inputs req bitwise NOT ~
+         // ANDNI & ANDN
+         // all conditional instructions that aren't branch or SCO (Rs - Rt)
+         assign InvB =  ({opcode, instruction[1:0]} == 7'b1101111) | (opcode == 5'b01011)
+                        | ((opcode[4:2] == 3'b111) & (~&opcode[1:0]));
          
-
-         // if we are invA or B. Since Cin not used for ands it is not a problem
-         // if Cin is asserted during ANDN insts
+         // We only need Cin when A is inverted for subtraction, InvB is for AND operations only
          assign Cin = InvA | InvB;
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
@@ -143,22 +143,28 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
 
          assign sign = (Oper[2:0] == 3'b100) | (Oper[2:0] == 3'b001);
 
+         //Only for ANDNI XORI is 0ext needed, default sign extend
+         assign 0ext = (opcode[4:1] == 4'b0101);
 
+         // sign is req for all operations where there is potential overflow
+         // essentially all addition/subtraction operations except SCO
+         // it's fine to assert at all time unless the instruction is SCO
+         assign sign = (opcode != 11111)
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
-      //Assign extends based on value of zero_ext calculated above
-      assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
-      assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      //Assign extends based on value of 0ext calculated above
+      assign five_extend   = 0ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign eight_extend  = 0ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
       
-      //not dependent on value of zero_ext
+      //not dependent on value of 0ext
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
-      regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
+      regFile IregFile (.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
                         .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(R1), 
                         .read2Data(R2), .err(err));
 

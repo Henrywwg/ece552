@@ -26,8 +26,9 @@ module memory (clk, rst, we, address, write_data , DUMP, read_data);
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
 
-   //memory2c is Memory and outputs value pointed to  pointed to by PC
-   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(1'b1), .wr(we), .createdump(DUMP), .clk(clk), .rst(rst));
+   //memory2c is Memory and outputs values pointed to be address
+   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(1'b1), 
+                .wr(we), .createdump(DUMP), .clk(clk), .rst(rst));
 
 
 endmodule

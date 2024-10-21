@@ -10,28 +10,19 @@ module fullAdder_1b(s, c_out, a, b, c_in);
 	input  a, b;
     input  c_in;
 
-    //////////////////////
-    // Internal Signals //
-    //////////////////////
-    wire xorAB, andAB, andCxorAB;
+    // 3-input xor gate to compute sum
+    xor3 iXOR(.in1(a),.in2(b),.in3(c_in),.out(s));
 
-    ///////////////////////////
-    // Gates for computing S //
-    ///////////////////////////
-    xor2 xor0(.in1(a), .in2(b), .out(xorAB));
-    xor2 xor1(.in1(xorAB), .in2(c_in), .out(s));
+    // needed intermediate signals
+    wire res1, res2, res3, res4, res5;
 
-    //////////////////////////////
-    // Gates for computing Cout //
-    //////////////////////////////
-    nand2 nand0(.in1(xorAB), .in2(c_in), .out(andCxorAB));
-    nand2 nand1(.in1(a), .in2(b), .out(andAB));
-
-    ///////////////////////////////////////////////////////////////////////////////////////
-    // We can exploit the fact that implementing AND requires a NOT after the NAND       //
-    // and OR requires a NOT before each operand to eliminate both gates as back to back //
-    // NOT operations result in the original signal.                                     //
-    ///////////////////////////////////////////////////////////////////////////////////////
-    nand2 nand3(.in1(andCxorAB), .in2(andAB), .out(c_out));
-
+    // c_out is high if a*b + a*c_in + b*c_in
+	// compute using only the provided NOT, NAND, NOR, and XOR gates
+    nand2 iNAND(.in1(a),.in2(b),.out(res1));
+    xor2 iXOR2(.in1(a),.in2(b),.out(res2));
+    nand2 iNAND2(.in1(res2),.in2(c_in),.out(res3));
+    not1 iNOT(.in1(res1),.out(res4));
+    not1 iNOT2(.in1(res3),.out(res5));
+    xor2 iXOR3(.in1(res4),.in2(res5),.out(c_out));
+    
 endmodule

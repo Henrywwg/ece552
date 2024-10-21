@@ -14,43 +14,22 @@ module cla_4b(sum, c_out, a, b, c_in);
     input [N-1: 0] a, b;
     input          c_in;
 
-    // YOUR CODE HERE
-
-    ///////////////////////////////////////////////////
-    // Internal signal for carries in between adders //
-    /////////////////////////////////////////////////// 
-    wire carry[2:0];
-    wire [3:0]prop;
-    wire [3:0]notg;
-    wire notp0;
-    wire notp1;
-    wire notp2;
-    wire notp3;
+	wire [3:0] G,P,C;
+	
+	// Compute generate and propagate bits
+    assign G = a & b;             // Generate: G_i = a_i & b_i
+    assign P = a ^ b;             // Propagate: P_i = a_i ^ b_i
     
-
-    fullAdder_1b add0(.a(a[0]), .b(b[0]), .c_in(c_in), .s(sum[0]));
-    fullAdder_1b add1(.a(a[1]), .b(b[1]), .c_in(carry[0]), .s(sum[1]));
-    fullAdder_1b add2(.a(a[2]), .b(b[2]), .c_in(carry[1]), .s(sum[2]));
-    fullAdder_1b add3(.a(a[3]), .b(b[3]), .c_in(carry[2]), .s(sum[3]));
-
-    //////////////////////
-    // Look Ahead Logic //
-    //////////////////////
-
-    nand2 nand0[3:0](.in1(a), .in2(b), .out(notg));
-    xor2 xor0[3:0](.in1(a), .in2(b), .out(prop));
-
-    nand2 nand1(.in1(c_in), .in2(prop[0]), .out(notp0));
-    nand2 nand2(.in1(notg[0]), .in2(notp0), .out(carry[0]));
-
-    nand2 nand3(.in1(carry[0]), .in2(prop[1]), .out(notp1));
-    nand2 nand4(.in1(notg[1]), .in2(notp1), .out(carry[1]));
-
-    nand2 nand5(.in1(carry[1]), .in2(prop[2]), .out(notp2));
-    nand2 nand6(.in1(notg[2]), .in2(notp2), .out(carry[2]));
-
-    nand2 nand7(.in1(carry[2]), .in2(prop[3]), .out(notp3));
-    nand2 nand8(.in1(notg[3]), .in2(notp3), .out(c_out));
-
-
+    // Compute carry bits
+    assign C[0] = G[0] | (P[0] & c_in);
+    assign C[1] = G[1] | (P[1] & G[0]) | (P[1] & P[0] & c_in);
+    assign C[2] = G[2] | (P[2] & G[1]) | (P[2] & P[1] & G[0]) | (P[2] & P[1] & P[0] & c_in);
+	assign C[3] = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0]) | (P[3] & P[2] & P[1] & P[0] & c_in);
+    
+    // Compute sum, leave c_out port unconnected
+	fullAdder_1b iFULLADDER [3:0] (.a(a),.b(b),.c_in({C[2:0],c_in}),.s(sum),.c_out()); 
+    
+    // Compute c_out
+    assign c_out = C[3];  // The carry-out of the 4-bit CLA
+	
 endmodule

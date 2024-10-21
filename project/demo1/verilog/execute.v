@@ -5,8 +5,10 @@
    Description     : This is the overall module for the execute stage of the processor.
 */
 `default_nettype none
-module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, Sign, ImmSrc, TkBrch, ALUJmp, SF, ZF, OF, CF, ALUrslt, newPC);
+module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, Sign, ImmSrc, 
+   ALUJmp, ALUrslt, newPC);
 
+   input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
    input wire [2:0] Oper; // Operand for ALU operation.
    input wire [15:0] A; // A input to ALU from Read Data 1.
@@ -22,29 +24,52 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    input wire Sign; // Control signal for signed instructions.
    input wire ImmSrc; // Control signal to choose between Inst7 and Inst10 for branch immediate.
    input wire ALUJmp; // Control signals to decide next PC value.
-   input wire [2:0]brtype; //Branch type. Determines which control signals need to be checked.
-   wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
-   output wire [15:0] ALUrslt; // Result from ALU operation.
+   input wire [2:0]brType; //Branch type. Determines which control signals need to be checked.
+
+   output wire [15:0] EXErslt; // Result from ALU operation.
    output wire [15:0] newPC; // PC for next instruction.
 
    wire [15:0] B; // B input to ALU. Will be assigned via Mux.
    wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
    wire [15:0] tempPC; // Result of PC + Imm for branches.
+   wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
+   wire SF, ZF, OF, CF; // Signed, Zero, Overflow, and Carry Flags for Branch Conditions.
+   wire TkBrch; // Signal determined by branching logic
 
    //////////////////
    // B select Mux //
    //////////////////
-   assign B = brtype[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
+   assign B = brType[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
 
    ///////////////////////
    // ALU instantiation //
    ///////////////////////
-   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF), .Cout(CF));
+   alu ExecuteALU(.InA(A), .InB(B), .Cin(Cin), .Oper(Oper), .invA(InvA), .invB(InvB), 
+                  .sign(Sign), .Out(ALUrslt), .Zero(ZF), .Ofl(OF));
+
+   /////////////////////////////////////////////////
+   // Logic for Instructions that write to Rd 
+   // based off the conditional result of the ALU
+   /////////////////////////////////////////////////
+   reg [15:0] result;
+   always @(*) begin
+		// Default to avoid latches
+		result = 16'b0;
+
+        casex (opcode)
+            5'b11100: result = {15{1'b0}, ZF};
+            5'b11101: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, SF};
+            5'b11110: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, (SF | ZF)};
+            5'b11111: result = OF;
+            default: result = ALUrslt;
+        endcase
+        
+   end
 
    /////////////////////////////////
    // Branch Condition Evaluation //
    /////////////////////////////////
-   assign TkBrch = brtype[2] ? (brtype[1] ? (brtype[0] ? (A[15] == 0) : (A[15] == 1)) : (brtype[0] !ZF : ZF)) : 0;
+   assign TkBrch = brType[2] ? (brType[1] ? (brType[0] ? (~SF | ZF) : SF) : (brType[0] ? ~ZF : ZF)) : 1'b0;
 
    ////////////////////////////////////
    // Branch destination calculation //
@@ -52,15 +77,11 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    assign ImmBrnch = ImmSrc ? Inst10 : Inst7;
    cla_16b #(16) PCadder(.sum(tempPC), .a(PC), .b(ImmBrnch), .c_in(1'b0));
 
-   /////////////////////
-   // Branching Muxes //
-   /////////////////////
+   ////////////////////
+   // Assign Outputs //
+   ////////////////////
    assign newPC = ALUJmp ? ALUrslt : (TkBrch ? tempPC : PC);
-   
-
-
-
-
+   assign EXErslt = result;
    
 endmodule
 `default_nettype wire
