@@ -5,7 +5,7 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, 
+module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt, InvA, InvB, Cin, sign, 
    brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2);
 
    //Inputs
@@ -102,7 +102,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
+         assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
                                                       ((opcode == 5'b10001)       ? 2'b01 : 
                                                       ((opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
 
