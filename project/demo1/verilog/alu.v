@@ -25,6 +25,7 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     output                      Ofl ; // Signal if overflow occured
     output                      Zero; // Signal if Out is 0
     output                      Cout; // Carry out bit (added for Execute stage of processor).
+    output                      sout;
 
     /* YOUR CODE HERE */
 
@@ -96,5 +97,9 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     ///////////////
     assign Zero = (|Out) ? 0 : 1;
 
+    //////////////////////
+    // OUTPUT SIGN FLAG //
+    //////////////////////
+    assign sout = Out[15];
     
 endmodule

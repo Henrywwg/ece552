@@ -26,7 +26,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    wire output Cin;
    wire output sign;
    wire output [2:0]brType;
-   wire output [4:0]Oper;
+   wire output [3:0]Oper;
    wire output [1:0]BSrc;
 
    //Reg sigs
@@ -80,7 +80,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
 
       //just pass the lower 2 bits of opcode
       //Needs more bits
-      assign brType = opcode[4:2] == 3'b011 ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
+      assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -93,9 +93,9 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          // all comparison and Reg to Reg ALU math uses input 2
          // immediate instructions use input 1
          // default rest to use input 0
-         assign regDst = opcode[4:1] == 4'b0011                    ? 2'b11 :
-                           ( ((opcode[4:3] == 2'b11) & |opcode[2:0] ) | opcode == 5'b11100? 2'b10  :
-                        ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
+         assign RegDst = opcode[4:1] == 4'b0011                               ? 2'b11 : 
+         ( ((opcode[4:3] == 2'b11) & |opcode[2:0] ) | opcode == 5'b11100      ? 2'b10  :
+          ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
@@ -116,7 +116,9 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
 
          assign Oper[2:0] = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
-         assign Oper[4:3] = opcode [1:0];
+         //If doing a comparison, specify such
+         //Comparison characterized by opcode 5'b111xx
+         assign Oper[3] = &opcode [4:2];
 
          //Conditionally invert Rs
          assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) | (opcode[4:1] == 4'b1110);
