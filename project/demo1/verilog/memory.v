@@ -9,11 +9,12 @@
    Tested?         : NO
 */
 `default_nettype none
-module memory (clk, rst, we, address, write_data, DUMP, read_data);
+module memory (clk, rst, wr, address, write_data, DUMP, read_data, en);
    //Module Inputs
    input wire clk;
    input wire rst;
-   input wire we;
+   input wire wr;
+   input wire en;
    input wire [15:0]address;
    input wire [15:0]write_data;
    input wire DUMP;
@@ -27,7 +28,7 @@ module memory (clk, rst, we, address, write_data, DUMP, read_data);
    /////////////////////////////////
 
    //memory2c is Memory and outputs values pointed to be address
-   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(1'b1), 
+   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(en), 
                 .wr(we), .createdump(DUMP), .clk(clk), .rst(rst));
 
 
