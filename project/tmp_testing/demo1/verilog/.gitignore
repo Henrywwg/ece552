@@ -1,0 +1,16 @@
+./__work/
+./__work/*
+./work/
+./work/*
+
+testbench/__work/
+testbench/__work/*
+
+transcript
+*.wsl
+*.wpg
+*.back
+*.wlf
+*.cr.mti
+*.mti
+*.mpf

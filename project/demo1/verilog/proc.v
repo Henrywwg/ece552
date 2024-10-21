@@ -31,8 +31,12 @@ module proc (/*AUTOARG*/
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
    always @(*) begin
-        err = error_decode;
-   end
+	err = 1'b0;
+		case(error_decode)
+			1'b1: err = 1'b1;
+			default: err = 1'b0;
+		endcase
+	end
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .PC_new(newPC), .DUMP(createDump), .PC_p2(incrPC), .instruction(instruction));
