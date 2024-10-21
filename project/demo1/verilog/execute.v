@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
-   ALUjump, Xcomp, newPC, opcode, Binput);
+   ALUjump, Xcomp, newPC, opcode, Binput, brType);
 
    input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
@@ -54,10 +54,10 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    reg [15:0] result;
    always @(*) begin
 		// Default to avoid latches
-		result = 16'b0;
+		result = 16'h0000;
 
         casex (opcode)
-            5'b11100: result = {15{1'b0}, ZF};
+            5'b11100: result = {{15{1'b0}}, ZF};
             5'b11101: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, SF};
             5'b11110: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, (SF | ZF)};
             5'b11111: result = OF;
