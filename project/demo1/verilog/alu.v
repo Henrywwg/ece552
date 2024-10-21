@@ -9,7 +9,7 @@
     of the operation, as well as drive the output signals Zero and Overflow
     (OFL).
 */
-module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
+module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl);
 
     parameter OPERAND_WIDTH = 16;    
     parameter NUM_OPERATIONS = 3;
@@ -24,9 +24,7 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     output [OPERAND_WIDTH -1:0] Out ; // Result of computation
     output                      Ofl ; // Signal if overflow occured
     output                      Zero; // Signal if Out is 0
-    output                      Cout; // Carry out bit (added for Execute stage of processor).
 
-    /* YOUR CODE HERE */
 
     //////////////////////
     // Internal Signals //
@@ -63,28 +61,6 @@ module alu (InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl, Cout);
     ///////////////////
     assign temp_out = Oper[1] ? (Oper[0] ? (A^B) : (A|B)) : (Oper[0] ? (A&B) : (add_result));
     assign Out = Oper[2] ? temp_out : shift_result;
-
-
-    //Determine if signs of Rt and Rs match
-    assign same_sign = InA[15] == InB[15];
-
-    //if true then a is positive and b is negative
-    //if false then either they have the same sign or a is negative and b is positive
-    assign aPosbNeg = ~InA[15] & InB[15];
-    // 0 1 = true
-    // 1 0 = false
-    // 1 1 = false  don't care about these
-    // 0 0 = false  don't care about these
-    
-    assign aGreaterThanb = (same_sign & ~add_result[15]) | aPosbNeg;
-
-    case (Oper[4:3])
-        2'b00 : single_bit_out   = Zero;                      //Rs == Rt
-        2'b01 : single_bit_out   = aGreaterThanb ;            //Rs <  Rt
-        2'b10 : single_bit_out   = aGreaterThanb | Zero;      //Rs <= Rt
-        default : single_bit_out = Cout;                      //Rs +  Rt generates carry
-    endcase
-
 
     ///////////////////
     // Determine Ofl //

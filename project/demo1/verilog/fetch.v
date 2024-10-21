@@ -34,7 +34,8 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    dff iPC[15:0](.q(PC_q), .d(PC_new), .clk(clk), .rst(rst));
 
    //memory2c is Instruction Memory and outputs instruction pointed to by PC
-   memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(1'b1), .wr(1'b0), .createdump(DUMP), .clk(clk), .rst(rst));
+   memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(1'b1), .wr(1'b0), 
+                .createdump(DUMP), .clk(clk), .rst(rst));
 
    ///////////
    // LOGIC //

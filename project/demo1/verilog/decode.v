@@ -5,8 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend,
-               R1, R2);
+module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJump, MemWrt InvA, InvB, Cin, sign, 
+   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2);
 
    //Inputs
    wire input clk;
@@ -25,8 +25,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    wire output InvB;
    wire output Cin;
    wire output sign;
-   wire output [2:0]brType;
-   wire output [4:0]Oper;
+   wire output [2:0]brType, Oper;
    wire output [1:0]BSrc;
 
    //Reg sigs
@@ -41,6 +40,9 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    //Register outputs
    wire output [15:0]R1, R2;
 
+   //For execture stage
+   wire [4:0]opcode;
+
    //Error flag
    wire output error;
 
@@ -48,12 +50,11 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
-      wire [4:0]opcode = instruction[15:11];
       wire [2:0]ALUOpr;
       wire 0ext;
-      wire [2:0]ALUOpr;
       wire RegWrt;
 
+      assign opcode = instruction[15:11];
    ///////////////////
    //CONTROL SIGNALS//
    ///////////////////
@@ -69,18 +70,17 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          //otherwise we can default to 8 bit extended
          assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
 
-   //ALUJump
-   // all branches and JR
-   // all br share opcode[4:2] so check for that
-      assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
+         // ALUJump
+         // all branches and JR
+         // all br share opcode[4:2] so check for that
+         assign ALUJump = ({opcode[4:2], opcode[0]} == 4'b0011);
 
-      //Check first 3 bits, and then check the lower 2 bits of the opcode
-      // are the same using nots and xor.
-      assign MemWrt = (opcode[4:2] == 3'b100) & ~(^opcode[1:0]);
+         //Check first 3 bits, and then check the lower 2 bits of the opcode
+         // are the same using nots and xor.
+         assign MemWrt = (opcode[4:2] == 3'b100) & (~^opcode[1:0]);
 
-      //just pass the lower 2 bits of opcode
-      //Needs more bits
-      assign brType = opcode[4:2] == 3'b011 ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
+         // just pass the lower 2 bits of opcode
+         assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -93,56 +93,55 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
          // all comparison and Reg to Reg ALU math uses input 2
          // immediate instructions use input 1
          // default rest to use input 0
-         assign regDst = opcode[4:1] == 4'b0011                    ? 2'b11 :
-                           ( ((opcode[4:3] == 2'b11) & |opcode[2:0] ) | opcode == 5'b11100? 2'b10  :
+         assign regDst = (opcode[4:1] == 4'b0011)                    ? 2'b11 :
+                        (((opcode[4:3] == 2'b11) & |opcode[2:0])     ? 2'b10 :
                         ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
-                                                      (opcode == 5'b10001)       ? 2'b01 : (
-                                                      (opcode[4:1 == 4'b0011])   ? 2'b00 : 
-                                                                                   2'b10));
+         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
+                                                      ((opcode == 5'b10001)       ? 2'b01 : 
+                                                      ((opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
 
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
          assign ALUOpr = (opcode[4:1] == 4'b1101) ?  {opcode[0], instruction[1:0]} : 
                          (opcode[4:2] == 3'b101)  ?  {1'b0, opcode[1:0]} : 
-                         (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 
-                                                      3'b100;
+                         (opcode[4:2] == 3'b010)  ?  {1'b1, opcode[1:0]} : 3'b100;  // default is add
 
          assign Oper[2:0] = ALUOpr[2] ? ((ALUOpr[1] ? (ALUOpr[0] ? 3'b101 : 3'b111) : 3'b100)) : ALUOpr;
 
-         assign Oper[4:3] = opcode [1:0];
-
-         //Conditionally invert Rs
-         assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001) | (opcode[4:1] == 4'b1110);
+         //Conditionally invert R1 
+         // all instructions where "Rs" R1 must be negative
+         // SUB & SUBI
+         assign InvA =  ({opcode, instruction[1:0]} == 7'b1101101) | (opcode == 5'b01001);
          
-         //Conditionally invert Rt
-         assign InvB =  ({opcode, instruction[1:0]} == 7'b1101111) | (opcode == 5'b01011) | (opcode == 5'b11110);
+         //Conditionally invert R2
+         // all instructions where B inputs req bitwise NOT ~
+         // ANDNI & ANDN
+         // all conditional instructions that aren't branch or SCO (Rs - Rt)
+         assign InvB =  ({opcode, instruction[1:0]} == 7'b1101111) | (opcode == 5'b01011)
+                        | ((opcode[4:2] == 3'b111) & (~&opcode[1:0]));
          
-
-         // if we are invA or B. Since Cin not used for ands it is not a problem
-         // if Cin is asserted during ANDN insts
+         // We only need Cin when A is inverted for subtraction, InvB is for AND operations only
          assign Cin = InvA | InvB;
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
-         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : (
-                        (opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
-                        ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))      ?  2'b01 : (
-                        (opcode[4:0] == 5'b10010)                             ?  2'b11 : 
-                                                                                 2'b10));
+         assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : 
+                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) |
+                        ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))    ?  2'b01 : 
+                        ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 2'b10));
 
-
-         //Only for SLBI ANDNI XORI is 0ext needed, default sign extend
+         //Only for ANDNI XORI is 0ext needed, default sign extend
          assign 0ext = (opcode[4:1] == 4'b0101);
 
-         assign sign (opcode[4:2] == 3'b011);
-
-
+         // sign is req for all operations where there is potential overflow
+         // essentially all addition/subtraction operations except SCO
+         // it's fine to assert at all time unless the instruction is SCO
+         assign sign = (opcode != 11111)
 
    /////////////////////////
    //SIGN and ZERO EXTENDS//
@@ -157,7 +156,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUJ
    ////////////////////////
    //INSTANTIATE REG FILE//
    ////////////////////////  
-      regFile IregFile( .clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
+      regFile IregFile (.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
                         .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(R1), 
                         .read2Data(R2), .err(error));
 

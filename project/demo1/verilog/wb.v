@@ -17,7 +17,7 @@ module wb (RegSrc, PC, MemData, ALUData, RegData, WData, RegDst, Inst, WRegister
    //////////////////////////////////////////////////
    // Mux logic to determine destination register. //
    //////////////////////////////////////////////////
-   assign WRegister = RegDst[1] ? (RegDst[0] ? 3'b111 : Inst[4:2]) : (RegDst[0] ? Inst[7:5] : Inst[10:8]);
+   assign WRegister = RegDst[1] ? (RegDst[0] ? 3'b111 : Inst[4:2]) : (RegDst[0] ? Inst[10:8] : Inst[7:5]);
 
    //////////////////////////////////
    // Mux logic to determine data. //
