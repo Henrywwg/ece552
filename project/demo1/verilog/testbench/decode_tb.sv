@@ -29,11 +29,11 @@ module decode_tb();
     wire  Cin;
     wire  sign;
     wire  [2:0]brType;
-    wire  [3:0]Oper;
+    wire  [2:0]Oper;
     wire  [1:0]BSrc;
  
     //Reg sigs
-    wire  [2:0]RegDst, RegSrc;
+    wire  [1:0]RegDst, RegSrc;
  
     //Memory sig
     wire  MemWrt;
@@ -84,7 +84,7 @@ module decode_tb();
             (immSrc != 1'b0) ||        (ALUJump !== 1'b0)  || 
             (InvA !== InvB !== 1'b0) || (Cin !== 1'b0)      || 
             (sign !== 1'b0) ||          (brType !== 3'b000) || 
-            (Oper !== 4'b0000) ||      (BSrc !== 2'b00)    ||
+            (Oper !== 3'b000) ||      (BSrc !== 2'b00)    ||
             (RegDst !== 2'b00) ||       (RegSrc !== 2'b00)  ||
             (MemWrt !== 1'b0))
                 $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -112,7 +112,7 @@ module decode_tb();
                 (immSrc != 1'b0) ||        (ALUJump !== 1'b0)  || 
                 (InvA !== InvB !== 1'b0) || (Cin !== 1'b0)      || 
                 (sign !== 1'b1) ||          (brType !== 3'b000) || 
-                (Oper !== 4'b0100) ||      (BSrc !== 2'b01)    ||
+                (Oper !== 3'b100) ||      (BSrc !== 2'b01)    ||
                 (RegDst !== 2'b01) ||       (RegSrc !== 2'b10)  ||
                 (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -142,7 +142,7 @@ module decode_tb();
 
                 (InvA !== 1'b1) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b1)      ||      (sign !== 1'b1) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -168,7 +168,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b0) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0111) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b111) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -198,7 +198,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b1)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b0) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0101) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b101) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -228,7 +228,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b0) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0000) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b000) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -256,7 +256,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b0) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0001) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b001) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -285,7 +285,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b1)     ||
                 (Cin !== 1'b1)      ||      (sign !== 1'b0) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0000) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b000) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -315,7 +315,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b1) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0011) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b011) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -344,7 +344,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b1) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                 (BSrc !== 2'b01)    ||      (RegDst == 2'bXX) ||       
                 (RegSrc == 2'bXX)  ||      (MemWrt !== 1'b1))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -374,7 +374,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b1) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b01)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -402,7 +402,7 @@ module decode_tb();
 
                 (InvA !== 1'b0) ||          (InvB !== 1'b0)     ||
                 (Cin !== 1'b0)      ||      (sign !== 1'b1) ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                 (BSrc !== 2'b01)    ||      (RegDst == 2'b00) ||       
                 (RegSrc == 2'b10)  ||      (MemWrt !== 1'b1))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -434,7 +434,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -464,7 +464,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b1)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -493,7 +493,7 @@ module decode_tb();
 
                     (InvA !== 1'b1)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b1)      ||      (sign !== 1'b1)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b100) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -522,7 +522,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0111) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b111) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -551,7 +551,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b1)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0101) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b101) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -581,7 +581,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0000) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b000) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -609,7 +609,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0001) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b001) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -640,7 +640,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b1)     ||
                     (Cin !== 1'b1)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0000) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b000) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -669,7 +669,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0011) ||      
+                    (brType !== 3'b000) ||      (Oper !== 3'b011) ||      
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -819,7 +819,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b100) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b100) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -849,7 +849,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b101) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b101) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -877,7 +877,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||
                     (Cin !== 1'b0)      ||      (sign !== 1'b1)     ||          
-                    (brType !== 3'b110) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b110) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -906,7 +906,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b1)     ||          
-                    (brType !== 3'b111) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b111) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -937,7 +937,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -965,7 +965,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //brType: branch if MSB is 1, LSBs gives type - Comparison: Check if Rs == 0
                     (BSrc !== 2'b11)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -999,7 +999,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
                     (BSrc !== 2'b11)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -1027,7 +1027,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -1055,7 +1055,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -1083,7 +1083,7 @@ module decode_tb();
 
                     (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                     (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                    (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
+                    (brType !== 3'b000) ||      (Oper !== 3'b100)  ||      //TODO: ADD A WAY FOR BRCHCND TO SET TkBrch IF A J COMMAND IS ISSUED
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
@@ -1112,7 +1112,7 @@ module decode_tb();
 
                 (InvA !== 1'b0)     ||      (InvB !== 1'b0)     ||      
                 (Cin !== 1'b0)      ||      (sign !== 1'b0)     ||          
-                (brType !== 3'b000) ||      (Oper !== 4'b0100)  ||    
+                (brType !== 3'b000) ||      (Oper !== 3'b100)  ||    
                 (BSrc !== 2'b00)    ||      (RegDst !== 2'b00)  ||       
                 (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...

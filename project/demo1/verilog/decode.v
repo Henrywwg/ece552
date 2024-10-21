@@ -9,11 +9,11 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode);
 
    //Inputs
-   wire input clk;
-   wire input rst;
-   wire input [15:0]instruction;
-   wire input [2:0]write_reg;
-   wire input [15:0]write_data;
+   input wire clk;
+   input wire rst;
+   input wire [15:0]instruction;
+   input wire [2:0]write_reg;
+   input wire [15:0]write_data;
 
    //Outputs (all control signals)
    //PC sigs
@@ -21,38 +21,38 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    wire output ALUjump;
 
    //ALU sigs
-   wire output InvA;
-   wire output InvB;
-   wire output Cin;
-   wire output sign;
-   wire output [2:0]brType, Oper;
-   wire output [1:0]BSrc;
+   output wire InvA;
+   output wire InvB;
+   output wire Cin;
+   output wire sign;
+   output wire [2:0]brType, Oper;
+   output wire [1:0]BSrc;
 
    //Reg sigs
-   wire output [2:0]RegDst, RegSrc;
+   output wire [1:0]RegDst, RegSrc;
 
    //Memory sig
-   wire output MemWrt;
+   output wire MemWrt;
 
    //Sign extend outputs
-   wire output [15:0]five_extend, eight_extend, eleven_extend;
+   output wire [15:0]five_extend, eight_extend, eleven_extend;
 
    //Register outputs
-   wire output [15:0]R1, R2;
+   output wire [15:0]R1, R2;
 
    //For execture stage
    wire output [4:0]opcode;
    wire output [15:0]SLBI;
 
    //Error flag
-   wire output error;
+   output wire  err;
 
 
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
       wire [2:0]ALUOpr;
-      wire 0ext;
+      wire zero_ext;
       wire RegWrt;
 
       assign opcode = instruction[15:11];
@@ -80,8 +80,9 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
          // are the same using nots and xor.
          assign MemWrt = (opcode[4:2] == 3'b100) & (~^opcode[1:0]);
 
-         // just pass the lower 2 bits of opcode
-         assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {1'b0, opcode[1:0]};
+         //just pass the lower 2 bits of opcode
+         //Needs more bits
+         assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {3'b000};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -94,15 +95,15 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
          // all comparison and Reg to Reg ALU math uses input 2
          // immediate instructions use input 1
          // default rest to use input 0
-         assign regDst = (opcode[4:1] == 4'b0011)                    ? 2'b11 :
-                        (((opcode[4:3] == 2'b11) & |opcode[2:0])     ? 2'b10 :
-                        ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
+         assign RegDst = (opcode[4:1] == 4'b0011)                                ? 2'b11  : 
+         ( ((opcode[4:3] == 2'b11) & |opcode[2:0] )                              ? 2'b10  :
+          ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))   ? 2'b01  : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
          //LD is only instruction grabbing from mem
          //Default rest to pulling from ALU
-         assign regSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
+         assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)        ? 2'b11 : 
                                                       ((opcode == 5'b10001)       ? 2'b01 : 
                                                       ((opcode[4:1] == 4'b0011)   ? 2'b00 : 2'b10));
 
@@ -132,12 +133,20 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
          assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : 
-                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) |
+                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
                         ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))    ?  2'b01 : 
-                        ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 2'b10));
+                        ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 
+                                                                                 2'b10));
 
-         //Only for ANDNI XORI is 0ext needed, default sign extend
-         assign 0ext = (opcode[4:1] == 4'b0101);
+
+         //Only for SLBI ANDNI XORI is zero_ext needed, default sign extend
+         assign zero_ext = (opcode[4:1] == 4'b0101);
+
+         // not sure if this makes sense-matt
+         //assign sign = (Oper[2:0] == 3'b100) | (Oper[2:0] == 3'b001);
+
+         //Only for ANDNI XORI is zero_ext needed, default sign extend
+         assign zero_ext = (opcode[4:1] == 4'b0101);
 
          // sign is req for all operations where there is potential overflow
          // essentially all addition/subtraction operations except SCO
@@ -147,13 +156,14 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
-      //Assign extends based on value of 0ext calculated above
-      assign five_extend   = 0ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
-      assign eight_extend  = 0ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      //Assign extends based on value of zero_ext calculated above
+      assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
       
-      //not dependent on value of 0ext
+      //not dependent on value of zero_ext
       assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
 
+      //SLBI assignment
       assign SLBI = ((R2 << 8) | {8'h00, instruction[7:0]});
 
    ////////////////////////
@@ -161,7 +171,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    ////////////////////////  
       regFile IregFile (.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), 
                         .writeRegSel(write_reg), .writeData(write_data), .writeEn(RegWrt), .read1Data(R1), 
-                        .read2Data(R2), .err(error));
+                        .read2Data(R2), .err(err));
 
 endmodule
 `default_nettype wire

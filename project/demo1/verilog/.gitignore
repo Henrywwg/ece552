@@ -3,6 +3,9 @@
 ./work/
 ./work/*
 
+testbench/__work/
+testbench/__work/*
+
 transcript
 *.wsl
 *.wpg
