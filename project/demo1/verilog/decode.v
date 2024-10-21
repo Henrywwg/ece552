@@ -31,7 +31,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
    //Reg sigs
    output wire [1:0]RegDst, RegSrc;
 
-   //Memory sig
+   //Memory sigs
    output wire MemWrt;
 
    //Sign extend outputs
@@ -45,7 +45,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
    output wire [15:0]SLBI;
 
    //err flag
-   output wire  err;
+   output wire err;
 
 
    ////////////////////
@@ -76,13 +76,13 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          // all br share opcode[4:2] so check for that
          assign ALUjump = ({opcode[4:2], opcode[0]} == 4'b0011);
 
-         //Check first 3 bits, and then check the lower 2 bits of the opcode
+      /////////////////////////
+      // MEM CONTROL SIGNALS //
+      /////////////////////////
+         // Check first 3 bits, and then check the lower 2 bits of the opcode
          // are the same using nots and xor.
          assign MemWrt = (opcode[4:2] == 3'b100) & (~^opcode[1:0]);
 
-         //just pass the lower 2 bits of opcode
-         //Needs more bits
-         assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {3'b000};
 
       //////////////////////////////
       // REGISTER CONTROL SIGNALS //
@@ -135,18 +135,11 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
          assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111))  ?  2'b00 : 
                         ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)|
                         ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))    ?  2'b01 : 
-                        ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 
-                                                                                 2'b10));
+                        ((opcode[4:0] == 5'b10010)                            ?  2'b11 : 2'b10));
 
-
-         //Only for SLBI ANDNI XORI is zero_ext needed, default sign extend
-         assign zero_ext = (opcode[4:1] == 4'b0101);
-
-         // not sure if this makes sense-matt
-         //assign sign = (Oper[2:0] == 3'b100) | (Oper[2:0] == 3'b001);
-
-         //Only for ANDNI XORI is zero_ext needed, default sign extend
-         assign zero_ext = (opcode[4:1] == 4'b0101);
+         //just pass the lower 2 bits of opcode
+         //Needs more bits
+         assign brType = (opcode[4:2] == 3'b011) ? {1'b1, opcode[1:0]} : {3'b000};
 
          // sign is req for all operations where there is potential overflow
          // essentially all addition/subtraction operations except SCO
@@ -156,6 +149,9 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
    /////////////////////////
    //SIGN and ZERO EXTENDS//
    /////////////////////////
+      //Only for ANDNI XORI is zero_ext needed, default sign extend
+      assign zero_ext = (opcode[4:1] == 4'b0101);
+
       //Assign extends based on value of zero_ext calculated above
       assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
       assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};

@@ -9,7 +9,7 @@
    Tested?         : NO
 */
 `default_nettype none
-module memory (clk, rst, we, address, write_data , DUMP, read_data);
+module memory (clk, rst, we, address, write_data, DUMP, read_data);
    //Module Inputs
    input wire clk;
    input wire rst;

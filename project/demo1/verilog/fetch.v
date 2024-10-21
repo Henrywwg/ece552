@@ -8,17 +8,16 @@
    Tested?         : NO
 */
 `default_nettype none
-module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
+module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
    //Module Inputs
    input wire clk;
    input wire rst;
    input wire [15:0]PC_new;
-   input wire DUMP;
    
    //Module Outputs
    output wire [15:0]PC_p2;
    output wire [15:0]instruction;
-
+   output wire DUMP;
 
    ///////////////////////
    // INTERNAL SIGNALS  //
@@ -39,7 +38,7 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
 
    //memory2c is Instruction Memory and outputs instruction pointed to by PC
    memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~HALT), .wr(1'b0), 
-                .createdump(DUMP), .clk(clk), .rst(rst));
+                .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
    // LOGIC //
@@ -47,6 +46,9 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
    //Keep PC_p2 as PC_q + 2
    cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0));
 
+   ///////////////////////////////////////////////////////////////
+   // Create HALT Singal to stop processor and dump Data Memory //
+   ///////////////////////////////////////////////////////////////
    always @(opcode) begin
       HALT = 1'b0;
       case(opcode)
@@ -57,6 +59,7 @@ module fetch (clk, rst, PC_new, DUMP, PC_p2, instruction);
       endcase
    end
 
+   assign DUMP = HALT;
 
 
 endmodule
