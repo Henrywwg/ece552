@@ -11,9 +11,8 @@ module decode_tb();
     //STIMULUS//
     ////////////
     reg clk; 
-    wire rst;
-    wire instruction;
-    wire [15:0]instruction;
+    reg rst;
+    reg [15:0]instruction;
 
     wire [2:0]write_reg;
     wire [15:0]write_data;
@@ -21,47 +20,47 @@ module decode_tb();
 
     //Output signals (to monitor)
     //PC sigs
-    wire output immSrc;
-    wire output ALUJump;
+    wire  immSrc;
+    wire  ALUJump;
  
     //ALU sigs
-    wire output InvA;
-    wire output InvB;
-    wire output Cin;
-    wire output sign;
-    wire output [2:0]brType;
-    wire output [4:0]Oper;
-    wire output [1:0]BSrc;
+    wire  InvA;
+    wire  InvB;
+    wire  Cin;
+    wire  sign;
+    wire  [2:0]brType;
+    wire  [3:0]Oper;
+    wire  [1:0]BSrc;
  
     //Reg sigs
-    wire output [2:0]RegDst, RegSrc;
+    wire  [2:0]RegDst, RegSrc;
  
     //Memory sig
-    wire output MemWrt;
+    wire  MemWrt;
  
-    //Sign extend outputs
-    wire output [15:0]five_extend, eight_extend, eleven_extend;
+    //Sign extend s
+    wire  [15:0]five_extend, eight_extend, eleven_extend;
  
-    //Register outputs
-    wire output [15:0]R1, R2;
+    //Register s
+    wire  [15:0]R1, R2;
  
     //Error flag
-    wire output error;
+    wire  err;
 
 
     
 
 
-    decode iD (.clk(clk), .rst(rst), .error(error_decode), .instruction(instruction), 
+    decode iD (.clk(clk), .rst(rst), .err(error_decode), .instruction(instruction), 
     .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUJump(ALUJump), .MemWrt(MemWrt),
     .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
     .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
     .eleven_extend(eleven_extend), .R1(R1), .R2(R2));
 
 
-    begin
+    initial begin
         clk = 0;
-        rst = 1;
+		rst = 1;
 
         //Initial test is NOP
         instruction = 16'b0000_1000_0001_0000;
@@ -1123,7 +1122,7 @@ module decode_tb();
         
             else    $display("HALT Passed (36/38)");
 
-        $stop();
+        $exit();
     end
 
     always
