@@ -39,7 +39,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    //////////////////
    // B select Mux //
    //////////////////
-   assign Binput = brType[2] ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
+   assign Binput = (brType[2] | (opcode == 11001)) ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
 
    ///////////////////////
    // ALU instantiation //
@@ -61,6 +61,9 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
             5'b11101: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, SF};
             5'b11110: result = OF ? (~SF ? 16'b1 : 16'b0) : {15'b0, (SF | ZF)};
             5'b11111: result = OF;
+            5'b11001: result = {ALUrslt[0], ALUrslt[1], ALUrslt[2], ALUrslt[3], ALUrslt[4], ALUrslt[5], 
+               ALUrslt[6], ALUrslt[7], ALUrslt[8], ALUrslt[9], ALUrslt[10], ALUrslt[11], ALUrslt[12], ALUrslt[13], 
+               ALUrslt[14], ALUrslt[15]};
             default: result = ALUrslt;
         endcase
         
