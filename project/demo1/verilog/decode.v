@@ -92,9 +92,9 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          // all comparison and Reg to Reg ALU math uses input 2
          // immediate instructions use input 1
          // default rest to use input 0
-         assign RegDst = opcode[4:1] == 4'b0011                               ? 2'b11 : 
-         ( ((opcode[4:3] == 2'b11) & |opcode[2:0] ) | opcode == 5'b11100      ? 2'b10  :
-          ((opcode == 5'b11000) | (opcode == 5'b10010) | (opcode == 5'b10011) ? 2'b01 : 2'b00));
+         assign RegDst = opcode[4:1] == 4'b0011                                  ? 2'b11  : 
+         ( ((opcode[4:3] == 2'b11) & |opcode[2:0] )                              ? 2'b10  :
+          ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))   ? 2'b10  : 2'b00));
          
          //LBI and BTR pull directly from B input (and SLBI)
          //JAL JALR, pull from PC adder logic
@@ -102,7 +102,7 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUJum
          //Default rest to pulling from ALU
          assign RegSrc = (opcode[4:1] == 4'b1100) |   (opcode == 5'b10010)       ? 2'b11 : (
                                                       (opcode == 5'b10001)       ? 2'b01 : (
-                                                      (opcode[4:1 == 4'b0011])   ? 2'b00 : 
+                                                      (opcode[4:1] == 4'b0011)   ? 2'b00 : 
                                                                                    2'b10));
 
       /////////////////////////
