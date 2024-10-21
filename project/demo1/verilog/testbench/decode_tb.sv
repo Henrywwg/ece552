@@ -52,7 +52,7 @@ module decode_tb();
 
 
     decode iD (.clk(clk), .rst(rst), .err(error_decode), .instruction(instruction), 
-    .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUJump(ALUJump), .MemWrt(MemWrt),
+    .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUjump(ALUJump), .MemWrt(MemWrt),
     .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
     .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
     .eleven_extend(eleven_extend), .R1(R1), .R2(R2));
