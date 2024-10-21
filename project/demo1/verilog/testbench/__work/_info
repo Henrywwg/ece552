@@ -1,0 +1,124 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/hwysong-grass/private/ece552/ece552/project/demo1/verilog/testbench
+vdecode
+Z1 !s110 1729473198
+!i10b 1
+!s100 dZYN6MfLY;5WTOBcaoDS>0
+ILFngI9YA[VIjjKIP:RC]M0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1729472234
+8../decode.v
+F../decode.v
+L0 8
+Z3 OP;L;10.7c;67
+r1
+!s85 0
+31
+Z4 !s108 1729473198.000000
+!s107 decode_tb.sv|../dff.v|../register.v|../regFile.v|../decode.v|
+Z5 !s90 +define+RANDSEED=3|-work|__work|../decode.v|../regFile.v|../register.v|../dff.v|decode_tb.sv|
+!i113 1
+Z6 o-work __work
+Z7 !s92 +define+RANDSEED=3 -work __work
+Z8 tCvgOpt 0
+vdecode_tb
+DXx6 sv_std 3 std 0 22 d=_JfHTnXCN[H5FjiaJJc0
+R1
+!i10b 1
+!s100 mO3_<d>07VKo3EzN31e1U0
+Ik0[V3:@`lJ=2X^B;aXBLb1
+R2
+!s105 decode_tb_sv_unit
+S1
+R0
+w1729473197
+8decode_tb.sv
+Fdecode_tb.sv
+L0 8
+R3
+r1
+!s85 0
+31
+R4
+Z9 !s107 decode_tb.sv|../dff.v|../register.v|../regFile.v|../decode.v|
+R5
+!i113 1
+R6
+R7
+R8
+vdff
+R1
+!i10b 1
+!s100 F^G8EIaUgKJ6DQB2zBzd^2
+I`e:ZMaaV]i?FNePUkK[oe3
+R2
+R0
+w1646504840
+8../dff.v
+F../dff.v
+L0 6
+R3
+r1
+!s85 0
+31
+R4
+R9
+R5
+!i113 1
+R6
+R7
+R8
+vregFile
+R1
+!i10b 1
+!s100 g0K<Pj]CFV0R6Wd7Jj6NN3
+ISXGni0<VIUePNm>A9mInc2
+R2
+R0
+Z10 w1729471460
+8../regFile.v
+F../regFile.v
+L0 10
+R3
+r1
+!s85 0
+31
+R4
+R9
+R5
+!i113 1
+R6
+R7
+R8
+nreg@file
+vregister
+R1
+!i10b 1
+!s100 @7daK9`kXzD4g<ecIWzN32
+IkXN@:^Z9j2SQ5:zXQH0Pi3
+R2
+R0
+R10
+8../register.v
+F../register.v
+L0 1
+R3
+r1
+!s85 0
+31
+R4
+R9
+R5
+!i113 1
+R6
+R7
+R8

@@ -1,7 +1,8 @@
-# Loading project Compile
-# Compile of execute.v failed with 1 errors.
-# Compile of execute.v failed with 9 errors.
-# Compile of execute.v failed with 7 errors.
-# Compile of execute.v failed with 1 errors.
-# Compile of execute.v was successful.
-# Compile of execute.v was successful.
+# vsim -c testbench/decode_tb -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 19:59:44 on Oct 20,2024
+# ** Error: (vsim-3170) Could not find 'testbench/decode_tb'.
+#         Searched libraries:
+#             /home/hwysong-grass/private/ece552/ece552/project/demo1/verilog/__work
+# Error loading design
+# End time: 19:59:45 on Oct 20,2024, Elapsed time: 0:00:01
+# Errors: 1, Warnings: 0
