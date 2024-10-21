@@ -88,7 +88,7 @@ module decode_tb();
             (RegDst !== 2'b00) ||       (RegSrc !== 2'b00)  ||
             (MemWrt !== 1'b0))
                 $display("ERROR: Output signals do not match expected. Dumping all values...
-                        \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                        \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                         \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                         immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
 
@@ -116,10 +116,10 @@ module decode_tb();
                 (RegDst !== 2'b01) ||       (RegSrc !== 2'b10)  ||
                 (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
-        
+                            
             else
                     $display("ADDI Passed (2/38)");
 
@@ -146,7 +146,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -172,7 +172,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -202,7 +202,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -232,7 +232,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -260,7 +260,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -289,7 +289,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -319,7 +319,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -348,7 +348,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst == 2'bXX) ||       
                 (RegSrc == 2'bXX)  ||      (MemWrt !== 1'b1))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -378,7 +378,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst !== 2'b01) ||       
                 (RegSrc !== 2'b01)  ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -406,7 +406,7 @@ module decode_tb();
                 (BSrc !== 2'b01)    ||      (RegDst == 2'b00) ||       
                 (RegSrc == 2'b10)  ||      (MemWrt !== 1'b1))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
@@ -438,7 +438,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -468,7 +468,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -497,7 +497,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -526,7 +526,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -555,7 +555,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -585,7 +585,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -613,7 +613,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -644,7 +644,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -673,7 +673,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -706,7 +706,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -734,7 +734,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -762,7 +762,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -790,7 +790,7 @@ module decode_tb();
                     (BSrc !== 2'b00)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc !== 2'b10)  ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -823,7 +823,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -853,7 +853,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -881,7 +881,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -910,7 +910,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'bxx)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -941,7 +941,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b10)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -969,7 +969,7 @@ module decode_tb();
                     (BSrc !== 2'b11)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -1003,7 +1003,7 @@ module decode_tb();
                     (BSrc !== 2'b11)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -1031,7 +1031,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b00)  ||       
                     (RegSrc == 2'b11)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -1059,7 +1059,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -1087,7 +1087,7 @@ module decode_tb();
                     (BSrc !== 2'b10)    ||      (RegDst !== 2'b11)  ||       
                     (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                         $display("ERROR: Output signals do not match expected. Dumping all values...
-                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                                \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                                 \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                                 immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
             
@@ -1116,7 +1116,7 @@ module decode_tb();
                 (BSrc !== 2'b00)    ||      (RegDst !== 2'b00)  ||       
                 (RegSrc == 2'b00)   ||      (MemWrt !== 1'b0))
                     $display("ERROR: Output signals do not match expected. Dumping all values...
-                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n Cin: %b\n brType %b
+                            \n immSrc: %b\n ALUJump: %b\n InvA, InvB: %b, %b\n sign: %b\n Cin: %b\n brType %b
                             \n Oper: %b\n BSrc: %b\n RegDst, RegSrc: %b, %b\n MemWrt: %b\n",
                             immSrc, ALUJump, InvA, InvB, Cin, sign, brType, Oper, BSrc, RegDst, RegSrc, MemWrt);
         
