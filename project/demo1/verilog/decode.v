@@ -133,9 +133,9 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
 
          //Rt (00) used when opcodes starts 1101 opcode or 111
          assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111) 
-                        | (opcode[4:1] == 4'b0000) 
-                        | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10)))  ?  2'b00 : 
-                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)     ?  2'b01 : 
+                        | (opcode[4:1] == 4'b0000))                            ?  2'b00 : 
+                        ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)
+                        | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))   ?  2'b01 : 
                         ((opcode[4:0] == 5'b10010)                             ?  2'b11 : 2'b10));
 
          //just pass the lower 2 bits of opcode
