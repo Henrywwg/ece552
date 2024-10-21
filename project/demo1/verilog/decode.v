@@ -5,8 +5,8 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUjump, MemWrt InvA, InvB, Cin, sign, 
-   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode);
+module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, 
+   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode, SLBI);
 
    //Inputs
    input wire clk;
@@ -44,7 +44,7 @@ module decode (clk, rst, error, instruction, write_reg, write_data, immSrc, ALUj
    output wire [4:0]opcode;
    output wire [15:0]SLBI;
 
-   //Error flag
+   //err flag
    output wire  err;
 
 
