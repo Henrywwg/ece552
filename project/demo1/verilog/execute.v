@@ -79,7 +79,7 @@ module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, In
    // Branch destination calculation //
    ////////////////////////////////////
    assign ImmBrnch = immSrc ? Inst10 : Inst7;
-   cla_16b #(16) PCadder(.sum(tempPC), .a(PC), .b(ImmBrnch), .c_in(1'b0));
+   cla_16b #(16) PCadder(.sum(tempPC), .a(PC), .b(ImmBrnch), .c_in(1'b0), .c_out());
 
    ////////////////////
    // Assign Outputs //

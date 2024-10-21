@@ -37,7 +37,7 @@ module proc (/*AUTOARG*/
    fetch iIF (.clk(clk), .rst(rst), .PC_new(newPC), .DUMP(createDump), .PC_p2(incrPC), .instruction(instruction));
 
    decode iD (.clk(clk), .rst(rst), .err(error_decode), .instruction(instruction), 
-   .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUJump(ALUjump), .MemWrt(MemWrt),
+   .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUjump(ALUjump), .MemWrt(MemWrt),
    .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
    .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
    .eleven_extend(eleven_extend), .R1(R1), .R2(R2), .opcode(opcode), .SLBI(SLBI));
@@ -45,10 +45,10 @@ module proc (/*AUTOARG*/
    execute iX (.PC(incrPC), .Oper(Oper), .A(R1), .RegData(R2), .Inst4(five_extend), .Inst7(eight_extend), 
                .Inst10(eleven_extend), .SLBI(SLBI), .BSrc(BSrc), .InvA(InvA), .InvB(InvB), .Cin(Cin), 
                .sign(sign), .immSrc(immSrc), .ALUjump(ALUjump), .Xcomp(Xcomp), .newPC(newPC), 
-               .opcode(opcode), .Binput(Binput));
+               .opcode(opcode), .Binput(Binput), .brType(brType));
 
    memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(R2), 
-              .DUMP(createDump), .readData(read_data));
+              .DUMP(createDump), .read_data(read_data));
 
    wb iWB (.RegSrc(RegSrc), .PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
            .WData(write_data), .RegDst(RegDst), .Inst(instruction), .WRegister(write_reg));
