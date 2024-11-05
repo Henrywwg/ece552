@@ -31,7 +31,7 @@ module src_parser(instruction, src_reg_val, src_valid);
 
     //Register sources (or equivalent dependency producer) can be found in instruction[7:5], [10:8] [4:2]
     //Default to 10:8 cause i'm lazy ;3
-    assign src_1_mux_intermediate_1 =   (opcode[4:3] == 2'b11) &  (opcode != 5'b11000)      ? instruction[4:2] :
+    assign src_reg =   (opcode[4:3] == 2'b11) &  (opcode != 5'b11000)      ? instruction[4:2] :
                                         (opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)   ? instruction[7:5] : instruction[10:8];
 
 

@@ -3,12 +3,11 @@
   
    Filename        : fetch.v
    Description     : This is the module for the overall fetch stage of the processor.
-   Author          : Henry Wysong-Grass
-   Date            : 2024-10-09
-   Tested?         : NO
+
 */
 `default_nettype none
-module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
+module fetch (clk, rst, RAW, PC_new, PC_p2, instruction, DUMP);
+   
    //Module Inputs
    input wire clk;
    input wire rst;
@@ -26,8 +25,12 @@ module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
    wire [15:0]PC_q;
    wire [4:0]opcode;
    reg HALT;
+   wire [15:0]instruction_prepipe;
+   wire [15:0]PC_p2_prepipe;
+
 
    assign opcode = instruction[15:11];
+   
 
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
@@ -37,7 +40,7 @@ module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
    dff iPC[15:0](.q(PC_q), .d(HALT ? PC_q : PC_new), .clk(clk), .rst(rst));
 
    //memory2c is Instruction Memory and outputs instruction pointed to by PC
-   memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~HALT), .wr(1'b0), 
+   memory2c iIM(.data_out(instruction_prepipe), .data_in(16'h0000), .addr(PC_q), .enable(~HALT), .wr(1'b0), 
                 .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
@@ -60,6 +63,12 @@ module fetch (clk, rst, PC_new, PC_p2, instruction, DUMP);
    end
 
    assign DUMP = HALT;
+
+   //////////
+   // PIPE //
+   //////////
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_prepipe), .q(instruction));
+   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2_prepipe), .q(PC_p2));
 
 
 endmodule
