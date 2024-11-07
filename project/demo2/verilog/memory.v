@@ -9,8 +9,11 @@
    Tested?         : NO
 */
 `default_nettype none
-module memory (clk, rst, we, address, write_data, DUMP, read_data, en);
+module memory (instruction_in, instruction_out, clk, rst, we, address, write_data, DUMP, read_data, en);
    //Module Inputs
+   input wire [15:0]instruction_in;
+   output wire [15:0]instruction_out;
+
    input wire clk;
    input wire rst;
    input wire we;

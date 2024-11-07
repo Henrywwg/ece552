@@ -5,13 +5,16 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, 
+module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_data, immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, 
    brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode, SLBI, mem_en);
+
+   input wire [15:0]instruction_in;
+   output wire [15:0]instruction_out;
 
    //Inputs
    input wire clk;
    input wire rst;
-   input wire [15:0]instruction;
+   
    input wire [2:0]write_reg;
    input wire [15:0]write_data;
 
@@ -48,6 +51,9 @@ module decode (clk, rst, err, instruction, write_reg, write_data, immSrc, ALUjum
    //err flag
    output wire err;
 
+   //For posterities state
+   wire [15:0]instruction;
+   assign instruction = instruction_in;
 
    ////////////////////
    //INTERNAL SIGNALS//

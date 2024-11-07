@@ -6,7 +6,7 @@
 
 */
 `default_nettype none
-module fetch (clk, rst, RAW, PC_new, PC_p2, instruction, DUMP);
+module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP);
    
    //Module Inputs
    input wire clk;
@@ -15,7 +15,7 @@ module fetch (clk, rst, RAW, PC_new, PC_p2, instruction, DUMP);
    
    //Module Outputs
    output wire [15:0]PC_p2;
-   output wire [15:0]instruction;
+   output wire [15:0]instruction_out;
    output wire DUMP;
 
    ///////////////////////
@@ -28,6 +28,8 @@ module fetch (clk, rst, RAW, PC_new, PC_p2, instruction, DUMP);
    wire [15:0]instruction_prepipe;
    wire [15:0]PC_p2_prepipe;
 
+   wire [15:0]instruction;
+   assign instruction_out = instruction;
 
    assign opcode = instruction[15:11];
    

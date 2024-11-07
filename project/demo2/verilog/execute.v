@@ -5,8 +5,11 @@
    Description     : This is the overall module for the execute stage of the processor.
 */
 `default_nettype none
-module execute (PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
+module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
    ALUjump, Xcomp, newPC, opcode, Binput, brType);
+
+   input wire [15:0]instruction_in;
+   output wire [15:0]instruction_out;
    
    input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
