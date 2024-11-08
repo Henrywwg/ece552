@@ -6,11 +6,13 @@
 */
 `default_nettype none
 module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
-   ALUjump, Xcomp_out, newPC_out, opcode, Binput_out, brType);
+   ALUjump, Xcomp_out, newPC_out, opcode, Binput_out, brType, clk, rst);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
-   
+
+   input wire clk;
+   input wire rst;
    input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
    input wire [2:0] Oper; // Operand for ALU operation.

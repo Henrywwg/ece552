@@ -5,8 +5,9 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_data, immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, 
-   brType, BSrc, Oper, RegDst, RegSrc, five_extend, eight_extend, eleven_extend, R1, R2, opcode, SLBI, mem_en);
+module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_data, immSrc_out, ALUjump_out, MemWrt_out, InvA_out, InvB_out, Cin_out, sign_out, 
+   brType_out, BSrc_out, Oper_out, RegDst_out, RegSrc_out, RegWrt_out, five_extend_out, eight_extend_out, eleven_extend_out, R1_out, R2_out, opcode_out, SLBI_out,
+   mem_en_out, PC_in, PC_out);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -20,36 +21,56 @@ module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_
 
    //Outputs (all control signals)
    //PC sigs
-   output wire immSrc;
-   output wire ALUjump;
+   wire immSrc;
+   output wire immSrc_out;
+   wire ALUjump;
+   output wire ALUjump_out;
+   input wire [15:0]PC_in;
+   output wire [15:0]PC_out;
 
    //ALU sigs
-   output wire InvA;
-   output wire InvB;
-   output wire Cin;
-   output wire sign;
-   output wire [2:0]brType, Oper;
-   output wire [1:0]BSrc;
+   wire InvA;
+   output wire InvA_out;
+   wire InvB_out;
+   output wire InvB_out;
+   wire Cin;
+   output wire Cin_out;
+   wire sign;
+   output wire sign_out;
+   wire [2:0]brType, Oper;
+   output wire [2:0]brType_out, Oper_out;
+   wire [1:0]BSrc;
+   output wire [1:0]BSrc_out;
 
    //Reg sigs
-   output wire [1:0]RegDst, RegSrc;
+   wire [1:0]RegDst, RegSrc;
+   output wire [1:0]RegDst_out, RegSrc_out;
+   wire RegWrt;
+   output wire RegWrt_out;
 
    //Memory sigs
-   output wire MemWrt;
-   output wire mem_en;
+   wire MemWrt;
+   output wire MemWrt_out;
+   wire mem_en;
+   output wire mem_en_out;
 
    //Sign extend outputs
-   output wire [15:0]five_extend, eight_extend, eleven_extend;
+   wire [15:0]five_extend, eight_extend, eleven_extend;
+   output wire [15:0]five_extend_out, eight_extend_out, eleven_extend_out;
 
    //Register outputs
-   output wire [15:0]R1, R2;
+   wire [15:0]R1, R2; 
+   output wire [15:0]R1_out, R2_out;
 
    //For execture stage
-   output wire [4:0]opcode;
-   output wire [15:0]SLBI;
+   wire [4:0]opcode;
+   output wire [4:0]opcode_out;
+   wire [15:0]SLBI;
+   output wire [15:0]SLBI_out;
 
    //err flag
-   output wire err;
+   wire err;
+   output wire err_out;
 
    //For posterities state
    wire [15:0]instruction;
@@ -182,6 +203,29 @@ module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_
    // Pipe //
    //////////
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
+   dff immSrc(.clk(clk), .rst(rst), .d(immSrc), .q(immSrc_out));
+   dff ALUjump(.clk(clk), .rst(rst), .d(ALUjump), .q(ALUjump_out));
+   dff InvertA(.clk(clk), .rst(rst), .d(InvA), .q(InvA_out));
+   dff InvertB(.clk(clk), .rst(rst), .d(InvB), .q(InvB_out));
+   dff Carry(.clk(clk), .rst(rst), .d(Cin), .q(Cin_out));
+   dff Sign(.clk(clk), .rst(rst), .d(sign), .q(sign_out));
+   dff branch[2:0](.clk(clk), .rst(rst), .d(brType), .q(brType_out));
+   dff Operand[2:0](.clk(clk), .rst(rst), .d(Oper), .q(Oper_out));
+   dff BSource[1:0](.clk(clk), .rst(rst), .d(BSrc), .q(BSrc_out));
+   dff RD[1:0](.clk(clk), .rst(rst), .d(RegDst), .q(RegDst_out));
+   dff RS[1:0](.clk(clk), .rst(rst), .d(RegSrc), .q(RegSrc_out));
+   dff RW[1:0](.clk(clk), .rst(rst), .d(RegWrt), .q(RegWrt_out));
+   dff Mem_write(.clk(clk), .rst(rst), .d(MemWrt), .q(MemWrt_out));
+   dff mem_en(.clk(clk), .rst(rst), .d(mem_en), .q(mem_en_out));
+   dff five[15:0](.clk(clk), .rst(rst), .d(five_extend), .q(five_extend_out));
+   dff eight[15:0](.clk(clk), .rst(rst), .d(eight_extend), .q(eight_extend_out));
+   dff eleven[15:0](.clk(clk), .rst(rst), .d(eleven_extend), .q(eleven_extend_out));
+   dff reg1[15:0](.clk(clk), .rst(rst), .d(R1_extend), .q(R1_out));
+   dff reg2[15:0](.clk(clk), .rst(rst), .d(R2_extend), .q(R2_out));
+   dff op[4:0](.clk(clk), .rst(rst), .d(opcode), .q(opcode_out));
+   dff slbi[15:0](.clk(clk), .rst(rst), .d(SLBI), .q(SLBI_out));
+   dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
+   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_in), .q(PC_out));
 
 endmodule
 `default_nettype wire
