@@ -6,13 +6,21 @@
 
 */
 `default_nettype none
-module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP);
+module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP, dst1, dst2, dst3, valid1, valid2, valid3);
    
    //Module Inputs
    input wire clk;
    input wire rst;
    input wire [15:0]PC_new;
    
+   input wire [2:0]dst1;
+   input wire [2:0]dst2;
+   input wire [2:0]dst3;
+   input wire valid1;
+   input wire valid2;
+   input wire valid3;
+
+
    //Module Outputs
    output wire [15:0]PC_p2;
    output wire [15:0]instruction_out;
@@ -85,7 +93,8 @@ module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP);
    assign src2v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
 
 
-   RAW_detective iSherlock(.clk(clk), .rst(rst), .src1(instruction[10:8]), .src2(instruction[7:5]), .src_cnt({src2v, src1v}), .dst1(), .valid1(), .dst2(), .valid2(), .dst3(), .valid3(), .RAW(RAW));
+   RAW_detective iSherlock(.clk(clk), .rst(rst), .src1(instruction[10:8]), .src2(instruction[7:5]), .src_cnt({src2v, src1v}), 
+                           .dst1(dst1), .valid1(valid1), .dst2(dst2), .valid2(valid2), .dst3(dst3), .valid3(valid3), .RAW(RAW));
 
 
 endmodule
