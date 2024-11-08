@@ -20,11 +20,8 @@ module proc (/*AUTOARG*/
    wire [15:0] instruction, write_data, R1, R2, five_extend, eight_extend, eleven_extend, 
                newPC, incrPC, SLBI, Binput, Xcomp, read_data;
    wire [4:0] opcode;
-   wire [2:0] write_reg, brType, Oper; 
-   wire [1:0] RegDst, RegSrc;
-   wire [1:0] BSrc;
-   wire immSrc, ALUjump, MemWrt, InvA, InvB, Cin, sign, error_decode, createDump;
-   wire mem_en;
+   wire [2:0] write_reg; 
+   wire error_decode, createDump, RegWrt;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -42,21 +39,20 @@ module proc (/*AUTOARG*/
    fetch iIF (.clk(clk), .rst(rst), .PC_new(newPC), .DUMP(createDump), .PC_p2(incrPC), .instruction(instruction));
 
    decode iD (.clk(clk), .rst(rst), .err(error_decode), .instruction(instruction), 
-   .write_reg(write_reg), .write_data(write_data), .immSrc(immSrc), .ALUjump(ALUjump), .MemWrt(MemWrt),
-   .InvA(InvA), .InvB(InvB), .Cin(Cin), .sign(sign), .brType(brType), .BSrc(BSrc), .Oper(Oper), 
-   .RegDst(RegDst), .RegSrc(RegSrc), .five_extend(five_extend), .eight_extend(eight_extend), 
-   .eleven_extend(eleven_extend), .R1(R1), .R2(R2), .opcode(opcode), .SLBI(SLBI), .mem_en(mem_en));
+   .write_reg(write_reg), .write_data(write_data), .RegWrt(RegWrt), 
+   .five_extend(five_extend), .eight_extend(eight_extend), 
+   .eleven_extend(eleven_extend), .R1(R1), .R2(R2), .opcode(opcode), .SLBI(SLBI));
 
-   execute iX (.PC(incrPC), .Oper(Oper), .A(R1), .RegData(R2), .Inst4(five_extend), .Inst7(eight_extend), 
-               .Inst10(eleven_extend), .SLBI(SLBI), .BSrc(BSrc), .InvA(InvA), .InvB(InvB), .Cin(Cin), 
-               .sign(sign), .immSrc(immSrc), .ALUjump(ALUjump), .Xcomp(Xcomp), .newPC(newPC), 
-               .opcode(opcode), .Binput(Binput), .brType(brType));
+   execute iX (.PC(incrPC), .A(R1), .RegData(R2), .Inst4(five_extend), .Inst7(eight_extend), 
+               .Inst10(eleven_extend), .SLBI(SLBI), 
+               .Xcomp(Xcomp), .newPC(newPC), 
+               .opcode(opcode), .Binput(Binput));
 
-   memory iM (.clk(clk), .rst(rst), .we(MemWrt), .address(Xcomp), .write_data(R2), 
-              .DUMP(createDump), .read_data(read_data), .en(mem_en));
+   memory iM (.clk(clk), .rst(rst), .address(Xcomp), .write_data(R2), 
+              .DUMP(createDump), .read_data(read_data));
 
-   wb iWB (.RegSrc(RegSrc), .PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
-           .WData(write_data), .RegDst(RegDst), .Inst(instruction), .WRegister(write_reg));
+   wb iWB (.PC(incrPC), .MemData(read_data), .ALUData(Xcomp), .RegData(Binput),
+           .WData(write_data), .Inst(instruction), .WRegister(write_reg), .RegWrt(RegWrt));
    
    
 endmodule // proc
