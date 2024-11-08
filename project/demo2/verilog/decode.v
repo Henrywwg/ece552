@@ -183,5 +183,11 @@ module decode (clk, rst, err, instruction_in, instruction_out, write_reg, write_
    //////////
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
 
+
+   ///////////////////
+   // RAW DETECTION //
+   ///////////////////
+   dest_parser iParser(.instruction(), .dest_reg_val(), ..dest_valid());
+
 endmodule
 `default_nettype wire

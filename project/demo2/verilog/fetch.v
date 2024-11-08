@@ -28,6 +28,8 @@ module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP);
    wire [15:0]instruction_prepipe;
    wire [15:0]PC_p2_prepipe;
 
+   wire RAW;
+
    wire [15:0]instruction;
    assign instruction_out = instruction;
 
@@ -71,6 +73,19 @@ module fetch (clk, rst, RAW, PC_new, PC_p2, instruction_out, DUMP);
    //////////
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_prepipe), .q(instruction));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2_prepipe), .q(PC_p2));
+
+   //////////////////
+   // RAW DETECTOR //
+   // (HOLMES, S)  //
+   //////////////////
+
+   //Parse source registers//
+   assign src1v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //[3] indicates validity of register (is this actually a source)
+
+   assign src2v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
+
+
+   RAW_detective iSherlock(.clk(clk), .rst(rst), .src1(instruction[10:8]), .src2(instruction[7:5]), .src_cnt({src2v, src1v}), .dst1(), .valid1(), .dst2(), .valid2(), .dst3(), .valid3(), .RAW(RAW));
 
 
 endmodule

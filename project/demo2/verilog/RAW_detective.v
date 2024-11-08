@@ -1,7 +1,7 @@
 `default_nettype none
 
 /*
- * Module works in conjuction with src_parser to find RAWs in the pipe
+ * Module works in conjuction with src_parser to find RAWs in the pipeline
  * 
  * Henry Wysong-Grass
  */
@@ -34,7 +34,7 @@ module RAW_detective(clk, rst, src1, src2, src_cnt, dst1, valid1, dst2, valid2, 
     assign RAW_int_2 = ((src2 == dst1) & valid1) | ((src2 == dst2) & valid2) | ((src2 == dst3) & valid3);
 
     assign RAW =    (src_cnt == 2'b01) ? RAW_int_1 :
-                    (src_cnt == 2'b10) ? RAW_int_1 | RAW_int_2 : 1'b0;
+                    (src_cnt == 2'b11) ? (RAW_int_1 | RAW_int_2) : 1'b0;
 
 endmodule
 

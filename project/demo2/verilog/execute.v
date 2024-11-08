@@ -104,5 +104,12 @@ module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, In
    dff new_pc[15:0](.clk(clk), .rst(rst), .d(newPC), .q(newPC_out));
    dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    
+
+
+   ///////////////////
+   // RAW DETECTION //
+   ///////////////////
+   dest_parser iParser(.instruction(), .dest_reg_val(), ..dest_valid());
+
 endmodule
 `default_nettype wire

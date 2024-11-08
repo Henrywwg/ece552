@@ -44,6 +44,11 @@ module memory (instruction_in, instruction_out, clk, rst, we, address, write_dat
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
    dff read_data[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out_out));
 
+   ///////////////////
+   // RAW DETECTION //
+   ///////////////////
+   dest_parser iParser(.instruction(), .dest_reg_val(), ..dest_valid());
+
 
 endmodule
 `default_nettype wire
