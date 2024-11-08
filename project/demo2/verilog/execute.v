@@ -10,7 +10,9 @@ module execute (instruction_in, instruction_out, PC, A, RegData, Inst4, Inst7, I
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
-   
+
+   input wire clk;
+   input wire rst;
    input wire [4:0] opcode; // needed for certain logic
    input wire [15:0] PC; // Program counter already incrememnted used in branch related muxes.
    input wire [15:0] A; // A input to ALU from Read Data 1.
@@ -145,6 +147,21 @@ module execute (instruction_in, instruction_out, PC, A, RegData, Inst4, Inst7, I
    ////////////////////
    assign newPC = ALUjump ? ALUrslt : (TkBrch ? tempPC : PC);
    assign Xcomp = result;
+
+   //////////
+   // Pipe //
+   //////////
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
+   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
+   dff new_pc[15:0](.clk(clk), .rst(rst), .d(newPC), .q(newPC_out));
+   dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    
+
+
+   ///////////////////
+   // RAW DETECTION //
+   ///////////////////
+   dest_parser iParser(.instruction(), .dest_reg_val(), ..dest_valid());
+
 endmodule
 `default_nettype wire
