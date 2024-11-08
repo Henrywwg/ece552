@@ -93,13 +93,13 @@ R8
 R6
 R7
 vdecode
-Z10 !s110 1729536533
+Z10 !s110 1730829817
 !i10b 1
-!s100 k0CU^FommL9?`38mMHK8k2
-IVaflWfho2NT:l@MA=XN3J0
+!s100 ^b3[dKJLBO;b;n_F=dAjC2
+IKf_eE9n@EkbnUmO]=>b5M0
 R2
 R0
-Z11 w1729536492
+Z11 w1729553170
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v
 L0 8
@@ -107,7 +107,7 @@ R4
 r1
 !s85 0
 31
-Z12 !s108 1729536533.000000
+Z12 !s108 1730829817.000000
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/decode.v|
 !i113 1
@@ -117,13 +117,13 @@ vdecode_tb
 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
 R10
 !i10b 1
-!s100 T;Of23lOn;kPfK]_M3VTi0
-I1FU@K1_?[zRak^iG@mc0i0
+!s100 hO`]C]]om@KKilgfdJgFe3
+IWffKQDgA?^GEb]<MHABPI2
 R2
 !s105 decode_tb_sv_unit
 S1
 R0
-R11
+w1729538944
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/testbench/decode_tb.sv
 L0 8
@@ -159,13 +159,13 @@ R8
 R6
 R7
 vexecute
-Z13 !s110 1729536181
+R10
 !i10b 1
-!s100 1HkAZ2a9U31EmnKoDfQnc1
-I<kd2[L5Pf:2aS@LjMjY>b0
+!s100 l_NV`ooUdiV1lQn5Gmb]C3
+I91kGj73bzjXa[GP:8a@hj1
 R2
 R0
-w1729534867
+R11
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/execute.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/execute.v
 L0 8
@@ -173,20 +173,20 @@ R4
 r1
 !s85 0
 31
-R5
+R12
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/execute.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/execute.v|
 !i113 1
 R6
 R7
 vfetch
-R13
+R10
 !i10b 1
-!s100 >34FkP7cQBIO@fiha^XRm1
-Iezk`gZ03GkX=V29Rg5b2i1
+!s100 @]<=J<6Gi>ekn4SN`jD^l1
+I5KOl2AazU`FETC[HUIa2N3
 R2
 R0
-w1729533238
+w1729546849
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v
 L0 11
@@ -194,7 +194,7 @@ R4
 r1
 !s85 0
 31
-R5
+R12
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/fetch.v|
 !i113 1
@@ -223,13 +223,13 @@ R6
 R7
 nfull@adder_1b
 vmemory
-R13
+R10
 !i10b 1
-!s100 D^XC>[:;n[nHBITbi`ofB2
-IgnzjjfL9o]_lb1VKNBVNE1
+!s100 6[4P:c<=;OM5Y1IJAQK?A0
+Iz@CaU_?QGgAVEF>T45ZJz1
 R2
 R0
-w1729533463
+w1729553143
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v
 R3
@@ -237,7 +237,7 @@ R4
 r1
 !s85 0
 31
-R5
+R12
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/memory.v|
 !i113 1
@@ -286,7 +286,7 @@ R8
 R6
 R7
 vnor2
-Z14 !s110 1729536183
+Z13 !s110 1729536183
 !i10b 1
 !s100 >I]c<G]bR`@7Xz=Lj>mm`3
 I>GB[S]Hg^5]5WULdj?]:83
@@ -307,7 +307,7 @@ R8
 R6
 R7
 vnot1
-R14
+R13
 !i10b 1
 !s100 gHXeCD;o2[FSNQ0oOVNe00
 I<T5Wl?@cJb6W?>2>33K<10
@@ -321,20 +321,20 @@ R4
 r1
 !s85 0
 31
-Z15 !s108 1729536183.000000
+Z14 !s108 1729536183.000000
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/not1.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/not1.v|
 !i113 1
 R6
 R7
 vproc
-!s110 1729536416
+R10
 !i10b 1
-!s100 `Y<gMd]_1h;DhXNl=RIZl2
-I1jD;YGj[CY=dV9BRVIK>Z1
+!s100 m@W5S8@ikikN>aXfhj60f1
+IMdJdC:8Ul8=`aKSncc=Q63
 R2
 R0
-w1729536400
+w1729554874
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v
 L0 5
@@ -342,14 +342,14 @@ R4
 r1
 !s85 0
 31
-!s108 1729536416.000000
+R12
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc.v|
 !i113 1
 R6
 R7
 vproc_hier
-R14
+R13
 !i10b 1
 !s100 =MSCkY3S<c5SF1WjgZ`Ld2
 ISDMUA0l:OR_Nca85M59Z`3
@@ -363,20 +363,20 @@ R4
 r1
 !s85 0
 31
-R15
+R14
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier.v|
 !i113 1
 R6
 R7
 vproc_hier_bench
-R14
+R10
 !i10b 1
-!s100 HN^]oLN400n@DWT]bKziL2
-I[49N3cn6ZZLF6OH7z9nnK3
+!s100 i4WzOjZ<^Ko@mj^Ndl?k^2
+I<UZ?24@eVBl]iKMeOeJ`O3
 R2
 R0
-R9
+R11
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v
 L0 5
@@ -384,14 +384,14 @@ R4
 r1
 !s85 0
 31
-R15
+R12
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/proc_hier_bench.v|
 !i113 1
 R6
 R7
 vregFile
-R14
+R13
 !i10b 1
 !s100 TzQoMEzkLIeKMG=Ah0Zf80
 IzLo@aNzB?2z=A8N=GnRgH0
@@ -400,12 +400,12 @@ R0
 w1727390877
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v
-Z16 L0 10
+Z15 L0 10
 R4
 r1
 !s85 0
 31
-R15
+R14
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/regFile.v|
 !i113 1
@@ -413,7 +413,7 @@ R6
 R7
 nreg@file
 vregister
-R13
+!s110 1729536181
 !i10b 1
 !s100 BCV[IR@E9:8P<nTEch<JG0
 I1A4W9i3]Ya0e2lf>nXmVO1
@@ -443,7 +443,7 @@ R0
 w1729364298
 8C:/Users/kearn/Downloads/ece552/project/demo1/verilog/shifter.v
 FC:/Users/kearn/Downloads/ece552/project/demo1/verilog/shifter.v
-R16
+R15
 R4
 r1
 !s85 0
@@ -476,7 +476,7 @@ R8
 R6
 R7
 vxor2
-R14
+R13
 !i10b 1
 !s100 e65hXgAJCgGoI^i^Jo8U_0
 IK[ACGP9FNAil_UmEB0?O90
@@ -490,7 +490,7 @@ R4
 r1
 !s85 0
 31
-R15
+R14
 !s107 C:/Users/kearn/Downloads/ece552/project/demo1/verilog/xor2.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/kearn/Downloads/ece552/project/demo1/verilog/xor2.v|
 !i113 1
