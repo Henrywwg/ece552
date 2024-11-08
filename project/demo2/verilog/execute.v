@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, Inst7, Inst10, SLBI, BSrc, InvA, InvB, Cin, sign, immSrc, 
-   ALUjump, Xcomp, newPC, opcode, Binput, brType);
+   ALUjump, Xcomp_out, newPC_out, opcode, Binput_out, brType);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -29,15 +29,21 @@ module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, In
    input wire ALUjump; // Control signals to decide next PC value.
    input wire [2:0]brType; //Branch type. Determines which control signals need to be checked.
 
-   output wire [15:0] Xcomp; // Result from EXECUTION stage.
-   output wire [15:0] newPC; // PC for next instruction.
-   output wire [15:0] Binput; // B input to ALU. Will be assigned via Mux.
+   wire [15:0] Xcomp;
+   output wire [15:0] Xcomp_out; // Result from EXECUTION stage that gets pipelined out.
+   wire [15:0] newPC;
+   output wire [15:0] newPC_out; // PC for next instruction that gets pipelined out.
+   wire [15:0] Binput;
+   output wire [15:0] Binput_out; // B input to ALU. Will be assigned via Mux that gets pipelined out.
 
    wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
    wire [15:0] tempPC; // Result of PC + Imm for branches.
    wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
    wire SF, ZF, OF; // Signed, Zero, Overflow for Branch Conditions.
    wire TkBrch; // Signal determined by branching logic
+   wire [15:0] instruction; // Internal signal for the instruction
+
+   assign instruction = instruction_in;
 
    //////////////////
    // B select Mux //
@@ -89,6 +95,14 @@ module execute (instruction_in, instruction_out, PC, Oper, A, RegData, Inst4, In
    ////////////////////
    assign newPC = ALUjump ? ALUrslt : (TkBrch ? tempPC : PC);
    assign Xcomp = result;
+
+   //////////
+   // Pipe //
+   //////////
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
+   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
+   dff new_pc[15:0](.clk(clk), .rst(rst), .d(newPC), .q(newPC_out));
+   dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    
 endmodule
 `default_nettype wire

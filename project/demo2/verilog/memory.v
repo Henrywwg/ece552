@@ -9,7 +9,7 @@
    Tested?         : NO
 */
 `default_nettype none
-module memory (instruction_in, instruction_out, clk, rst, we, address, write_data, DUMP, read_data, en);
+module memory (instruction_in, instruction_out, clk, rst, we, address, write_data, DUMP, read_data_out, en);
    //Module Inputs
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -23,7 +23,11 @@ module memory (instruction_in, instruction_out, clk, rst, we, address, write_dat
    input wire DUMP;
    
    //Module Outputs
-   output wire [15:0]read_data;
+   wire [15:0] read_data;
+   output wire [15:0]read_data_out;
+
+   wire [15:0] instruction; // Internal signal for instruction
+   assign instruction = instruction_in;
 
 
    /////////////////////////////////
@@ -33,6 +37,12 @@ module memory (instruction_in, instruction_out, clk, rst, we, address, write_dat
    //memory2c is Memory and outputs values pointed to be address
    memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(en), 
                 .wr(we), .createdump(DUMP), .clk(clk), .rst(rst));
+
+   //////////
+   // Pipe //
+   //////////
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
+   dff read_data[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out_out));
 
 
 endmodule
