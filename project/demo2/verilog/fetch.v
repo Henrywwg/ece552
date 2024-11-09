@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, dst2, dst3, valid1, valid2, valid3);
+   dst1, valid1);
    
    //////////////
    //    IO    //
@@ -19,11 +19,11 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          input wire [15:0]jumpPC;
          
          input wire [2:0]dst1;
-         input wire [2:0]dst2;
-         input wire [2:0]dst3;
+         // input wire [2:0]dst2;
+         // input wire [2:0]dst3;
          input wire valid1;
-         input wire valid2;
-         input wire valid3;
+         // input wire valid2;
+         // input wire valid3;
 
 
       //Module Outputs
@@ -46,6 +46,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       //Internal instruction signals
       wire [15:0]instruction;
+      wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
       assign opcode = instruction[15:11];
    
@@ -86,7 +87,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    //////////
    // PIPE //
    //////////
-      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
+      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
       dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
 
    //////////////////
@@ -100,7 +101,13 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       //Let Sherlock find the hazards.
       RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(instruction[10:8]), .src2(instruction[7:5]), .src_cnt({src2v, src1v}), 
-                              .dst1(dst1), .valid1(valid1), .dst2(dst2), .valid2(valid2), .dst3(dst3), .valid3(valid3), .RAW(RAW));
+                              .dst1(dst1), .valid1(valid1), .RAW(RAW));
+
+      //Send bubble through pipe if there is a raw
+      assign instruction_to_pipe = RAW ? 16'h0800 : instruction;
+
+      //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
+      //assign PC_in = (RAW | J_BRANCH) ? PC_q : PC_p2;
 
 
 endmodule

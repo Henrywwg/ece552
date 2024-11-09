@@ -5,24 +5,31 @@
    Description     : This is the overall module for the execute stage of the processor.
 */
 `default_nettype none
-module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A, 
-   RegData, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc);
+module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
+   RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, WData);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
 
+   input wire RegWrt_in;
+   output wire RegWrt_out;
+   input wire [15:0]WData;
+
    input wire clk;
    input wire rst;
    input wire [15:0] incrPC;
-   input wire [15:0] A; // A input to ALU from Read Data 1.
-   input wire [15:0] RegData; // B input 0 from Read Data 2.
+   input wire [15:0] A_reg;             // A input to ALU from Read Data 1.
+   input wire [15:0] RegData;       // B input 0 from Read Data 2.
 
-   output wire PCsrc; // IF branch or jump instruction set high
-   output wire [15:0] Xcomp_out; // Result from EXECUTION stage.
-   output wire [15:0] newPC; // PC for next instruction.
-   output wire [15:0] incrPC_out; // PC for next instruction.
-   output wire [15:0] Binput_out; // B input to ALU. Will be assigned via Mux.
+   output wire PCsrc;               // IF branch or jump instruction set high
+   output wire [15:0] Xcomp_out;    // Result from EXECUTION stage.
+   output wire [15:0] newPC;        // PC for next instruction.
+   output wire [15:0] incrPC_out;   // PC for next instruction.
+   output wire [15:0] Binput_out;   // B input to ALU. Will be assigned via Mux.
    output wire [15:0] RegData_out;
+   
+   //Signals for RAW and forwarding units
+   //output wire rd;
 
    ////////////////////////////////////
    ///////// INTERNAL WIRES ///////////
@@ -45,10 +52,20 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    wire [4:0] opcode;
    wire [15:0] instruction;
    wire [15:0] SLBI;
-   wire [15:0] Inst4, Inst7, Inst10;
+   wire [15:0] ext_5, ext_8, ext_11;
+
+   wire [15:0] A, RegData;
+
+   assign A =  (forward_A == 2'b01) ? WData : 
+               ((forward_A == 2'b10) ? Xcomp_out : A_reg )
+
+   assign RegData =  (forward_A == 2'b01) ? WData : 
+                     ((forward_A == 2'b10) ? Xcomp_out : RegData_reg )
 
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
+
+
 
    /////////////////////////////////////
    // PROGRAM COUNTER CONTROL SIGNALS //
@@ -70,6 +87,8 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       //If opcode is 001x0, then we need to use sign extend 11 bit,
       //otherwise we can default to 8 bit extended
       assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
+
+
 
    /////////////////////
    // CONTROL SIGNALS //
@@ -114,11 +133,11 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       assign zero_ext = (opcode[4:1] == 4'b0101);
 
       //Assign extends based on value of zero_ext calculated above
-      assign five_extend   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
-      assign eight_extend  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
+      assign ext_5   = zero_ext ? {11'h000, instruction[4:0]}   : {{11{instruction[4]}}, instruction[4:0]};
+      assign ext_8  = zero_ext ? {8'h00, instruction[7:0]}     : {{8{instruction[7]}}, instruction[7:0]};
 
-      //not dependent on value of zero_ext
-      assign eleven_extend = {{5{instruction[10]}}, instruction[10:0]};
+      //Unconditionally sign extend this one
+      assign ext_11 = {{5{instruction[10]}}, instruction[10:0]};
 
       //SLBI assignment
       assign SLBI = {A[7:0], instruction[7:0]};
@@ -133,7 +152,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       //////////////////
       // B select Mux //
       //////////////////
-      assign Binput = (brType[2] | (opcode == 5'b11001)) ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : Inst7) : (BSrc[0] ? Inst4 : RegData));
+      assign Binput = (brType[2] | (opcode == 5'b11001)) ? 16'h0000 : (BSrc[1] ? (BSrc[0] ? SLBI : ext_8) : (BSrc[0] ? ext_5 : RegData));
 
    ///////////////////////
    // ALU instantiation //
@@ -172,7 +191,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    ////////////////////////////////////
    // Branch destination calculation //
    ////////////////////////////////////
-   assign ImmBrnch = immSrc ? Inst10 : Inst7;
+   assign ImmBrnch = immSrc ? ext_11 : ext_8;
    cla_16b #(16) PCadder(.sum(tempPC), .a(incrPC), .b(ImmBrnch), .c_in(1'b0), .c_out());
 
    ////////////////////
@@ -189,11 +208,13 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    dff incrPC[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
    dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    dff write_data[15:0](.clk(clk), .rst(rst), .d(RegData), .q(RegData_out));
+   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
+
 
    ///////////////////
    // RAW DETECTION //
    ///////////////////
-   dest_parser iParser(.instruction(), .dest_reg_val(), ..dest_valid());
+   //dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
 
 endmodule
 `default_nettype wire

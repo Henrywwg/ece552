@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt);
+   write_reg, write_data, R1_out, R2_out, RegWrt, rd);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
@@ -21,16 +21,27 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
 
    output wire [15:0]R1_out, R2_out; 
    output wire err_out;
+   output wire RegWrt_out;          //used for forwarding
+   output wire rd;                  //Destination of this instruction
+
 
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
    wire err;
+   wire RegWrt_pipeline;
    wire [15:0]R1, R2;
    wire [4:0]opcode;
    wire [15:0]instruction;
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
+
+   ///////////////////
+   // REGWRT_OUT //
+   ///////////////////
+   //Regwrt when not doing branch, J or JR, mem writes or NOPs, HALT or siic
+   assign RegWrt_pipeline = ~((opcode[4:2] == 3'b011) | (opcode[4:1] == 4'b0001) | 
+      (opcode[4:1] == 4'b0000) | (opcode[4:1] == 4'b0010) | (opcode[4:0] == 5'b10000));
 
    ////////////////////////
    //INSTANTIATE REG FILE//
@@ -47,11 +58,13 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    dff reg2[15:0](.clk(clk), .rst(rst), .d(R2), .q(R2_out));
    dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
+   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
+
 
    ///////////////////
    // RAW DETECTION //
    ///////////////////
-   dest_parser iParser(.instruction(), .dest_reg_val(), .dest_valid());
+   dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
 
 endmodule
 `default_nettype wire

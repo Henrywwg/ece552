@@ -10,7 +10,7 @@
 */
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
-   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out);
+   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, RegWrt_out);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
@@ -29,6 +29,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    output wire [15:0]read_data_out;
    output wire [15:0]Binput_out; 
    output wire [15:0]Xcomp_out; 
+   
 
    //Memory sigs
    wire MemWrt;
@@ -61,6 +62,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
    dff read_data[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
+   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
+
 
 endmodule
 `default_nettype wire

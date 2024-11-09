@@ -48,7 +48,7 @@ module proc (/*AUTOARG*/
    .write_data(write_data_reg), .RegWrt(RegWrt), .R1_out(R1), .R2_out(R2_D2X));
 
    execute iX (.clk(clk), .rst(rst), .instruction_in(inst_D2X), .instruction_out(inst_X2M), 
-   .incrPC(incrPC_D2X), .incrPC_out(incrPC_X2M), .newPC(jumpPC), .A(R1), .RegData(R2_D2X), .Xcomp_out(Xcomp_X2M), 
+   .incrPC(incrPC_D2X), .incrPC_out(incrPC_X2M), .newPC(jumpPC), .A_reg(R1), .RegData_reg(R2_D2X), .Xcomp_out(Xcomp_X2M), 
    .Binput_out(Binput_X2M), .RegData_out(R2_X2M), .PCsrc(PCsrc));
 
    memory iM (.clk(clk), .rst(rst), .instruction_in(inst_X2M), .instruction_out(inst_M2W), 
