@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt, RegWrt_pipeline, RegWrt_out, rd);
+   write_reg, write_data, R1_out, R2_out, RegWrt_in, RegWrt_pipeline, RegWrt_out, rd);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
@@ -15,7 +15,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
 
    input wire clk;
    input wire rst;
-   input wire RegWrt;
+   input wire RegWrt_in;
    input wire [2:0]write_reg;
    input wire [15:0]write_data;
 
@@ -48,7 +48,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    ////////////////////////  
    regFile_bypass IregFile (.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), 
       .read2RegSel(instruction[7:5]), .writeRegSel(write_reg), .writeData(write_data), 
-      .writeEn(RegWrt), .read1Data(R1), .read2Data(R2), .err(err));
+      .writeEn(RegWrt_in), .read1Data(R1), .read2Data(R2), .err(err));
 
    ////////////////////////
    // Pipeline Registers //
