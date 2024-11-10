@@ -29,6 +29,7 @@ module proc (/*AUTOARG*/
    wire RegWrt_D2X, RegWrt_X2M, RegWrt_mem;
    wire [2:0]rs, rt;
    wire rs_v, rt_v;
+   wire decode_rd_valid;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -44,12 +45,12 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .jumpPC(jumpPC), .DUMP(createDump), .incrPC(incrPC_F2D), 
-   .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(rd), .valid1(RegWrt_D2X));
+   .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(rd), .valid1(decode_rd_valid));
 
    decode iD (.clk(clk), .rst(rst), .err_out(regFileErr), .instruction_in(inst_F2D), 
    .instruction_out(inst_D2X), .incrPC(incrPC_F2D), .incrPC_out(incrPC_D2X), 
    .write_reg(write_reg), .write_data(write_data_reg), .RegWrt_in(RegWrt_mem), 
-   .RegWrt_out(RegWrt_D2X), .RegWrt_pipeline(RegWrt_D2X),
+   .RegWrt_out(RegWrt_D2X), .RegWrt_pipeline(decode_rd_valid),
    .R1_out(R1), .R2_out(R2_D2X), .rd(rd));
 
    execute iX (.clk(clk), .rst(rst), .instruction_in(inst_D2X), .instruction_out(inst_X2M), 
