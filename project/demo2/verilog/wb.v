@@ -5,13 +5,14 @@
    Description     : This is the module for the overall Write Back stage of the processor.
 */
 `default_nettype none
-module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister);
+module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister, mwb_dr);
 
    input wire [15:0] instruction_in;
    input wire [15:0] incrPC, MemData, ALUData, RegData; // 4 possible strings of data can get written to a register.
 
    output wire [15:0] WData; // Output data that gets written to a register.
    output wire [2:0] WRegister; // The register data gets written to.
+   output wire [2:0]mwb_rd;
 
    //Reg sigs
    wire [1:0]RegDst, RegSrc;
@@ -53,6 +54,10 @@ module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister);
    // Mux logic to determine data. //
    //////////////////////////////////
       assign WData = RegSrc[1] ? (RegSrc[0] ? RegData : ALUData) : (RegSrc[0] ? MemData : incrPC);
+
+
+      dest_parser iParser(.instruction(instruction), .dest_reg_val(mwb_rd));
+
 
 endmodule
 `default_nettype wire

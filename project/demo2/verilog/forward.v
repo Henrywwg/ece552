@@ -30,11 +30,11 @@ module forward(rs, rt, rs_v, rt_v, xm_rw, xm_dr, mwb_rw, mwb_dr, forward_A, forw
    // LOGIC //
    ///////////
       //Mux control to select A input of execute
-      assign forward_A = ((xm_rw == rs) & xm_rw) ? 2'b10 : (
+      assign forward_A = ((xm_dr == rs) & xm_rw) ? 2'b10 : (
                         ((mwb_dr == rs) & mwb_rw) ? 2'b01 : 2'b00); 
       
       //Mux control to select B input of execute (rt if you will)
-      assign forward_B = ((xm_rw == rt) & xm_rw) ? 2'b10 : (
+      assign forward_B = ((xm_dr == rt) & xm_rw) ? 2'b10 : (
                         ((mwb_dr == rt) & mwb_rw) ? 2'b01 : 2'b00);
 endmodule
 

@@ -10,7 +10,7 @@
 */
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
-   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, RegWrt_out);
+   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, RegWrt_out, xm_rd);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
@@ -33,6 +33,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    output wire [15:0]Xcomp_out; 
 
    output wire RegWrt_out;
+   output wire [2:0]xm_rd;
    
 
    //Memory sigs
@@ -68,6 +69,6 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
-
+   dest_parser iParser(.instruction(instruction), .dest_reg_val(xm_rd));
 endmodule
 `default_nettype wire
