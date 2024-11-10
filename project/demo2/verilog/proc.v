@@ -20,7 +20,7 @@ module proc (/*AUTOARG*/
    wire [15:0] write_data_reg, R1, jumpPC, read_data;
    wire [15:0] incrPC_F2D, incrPC_D2X, incrPC_X2M, incrPC_M2W;
    wire [15:0] inst_F2D, inst_D2X, inst_X2M, inst_M2W;
-   wire [15:0] forward_A, forward_B;
+   wire [1:0] forward_A, forward_B;
    wire [15:0] R2_D2X, R2_X2M;
    wire [15:0] Xcomp_X2M, Xcomp_M2W;
    wire [15:0] Binput_X2M, Binput_M2W;

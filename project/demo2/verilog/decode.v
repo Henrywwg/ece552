@@ -22,7 +22,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    output wire [15:0]R1_out, R2_out; 
    output wire err_out;
    output wire RegWrt_out;          //used for forwarding
-   output wire rd;                  //Destination of this instruction
+   output wire [2:0]rd;                  //Destination of this instruction
    output wire RegWrt_pipeline;
 
 

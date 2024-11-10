@@ -18,16 +18,16 @@ module forward(rs, rt, rs_v, rt_v, xm_wr, xm_rd, mwb_wr, mwb_rd, forward_A, forw
          input wire rt_v;
          
          // EXECUTE/MEMORY PIPE //
-         input wire [2:0]xm_wr;  //Register Write 
+         input wire xm_wr;  //Register Write 
          input wire [2:0]xm_rd;  //Destination reg
          
          // MEMORY/WRITEBACK PIPE //
-         input wire [2:0]mwb_wr; //Register Write
+         input wire mwb_wr; //Register Write
          input wire [2:0]mwb_rd; //Destination reg
 
       //Module outputs
-         output wire forward_A;
-         output wire forward_B;
+         output wire [1:0]forward_A;
+         output wire [1:0]forward_B;
 
    ///////////
    // LOGIC //

@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1, jmp_out);
+   dst1, valid1);
    
    //////////////
    //    IO    //
@@ -51,7 +51,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [15:0]instruction;
       wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
-      wire halt_fetch, raw_jmp_hlt, jmp_enroute, raw_jmp_hlt_delayed, jmp_out_delayed, jmp_out_delayed_delayed;
+      wire halt_fetch, raw_jmp_hlt, jmp_enroute, raw_jmp_hlt_delayed, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed;
       assign halt_fetch = HALT | raw_jmp_hlt_delayed;
 
       assign opcode = instruction[15:11];

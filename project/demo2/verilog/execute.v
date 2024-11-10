@@ -32,8 +32,8 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    output wire [15:0] RegData_out;
    
    //Forwarding signals
-   output wire rs;
-   output wire rt;
+   output wire [2:0]rs;
+   output wire [2:0]rt;
 
    output wire rs_v;
    output wire rt_v;
