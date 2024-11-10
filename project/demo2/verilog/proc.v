@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
    wire [15:0] R2_D2X, R2_X2M;
    wire [15:0] Xcomp_X2M, Xcomp_M2W;
    wire [15:0] Binput_X2M, Binput_M2W;
-   wire [2:0] write_reg;
+   wire [2:0] write_reg, rd;
    wire createDump, PCsrc, regFileErr, RegWrt;
 
    // As desribed in the homeworks, use the err signal to trap corner
@@ -40,12 +40,11 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .jumpPC(jumpPC), .DUMP(createDump), .incrPC(incrPC_F2D), 
-   .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(), .dst2(), .dst3(),
-   .valid1(), .valid2(), .valid3());
+   .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(rd), .valid1());
 
    decode iD (.clk(clk), .rst(rst), .err_out(regFileErr), .instruction_in(inst_F2D), 
    .instruction_out(inst_D2X), .incrPC(incrPC_F2D), .incrPC_out(incrPC_D2X), .write_reg(write_reg), 
-   .write_data(write_data_reg), .RegWrt(RegWrt), .R1_out(R1), .R2_out(R2_D2X));
+   .write_data(write_data_reg), .RegWrt_out(RegWrt), .R1_out(R1), .R2_out(R2_D2X), .rd(rd));
 
    execute iX (.clk(clk), .rst(rst), .instruction_in(inst_D2X), .instruction_out(inst_X2M), 
    .incrPC(incrPC_D2X), .incrPC_out(incrPC_X2M), .newPC(jumpPC), .A_reg(R1), .RegData_reg(R2_D2X), .Xcomp_out(Xcomp_X2M), 
