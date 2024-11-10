@@ -33,12 +33,12 @@ module forward(rs, rt, rs_v, rt_v, xm_wr, xm_rd, mwb_wr, mwb_rd, forward_A, forw
    // LOGIC //
    ///////////
       //Mux control to select A input of execute
-      assign forward_A = ((xm_dr == rs) & xm_rw & rs_v) ? 2'b10 : (
-                        ((mwb_dr == rs) & mwb_rw & rs_v) ? 2'b01 : 2'b00); 
+      assign forward_A = ((xm_rd == rs) & xm_wr & rs_v) ? 2'b10 : (
+                        ((mwb_rd == rs) & mwb_wr & rs_v) ? 2'b01 : 2'b00); 
       
       //Mux control to select B input of execute (rt if you will)
-      assign forward_B = ((xm_dr == rt) & xm_rw & rt_v) ? 2'b10 : (
-                        ((mwb_dr == rt) & mwb_rw & rt_v) ? 2'b01 : 2'b00);
+      assign forward_B = ((xm_rd == rt) & xm_wr & rt_v) ? 2'b10 : (
+                        ((mwb_rd == rt) & mwb_wr & rt_v) ? 2'b01 : 2'b00);
 endmodule
 
 `default_nettype wire

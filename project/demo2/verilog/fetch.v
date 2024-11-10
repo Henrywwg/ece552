@@ -30,10 +30,10 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          output wire [15:0]incrPC;
          output wire [15:0]instruction_out;
          output wire DUMP;
-         output wire [2:0]rs;
-         output wire [2:0]rt;
-         output wire rs_v;
-         output wire rt_v;
+         wire [2:0]rs;
+         wire [2:0]rt;
+         wire rs_v;
+         wire rt_v;
 
    ///////////////////////
    // INTERNAL SIGNALS  //
