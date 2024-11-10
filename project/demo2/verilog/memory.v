@@ -17,6 +17,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    input wire [15:0]Binput;
    input wire [15:0]Xcomp; 
 
+   input wire RegWrt_in;
+
    input wire clk;
    input wire rst;
    input wire [15:0]address;
@@ -29,6 +31,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    output wire [15:0]read_data_out;
    output wire [15:0]Binput_out; 
    output wire [15:0]Xcomp_out; 
+
+   output wire RegWrt_out;
    
 
    //Memory sigs
