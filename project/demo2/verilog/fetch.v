@@ -47,6 +47,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //hazard detection signals
       wire RAW;
 
+      //Silly signals
+      wire halt_halt1, halt_halt2, halt_halt3, halt_halt4, HALT_ACTUAL;
+
       //Internal instruction signals
       wire [15:0]instruction;
       wire [15:0]instruction_to_pipe;
@@ -91,7 +94,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          endcase
       end
 
-      assign DUMP = HALT;
+      assign DUMP = HALT_ACTUAL;
 
    //////////
    // PIPE //
@@ -102,6 +105,13 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
       dff jmp_imminent3(.clk(clk), .rst(rst), .d(jmp_out_delayed), .q(jmp_out_delayed_delayed));
       //dff halt_but_i_delayedIt_lmao(.clk(clk), .rst(rst), .d(raw_jmp_hlt), .q(raw_jmp_hlt_delayed));
+      dff HALT_halt1(.clk(clk), .rst(rst), .d(HALT), .q(halt_halt1));
+      dff HALT_halt2(.clk(clk), .rst(rst), .d(halt_halt1), .q(halt_halt2));
+      dff HALT_halt3(.clk(clk), .rst(rst), .d(halt_halt2), .q(halt_halt3));
+      dff HALT_halt4(.clk(clk), .rst(rst), .d(halt_halt3), .q(halt_halt4));
+      dff HALT_halt5(.clk(clk), .rst(rst), .d(halt_halt4), .q(HALT_ACTUAL));
+
+
 
 
    //////////////////
