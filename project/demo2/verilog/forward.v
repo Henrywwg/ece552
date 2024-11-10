@@ -13,6 +13,9 @@ module forward(rs, rt, rs_v, rt_v, xm_wr, xm_rd, mwb_wr, mwb_rd, forward_A, forw
          // INSTRUCTION REG //    
          input wire [2:0]rs;     //rs for current instruction
          input wire [2:0]rt;     //rt ^
+
+         input wire rs_v;
+         input wire rt_v;
          
          // EXECUTE/MEMORY PIPE //
          input wire [2:0]xm_wr;  //Register Write 
