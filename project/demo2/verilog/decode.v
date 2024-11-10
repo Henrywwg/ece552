@@ -11,7 +11,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
-   output wire [15:0]incrPC_out
+   output wire [15:0]incrPC_out;
 
    input wire clk;
    input wire rst;
@@ -58,7 +58,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    dff reg2[15:0](.clk(clk), .rst(rst), .d(R2), .q(R2_out));
    dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
+   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
 
 
    ///////////////////

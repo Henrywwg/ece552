@@ -5,7 +5,7 @@
    Description     : Logic determines where/if data can be forwarded
 */
 
-module forward(rs, rt, xm_rw, xm_dr mwb_rw, mwb_dr, forward_A, forward_B);
+module forward(rs, rt, xm_rw, xm_dr, mwb_rw, mwb_dr, forward_A, forward_B);
    //////////////
    //    IO    //
    //////////////

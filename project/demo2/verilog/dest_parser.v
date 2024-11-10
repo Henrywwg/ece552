@@ -9,7 +9,7 @@
    Date            : 2024-11-04
    Tested?         : NO
 */
-module dest_parser(instruction, dest_reg_val);
+module dest_parser(instruction, dest_reg);
 
    //The instruction to be parsed
    input wire [15:0]instruction;
