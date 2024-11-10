@@ -10,7 +10,8 @@
 */
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
-   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, RegWrt_out, xm_rd);
+   read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, 
+   RegWrt_out, xm_rd);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
