@@ -7,7 +7,7 @@
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
    RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, 
-   WData, forward_A, forward_B);
+   WData, forward_A, forward_B, rs, rt, rs_v, rt_v);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -31,6 +31,13 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    output wire [15:0] Binput_out;   // B input to ALU. Will be assigned via Mux.
    output wire [15:0] RegData_out;
    
+   //Forwarding signals
+   output wire rs;
+   output wire rt;
+
+   output wire rs_v;
+   output wire rt_v;
+
    //Signals for RAW and forwarding units
    //output wire rd;
 
@@ -218,6 +225,13 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    // RAW DETECTION //
    ///////////////////
    //dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
+
+   assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
+
+   assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
+
+   assign rs = instruction[10:8];
+   assign rt = instruction[7:5];
 
 endmodule
 `default_nettype wire
