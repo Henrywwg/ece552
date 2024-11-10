@@ -35,7 +35,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    // INTERNAL SIGNALS  //
    ///////////////////////
       //PC signals
-      wire [15:0]PC_new
+      wire [15:0]PC_new;
       wire [15:0]PC_q;
       wire [15:0]PC_p2;
       reg HALT;

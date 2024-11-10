@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
-   RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, WData);
+   RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, WData, forward_A, forward_B);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -14,12 +14,14 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    input wire RegWrt_in;
    output wire RegWrt_out;
    input wire [15:0]WData;
+   input wire [1:0]forward_A;
+   input wire [1:0]forward_B;
 
    input wire clk;
    input wire rst;
    input wire [15:0] incrPC;
    input wire [15:0] A_reg;             // A input to ALU from Read Data 1.
-   input wire [15:0] RegData;       // B input 0 from Read Data 2.
+   input wire [15:0] RegData_reg;       // B input 0 from Read Data 2.
 
    output wire PCsrc;               // IF branch or jump instruction set high
    output wire [15:0] Xcomp_out;    // Result from EXECUTION stage.
@@ -57,10 +59,10 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    wire [15:0] A, RegData;
 
    assign A =  (forward_A == 2'b01) ? WData : 
-               ((forward_A == 2'b10) ? Xcomp_out : A_reg )
+               ((forward_A == 2'b10) ? Xcomp_out : A_reg );
 
-   assign RegData =  (forward_A == 2'b01) ? WData : 
-                     ((forward_A == 2'b10) ? Xcomp_out : RegData_reg )
+   assign RegData =  (forward_B == 2'b01) ? WData : 
+                     ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
 
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
@@ -205,10 +207,10 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    //////////
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
-   dff incrPC[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
-   dff write_data[15:0](.clk(clk), .rst(rst), .d(RegData), .q(RegData_out));
-   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
+   dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
+   dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
+   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(RegData), .q(RegData_out));
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
 
    ///////////////////

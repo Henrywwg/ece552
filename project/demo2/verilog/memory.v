@@ -17,6 +17,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    input wire [15:0]Binput;
    input wire [15:0]Xcomp; 
 
+   input wire RegWrt_in;
+
    input wire clk;
    input wire rst;
    input wire [15:0]address;
@@ -29,6 +31,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    output wire [15:0]read_data_out;
    output wire [15:0]Binput_out; 
    output wire [15:0]Xcomp_out; 
+
+   output wire RegWrt_out;
    
 
    //Memory sigs
@@ -61,8 +65,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
    dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
-   dff read_data[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
-   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
+   dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
 
 endmodule

@@ -6,12 +6,12 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt, rd);
+   write_reg, write_data, R1_out, R2_out, RegWrt, RegWrt_pipeline, RegWrt_out, rd);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
-   output wire [15:0]incrPC_out
+   output wire [15:0]incrPC_out;
 
    input wire clk;
    input wire rst;
@@ -23,13 +23,13 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    output wire err_out;
    output wire RegWrt_out;          //used for forwarding
    output wire rd;                  //Destination of this instruction
+   output wire RegWrt_pipeline;
 
 
    ////////////////////
    //INTERNAL SIGNALS//
    ////////////////////
    wire err;
-   wire RegWrt_pipeline;
    wire [15:0]R1, R2;
    wire [4:0]opcode;
    wire [15:0]instruction;
@@ -58,7 +58,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    dff reg2[15:0](.clk(clk), .rst(rst), .d(R2), .q(R2_out));
    dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
+   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
 
 
    ///////////////////
