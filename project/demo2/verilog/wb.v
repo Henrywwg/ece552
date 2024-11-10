@@ -5,7 +5,7 @@
    Description     : This is the module for the overall Write Back stage of the processor.
 */
 `default_nettype none
-module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister, mwb_dr);
+module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister, mwb_rd);
 
    input wire [15:0] instruction_in;
    input wire [15:0] incrPC, MemData, ALUData, RegData; // 4 possible strings of data can get written to a register.
