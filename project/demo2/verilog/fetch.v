@@ -52,7 +52,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, raw_jmp_hlt_delayed, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed;
-      assign halt_fetch = HALT | raw_jmp_hlt_delayed;
+      assign halt_fetch = HALT | raw_jmp_hlt; //_delayed;
 
       assign opcode = instruction[15:11];
 
@@ -101,7 +101,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       dff jmp_imminent0(.clk(clk), .rst(rst), .d(jmp_enroute), .q(jmp_out));
       dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
       dff jmp_imminent3(.clk(clk), .rst(rst), .d(jmp_out_delayed), .q(jmp_out_delayed_delayed));
-      dff halt_but_i_delayedIt_lmao(.clk(clk), .rst(rst), .d(raw_jmp_hlt), .q(raw_jmp_hlt_delayed));
+      //dff halt_but_i_delayedIt_lmao(.clk(clk), .rst(rst), .d(raw_jmp_hlt), .q(raw_jmp_hlt_delayed));
 
 
    //////////////////
