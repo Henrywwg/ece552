@@ -1,0 +1,117 @@
+# vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 15:11:40 on Nov 10,2024
+# //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
+# //
+# //  Copyright 1991-2018 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim DE and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading __work.proc_hier_pbench
+# Loading __work.proc_hier
+# Loading __work.clkrst
+# Loading __work.proc
+# Loading __work.fetch
+# Loading __work.memory2c
+# Loading __work.cla_16b
+# Loading __work.RAW_detective
+# Loading __work.decode
+# Loading __work.regFile_bypass
+# Loading __work.regFile
+# Loading __work.dff
+# Loading __work.dest_parser
+# Loading __work.execute
+# Loading __work.alu
+# Loading __work.shifter
+# Loading __work.nand2
+# Loading __work.not1
+# Loading __work.nor2
+# Loading __work.memory
+# Loading __work.wb
+# Loading __work.forward
+# Loading __work.cla_4b
+# Loading __work.register
+# Loading __work.fullAdder_1b
+# Loading __work.xor3
+# Loading __work.xor2
+# ** Warning: (vsim-3008) [CNNODP] - Component name (Instruction_f) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 132
+# ** Error: (vsim-3043) Unresolved reference to 'Instruction_f' in DUT.Instruction_f.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 132
+# ** Warning: (vsim-3008) [CNNODP] - Component name (PC_Out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 131
+# ** Error: (vsim-3043) Unresolved reference to 'PC_Out' in DUT.PC_Out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 131
+# ** Warning: (vsim-3008) [CNNODP] - Component name (DstwithJmout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 137
+# ** Error: (vsim-3043) Unresolved reference to 'DstwithJmout' in DUT.p0.DstwithJmout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 137
+# ** Warning: (vsim-3008) [CNNODP] - Component name (HALT) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 175
+# ** Error: (vsim-3043) Unresolved reference to 'HALT' in DUT.p0.HALT.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 175
+# ** Warning: (vsim-3008) [CNNODP] - Component name (data1out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 149
+# ** Error: (vsim-3043) Unresolved reference to 'data1out' in DUT.p0.data1out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 149
+# ** Warning: (vsim-3008) [CNNODP] - Component name (data2out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 152
+# ** Error: (vsim-3043) Unresolved reference to 'data2out' in DUT.p0.data2out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 152
+# ** Warning: (vsim-3008) [CNNODP] - Component name (memRxout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 143
+# ** Error: (vsim-3043) Unresolved reference to 'memRxout' in DUT.p0.memRxout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 143
+# ** Warning: (vsim-3008) [CNNODP] - Component name (memWxout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 146
+# ** Error: (vsim-3043) Unresolved reference to 'memWxout' in DUT.p0.memWxout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 146
+# ** Warning: (vsim-3008) [CNNODP] - Component name (notdonem) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 143
+# ** Error: (vsim-3043) Unresolved reference to 'notdonem' in DUT.p0.notdonem.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 143
+# ** Warning: (vsim-3008) [CNNODP] - Component name (readData) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 155
+# ** Error: (vsim-3043) Unresolved reference to 'readData' in DUT.p0.readData.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 155
+# ** Warning: (vsim-3008) [CNNODP] - Component name (regWrite) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 134
+# ** Error: (vsim-3043) Unresolved reference to 'regWrite' in DUT.p0.regWrite.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 134
+# ** Warning: (vsim-3008) [CNNODP] - Component name (wData) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 140
+# ** Error: (vsim-3043) Unresolved reference to 'wData' in DUT.p0.wData.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: proc_hier_pbench.v Line: 140
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (3) for port 'rd'. The port definition is at: decode.v(9).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iD File: proc.v Line: 49
+# ** Error: (vsim-3063) Port 'dest_reg_val' not found in the connected module (2nd connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iD/iParser File: decode.v Line: 67
+# ** Error: (vsim-3063) Port 'Forward_A' not found in the connected module (17th connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iX File: proc.v Line: 55
+# ** Error: (vsim-3063) Port 'Forward_B' not found in the connected module (18th connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iX File: proc.v Line: 55
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (3) for port 'rs'. The port definition is at: execute.v(10).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iX File: proc.v Line: 55
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (3) for port 'rt'. The port definition is at: execute.v(10).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iX File: proc.v Line: 55
+# ** Error: (vsim-3063) Port 'dest_reg_val' not found in the connected module (2nd connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iM/iParser File: memory.v Line: 73
+# ** Error: (vsim-3063) Port 'dest_reg_val' not found in the connected module (2nd connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iWB/iParser File: wb.v Line: 59
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (1) for port 'xm_wr'. The port definition is at: forward.v(8).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iFORWARD File: proc.v Line: 72
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (1) for port 'mwb_wr'. The port definition is at: forward.v(8).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iFORWARD File: proc.v Line: 72
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'forward_A'. The port definition is at: forward.v(8).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iFORWARD File: proc.v Line: 72
+# ** Error: (vsim-3063) Port 'forward_b' not found in the connected module (10th connection).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iFORWARD File: proc.v Line: 72
+# Error loading design
+# End time: 15:11:41 on Nov 10,2024, Elapsed time: 0:00:01
+# Errors: 18, Warnings: 18

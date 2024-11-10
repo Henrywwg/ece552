@@ -20,13 +20,15 @@ module proc (/*AUTOARG*/
    wire [15:0] write_data_reg, R1, jumpPC, read_data;
    wire [15:0] incrPC_F2D, incrPC_D2X, incrPC_X2M, incrPC_M2W;
    wire [15:0] inst_F2D, inst_D2X, inst_X2M, inst_M2W;
-   wire [15:0] forward_A, forward_b;
+   wire [15:0] forward_A, forward_B;
    wire [15:0] R2_D2X, R2_X2M;
    wire [15:0] Xcomp_X2M, Xcomp_M2W;
    wire [15:0] Binput_X2M, Binput_M2W;
    wire [2:0] write_reg, rd, xm_rd, mwb_rd;
    wire createDump, PCsrc, regFileErr;
    wire RegWrt_D2X, RegWrt_X2M, RegWrt_mem;
+   wire [2:0]rs, rt;
+   wire rs_v, rt_v;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -55,13 +57,13 @@ module proc (/*AUTOARG*/
    .RegData_reg(R2_D2X), .Xcomp_out(Xcomp_X2M), 
    .Binput_out(Binput_X2M), .RegData_out(R2_X2M), .PCsrc(PCsrc),
    .RegWrt_in(RegWrt_D2X), .RegWrt_out(RegWrt_X2M), .WData(write_data_reg), 
-   .Forward_A(forward_A), .Forward_B(forward_B)
+   .Forward_A(forward_A), .Forward_B(forward_B),
    .rs(rs), .rt(rt), .rs_v(rs_v), .rt_v(rt_v));
 
    memory iM (.clk(clk), .rst(rst), .instruction_in(inst_X2M), .instruction_out(inst_M2W), 
    .address(Xcomp_X2M), .write_data(R2_X2M), .DUMP(createDump),
    .incrPC(incrPC_X2M), .incrPC_out(incrPC_M2W), .Binput(Binput_X2M), .Binput_out(Binput_M2W), 
-   .Xcomp(Xcomp_X2M), .Xcomp_out(Xcomp_M2W), .read_data_out(read_data)
+   .Xcomp(Xcomp_X2M), .Xcomp_out(Xcomp_M2W), .read_data_out(read_data),
    .RegWrt_in(RegWrt_X2M), .RegWrt_out(RegWrt_mem), .xm_rd(xm_rd));
 
    wb iWB (.incrPC(incrPC_M2W), .MemData(read_data), .ALUData(Xcomp_M2W), .RegData(Binput_M2W),
