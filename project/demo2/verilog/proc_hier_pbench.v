@@ -129,7 +129,7 @@ module proc_hier_pbench();
    // names on the right hand side
     
    assign PC = DUT.p0.iIF.PC_q;
-   assign Inst = DUT.iIF.instruction;
+   assign Inst = DUT.p0.iIF.instruction;
    
    assign RegWrite = DUT.p0.iM.RegWrt_out;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
@@ -170,7 +170,7 @@ module proc_hier_pbench();
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
-   assign DCacheHit = MemWrite | MemRead//DUT.p0.readData;
+   assign DCacheHit = MemWrite | MemRead; //DUT.p0.readData;
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    

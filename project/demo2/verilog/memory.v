@@ -70,6 +70,6 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
-   dest_parser iParser(.instruction(instruction), .dest_reg_val(xm_rd));
+   dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
 endmodule
 `default_nettype wire

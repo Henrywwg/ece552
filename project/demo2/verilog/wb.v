@@ -56,7 +56,7 @@ module wb (instruction_in, incrPC, MemData, ALUData, RegData, WData, WRegister, 
       assign WData = RegSrc[1] ? (RegSrc[0] ? RegData : ALUData) : (RegSrc[0] ? MemData : incrPC);
 
 
-      dest_parser iParser(.instruction(instruction), .dest_reg_val(mwb_rd));
+      dest_parser iParser(.instruction(instruction), .dest_reg(mwb_rd));
 
 
 endmodule

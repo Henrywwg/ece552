@@ -64,7 +64,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    ///////////////////
    // RAW DETECTION //
    ///////////////////
-   dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
+   dest_parser iParser(.instruction(instruction), .dest_reg(rd));
 
 endmodule
 `default_nettype wire

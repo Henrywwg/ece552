@@ -57,7 +57,7 @@ module proc (/*AUTOARG*/
    .RegData_reg(R2_D2X), .Xcomp_out(Xcomp_X2M), 
    .Binput_out(Binput_X2M), .RegData_out(R2_X2M), .PCsrc(PCsrc),
    .RegWrt_in(RegWrt_D2X), .RegWrt_out(RegWrt_X2M), .WData(write_data_reg), 
-   .Forward_A(forward_A), .Forward_B(forward_B),
+   .forward_A(forward_A), .forward_B(forward_B),
    .rs(rs), .rt(rt), .rs_v(rs_v), .rt_v(rt_v));
 
    memory iM (.clk(clk), .rst(rst), .instruction_in(inst_X2M), .instruction_out(inst_M2W), 
@@ -71,7 +71,7 @@ module proc (/*AUTOARG*/
    
    forward iFORWARD (.rs(rs), .rt(rt), .rs_v(rs_v), .rt_v(rt_v), 
    .xm_wr(RegWrt_X2M), .xm_rd(xm_rd), .mwb_wr(RegWrt_mem), .mwb_rd(mwb_rd),
-   .forward_A(forward_A), .forward_b(forward_B));
+   .forward_A(forward_A), .forward_B(forward_B));
    
 endmodule // proc
 `default_nettype wire
