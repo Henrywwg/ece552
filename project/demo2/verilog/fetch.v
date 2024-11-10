@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1, rs, rt, src1v, src2v);
+   dst1, valid1, rs, rt, rs_v, rt_v);
    
    //////////////
    //    IO    //
