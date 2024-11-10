@@ -6,7 +6,7 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt, rd);
+   write_reg, write_data, R1_out, R2_out, RegWrt, RegWrt_out, rd);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
