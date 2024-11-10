@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1);
+   dst1, valid1, jmp_out);
    
    //////////////
    //    IO    //
@@ -30,10 +30,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          output wire [15:0]incrPC;
          output wire [15:0]instruction_out;
          output wire DUMP;
-         output wire [2:0]rs;
-         output wire [2:0]rt;
-         output wire rs_v;
-         output wire rt_v;
+         output wire jmp_out;
 
    ///////////////////////
    // INTERNAL SIGNALS  //
@@ -51,8 +48,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [15:0]instruction;
       wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
-      wire halt_fetch, raw_jmp_hlt;
-      assign halt_fetch = HALT | raw_jmp_hlt;
+      wire halt_fetch, raw_jmp_hlt, jmp_enroute, raw_jmp_hlt_delayed, jmp_out_delayed, jmp_out_delayed_delayed;
+      assign halt_fetch = HALT | raw_jmp_hlt_delayed;
 
       assign opcode = instruction[15:11];
 
@@ -98,6 +95,11 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    //////////
       dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
       dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
+      dff jmp_imminent0(.clk(clk), .rst(rst), .d(jmp_enroute), .q(jmp_out));
+      dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
+      dff jmp_imminent3(.clk(clk), .rst(rst), .d(jmp_out_delayed), .q(jmp_out_delayed_delayed));
+      dff halt_but_i_delayedIt_lmao(.clk(clk), .rst(rst), .d(raw_jmp_hlt), .q(raw_jmp_hlt_delayed));
+
 
    //////////////////
    // RAW DETECTOR //
@@ -117,7 +119,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (RAW | (opcode[4:2] == 3'b011) | (opcode[4:2] == 3'b001));
+      assign raw_jmp_hlt = (RAW  | jmp_enroute | jmp_out | jmp_out_delayed);
+      assign jmp_enroute = (opcode[4:2] == 3'b011) | (opcode[4:2] == 3'b001);
 
 
 endmodule

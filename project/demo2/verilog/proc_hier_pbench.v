@@ -155,6 +155,8 @@ module proc_hier_pbench();
    assign MemDataOut = DUT.p0.readData;
    // Data read from memory for memory reads (16 bits)
 
+/////////////////////////////////////////////////////////////////////////////////
+
    // new added 05/03
    assign ICacheReq = DUT.p0.readData;
    // Signal indicating a valid instruction read request to cache
