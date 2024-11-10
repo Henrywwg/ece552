@@ -6,7 +6,8 @@
 */
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
-   RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, WData, forward_A, forward_B);
+   RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, 
+   WData, forward_A, forward_B);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
