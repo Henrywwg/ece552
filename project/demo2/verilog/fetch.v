@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1);
+   dst1, valid1, rs, rt, src1v, src2v);
    
    //////////////
    //    IO    //
@@ -30,6 +30,10 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          output wire [15:0]incrPC;
          output wire [15:0]instruction_out;
          output wire DUMP;
+         output wire [2:0]rs;
+         output wire [2:0]rt;
+         output wire rs_v;
+         output wire rt_v;
 
    ///////////////////////
    // INTERNAL SIGNALS  //
@@ -42,7 +46,6 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       //hazard detection signals
       wire RAW;
-      wire src1v, src2v;
 
       //Internal instruction signals
       wire [15:0]instruction;
@@ -52,6 +55,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign halt_fetch = HALT | raw_jmp_hlt;
 
       assign opcode = instruction[15:11];
+
+      assign rs = instruction[10:8];
+      assign rt = instruction[7:5];
    
 
    /////////////////////////////////
@@ -98,12 +104,12 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    // (HOLMES, S)  //
    //////////////////
       //Parse source registers//
-      assign src1v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
+      assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
 
-      assign src2v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
+      assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
 
       //Let Sherlock find the hazards.
-      RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(instruction[10:8]), .src2(instruction[7:5]), .src_cnt({src2v, src1v}), 
+      RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
                               .dst1(dst1), .valid1(valid1), .RAW(RAW));
 
       //Send bubble through pipe if there is a raw
