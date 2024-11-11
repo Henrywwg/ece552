@@ -133,7 +133,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
                               .dst1(dst1), .valid1(valid1), .RAW(RAW));
 
       //Send bubble through pipe if there is a raw
-      assign instruction_to_pipe = (RAW | jmp_out | brstall[1] ) ? 16'h0800 : instruction;
+      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] ) ? 16'h0800 : instruction;
 
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
