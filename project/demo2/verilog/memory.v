@@ -82,7 +82,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
    dff rd_data_flopped[15:0](.clk(clk), .rst(rst), .d(wb_rd_data), .q(wb_rd_data_delayed));
-   dff rd_flopped[15:0](.clk(clk), .rst(rst), .d(wb_rd), .q(wb_rd_delayed));
+   dff rd_flopped[2:0](.clk(clk), .rst(rst), .d(wb_rd), .q(wb_rd_delayed));
 
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));

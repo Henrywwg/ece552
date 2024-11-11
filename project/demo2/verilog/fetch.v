@@ -56,9 +56,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [4:0]opcode;
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
       wire brstall[0:2];
-      assign halt_fetch = HALT | raw_jmp_hlt; //_delayed;
+      assign halt_fetch = halt_halt1 | raw_jmp_hlt; //_delayed
 
-      assign opcode = instruction[15:11];
+      assign opcode = instruction_to_pipe[15:11];
 
       assign rs = instruction[10:8];
       assign rt = instruction[7:5];
@@ -68,16 +68,16 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
 
-      assign PC_new = PCsrc ? jumpPC : PC_p2;
+      assign PC_new = PCsrc ? jumpPC : PC_p2;         
       //DFFs hold value of PC
       dff iPC[15:0](.q(PC_q), .d(halt_fetch ? PC_q : PC_new), .clk(clk), .rst(rst));
 
       //memory2c is Instruction Memory and outputs instruction pointed to by PC
-      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~HALT), .wr(1'b0), 
+      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~raw_jmp_hlt & ~jmp_enroute & ~brstall[0])), .wr(1'b0), 
                   .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
-   // LOGIC //
+   // LOGIC // 
    ///////////
       //Keep PC_p2 as PC_q + 2
       cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0), .c_out());
@@ -87,7 +87,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    ///////////////////////////////////////////////////////////////
       always @(opcode) begin
          HALT = 1'b0;
-         case(opcode)
+         case(instruction_to_pipe[15:11])
             5'b00000: 
                HALT = 1'b1;
             default: 
@@ -133,13 +133,14 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
                               .dst1(dst1), .valid1(valid1), .RAW(RAW));
 
       //Send bubble through pipe if there is a raw
-      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] ) ? 16'h0800 : instruction;
+//      assign instruction_to_pipe = (RAW | jmp_out | brstall[1] ) ? 16'h0800 : instruction;
 
+      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] | brstall[2] ) ? 16'h0800 : instruction;
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (jmp_enroute | RAW | brstall[0]);
+      assign raw_jmp_hlt = (jmp_out | RAW | brstall[0]);
       assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out;
-      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[2];
+      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[1];
 
 
 
