@@ -217,7 +217,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
    dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
    dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
-   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(RegData), .q(RegData_out));
+   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(A), .q(RegData_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
 
