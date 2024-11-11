@@ -11,7 +11,7 @@
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
    read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, 
-   RegWrt_out, xm_rd);
+   RegWrt_out, xm_rd, wb_rd, wb_rd_data);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
@@ -19,6 +19,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    input wire [15:0]Xcomp; 
 
    input wire RegWrt_in;
+   input wire [2:0]wb_rd;
+   input wire [15:0]wb_rd_data;
 
    input wire clk;
    input wire rst;
@@ -40,6 +42,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    //Memory sigs
    wire MemWrt;
    wire en;
+   wire [15:0]forward_M
 
    wire [4:0]opcode;
    wire [15:0]instruction;
@@ -54,13 +57,18 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
       // are the same using nots and xor.
       assign MemWrt = ((opcode[4:2] == 3'b100) & (~^opcode[1:0]));
       assign en = (opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10);
-   
+
+   //////////////////////
+   // FORWARDING LOGIC //
+   //////////////////////
+      assign forward_M = (instruction[7:5] == wb_rd) ? wb_rd_data : write_data;
+
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
 
    //memory2c is Memory and outputs values pointed to be address
-   memory2c iIM(.data_out(read_data), .data_in(write_data), .addr(address), .enable(en), 
+   memory2c iIM(.data_out(read_data), .data_in(forward_M), .addr(address), .enable(en), 
                 .wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
 
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
