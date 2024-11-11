@@ -105,9 +105,6 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       dff jmp_imminent0(.clk(clk), .rst(rst), .d(jmp_enroute), .q(jmp_out));
       dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
-      dff jmp_imminent3(.clk(clk), .rst(rst), .d(jmp_out_delayed), .q(jmp_out_delayed_delayed));
-      dff jmp_imminent4(.clk(clk), .rst(rst), .d(jmp_out_delayed_delayed), .q(jmp_out_delayed_delayed_delayed));
-
       
       dff br_stall1(.clk(clk), .rst(rst), .d(brstall[0]), .q(brstall[1]));
       dff br_stall2(.clk(clk), .rst(rst), .d(brstall[1]), .q(brstall[2]));
@@ -136,12 +133,12 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
                               .dst1(dst1), .valid1(valid1), .RAW(RAW));
 
       //Send bubble through pipe if there is a raw
-      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | jmp_out_delayed_delayed | jmp_out_delayed_delayed | brstall[1] | brstall[2]) ? 16'h0800 : instruction;
+      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] | brstall[2]) ? 16'h0800 : instruction;
 
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
       assign raw_jmp_hlt = (jmp_enroute | RAW | brstall[0]);
-      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out_delayed_delayed_delayed;
+      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out_delayed;
       assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[2];
 
 
