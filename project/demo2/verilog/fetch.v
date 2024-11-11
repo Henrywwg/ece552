@@ -140,9 +140,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (jmp_enroute | RAW | jmp_out | jmp_out_delayed | jmp_out_delayed_delayed | jmp_out_delayed_delayed_delayed | brstall[0] | brstall[1] | brstall[2]);
-      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW;
-      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW;
+      assign raw_jmp_hlt = (jmp_enroute | RAW | brstall[0]);
+      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out_delayed_delayed_delayed;
+      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[2];
 
 
 
