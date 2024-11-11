@@ -42,7 +42,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    //Memory sigs
    wire MemWrt;
    wire en;
-   wire [15:0]forward_M
+   wire [15:0]forward_M;
 
    wire [4:0]opcode;
    wire [15:0]instruction;
