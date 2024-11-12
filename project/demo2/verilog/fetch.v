@@ -138,7 +138,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] | brstall[2] ) ? 16'h0800 : instruction;
 
       //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (jmp_out | RAW | brstall[0]);
+      assign raw_jmp_hlt = (jmp_out | RAW | brstall[0] | brstall[1]);
       assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out;
       assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[1];
 
