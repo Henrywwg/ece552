@@ -45,6 +45,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    wire [15:0]forward_M;
    wire[2:0]wb_rd_delayed;
    wire [15:0]wb_rd_data_delayed;
+   wire[2:0]wb_rd_delayed1;
+   wire [15:0]wb_rd_data_delayed1;
 
    wire [4:0]opcode;
    wire [15:0]instruction;
@@ -64,7 +66,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    // FORWARDING LOGIC //
    //////////////////////
       assign forward_M =   (instruction[7:5] == wb_rd) ? wb_rd_data : ( 
-                  (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : write_data);
+                  (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : (instruction[7:5] == wb_rd_delayed1) ? wb_rd_data_delayed1 : write_data);
 
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
@@ -81,8 +83,10 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
 
-   dff rd_data_flopped[15:0](.clk(clk), .rst(rst), .d(wb_rd_data), .q(wb_rd_data_delayed));
-   dff rd_flopped[2:0](.clk(clk), .rst(rst), .d(wb_rd), .q(wb_rd_delayed));
+   dff rd_data_flopped0[15:0](.clk(clk), .rst(rst), .d(wb_rd_data), .q(wb_rd_data_delayed));
+   dff rd_flopped0[2:0](.clk(clk), .rst(rst), .d(wb_rd), .q(wb_rd_delayed));
+   dff rd_data_flopped1[15:0](.clk(clk), .rst(rst), .d(wb_rd_data_delayed), .q(wb_rd_data_delayed1));
+   dff rd_flopped1[2:0](.clk(clk), .rst(rst), .d(wb_rd_delayed), .q(wb_rd_delayed1));
 
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
