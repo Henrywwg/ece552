@@ -65,9 +65,10 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    //////////////////////
    // FORWARDING LOGIC //
    //////////////////////
-      assign forward_M =   (instruction[7:5] == wb_rd) ? wb_rd_data : ( 
-                  (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : (instruction[7:5] == wb_rd_delayed1) ? wb_rd_data_delayed1 : write_data);
-
+      assign forward_M =   (opcode == 5'b1011) ? Binput :
+                           (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : (
+                           (instruction[7:5] == wb_rd_delayed1) ? wb_rd_data_delayed1 : write_data
+                  );
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
