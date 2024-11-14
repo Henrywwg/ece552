@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/hwysong-grass/private/ece552/ece552/project/demo2/verilog
 valu
-Z1 !s110 1731448179
+Z1 !s110 1731627033
 !i10b 1
 !s100 Of:kGAin[:CdTQ<;6_T=L3
 IlzKJNOAa@fc>RbPTUQd3h1
@@ -23,7 +23,7 @@ Z5 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z6 !s108 1731448179.000000
+Z6 !s108 1731627033.000000
 !s107 xor3.v|xor2.v|wb.v|shifter.v|register.v|regFile.v|regFile_bypass.v|RAW_detective.v|proc.v|proc_hier.v|proc_hier_pbench.v|not1.v|nor2.v|nand2.v|memory.v|memory2c.v|fullAdder_1b.v|forward.v|fetch.v|execute.v|dff.v|dest_parser.v|decode.v|clkrst.v|cla_4b.v|cla_16b.v|alu.v|
 Z7 !s90 +define+RANDSEED=3|-work|__work|alu.v|cla_16b.v|cla_4b.v|clkrst.v|decode.v|dest_parser.v|dff.v|execute.v|fetch.v|forward.v|fullAdder_1b.v|memory2c.v|memory.v|nand2.v|nor2.v|not1.v|proc_hier_pbench.v|proc_hier.v|proc.v|RAW_detective.v|regFile_bypass.v|regFile.v|register.v|shifter.v|wb.v|xor2.v|xor3.v|
 !i113 1
@@ -125,7 +125,7 @@ R1
 IdKTS__SUi4z`cAT@HVBOl0
 R2
 R0
-w1731440869
+w1731558951
 8dest_parser.v
 Fdest_parser.v
 R4
@@ -165,11 +165,11 @@ R10
 vexecute
 R1
 !i10b 1
-!s100 MSCnVH^4@oo5QD`76?:Ln2
-I;aX18dDJ8?G;fRW3kM0PV2
+!s100 Mf@PbE4]aoFaM3[_PPGSd0
+IFgM@J8P?M^jHan@j;FCbo1
 R2
 R0
-w1731344148
+w1731621983
 8execute.v
 Fexecute.v
 L0 8
@@ -187,11 +187,11 @@ R10
 vfetch
 R1
 !i10b 1
-!s100 Mj_kD[=7ddhUJdKR59Y2Z2
-I3]8AzIFj^3CBASf8Ph_lH0
+!s100 8S_kQS?598V6DTc78VRR82
+I^PY=3@NfYeIha[YZWF`=b1
 R2
 R0
-w1731365366
+w1731626617
 8fetch.v
 Ffetch.v
 L0 9
@@ -254,11 +254,11 @@ nfull@adder_1b
 vmemory
 R1
 !i10b 1
-!s100 5k5C1j65[WeWNJzg4J9?80
-I2:Z?fbN0gDV[c[mUI7Q^=0
+!s100 0mbXdVYd3F@B7[Xm8eZPm0
+I`]HXWY2]k[2h>SlbWLBZg2
 R2
 R0
-w1731351098
+w1731622055
 8memory.v
 Fmemory.v
 R4
@@ -364,11 +364,11 @@ R10
 vproc
 R1
 !i10b 1
-!s100 fZ>W`U[;?LeO96^0a8J[:1
-I4kMXD<92Ae<Z1U=;X@o:`0
+!s100 ToUVKMc0glF;e^@0o=7Yj1
+IT5ZK7YSJl^V?5j9MBVIOo0
 R2
 R0
-w1731347734
+w1731624638
 8proc.v
 Fproc.v
 L0 5
@@ -408,11 +408,11 @@ R10
 vproc_hier_pbench
 R1
 !i10b 1
-!s100 zzC]1goVB4`D=>IbmTa4I1
-IzPjl>fSQIT^1J88CkEGeC0
+!s100 0YK@SoYF`_>Xa4KWY3YIW3
+IiiDPH`A5^8V6G_IX4@?5f3
 R2
 R0
-w1731348232
+w1731559605
 8proc_hier_pbench.v
 Fproc_hier_pbench.v
 L0 5
@@ -430,11 +430,11 @@ R10
 vRAW_detective
 R1
 !i10b 1
-!s100 nnIbO^PV:ZPQB6Pd3aWFm0
-IAB^RbK86<EC?`jkKRFmPm1
+!s100 ?_JQT_dT7aPIj`J6f@kIG0
+IPbG89AaF74m]<h`2]4=cz2
 R2
 R0
-w1731267015
+w1731626557
 8RAW_detective.v
 FRAW_detective.v
 L0 9

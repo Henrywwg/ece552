@@ -11,13 +11,14 @@
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
    read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, 
-   RegWrt_out, xm_rd, wb_rd, wb_rd_data);
+   RegWrt_out, xm_rd, wb_rd, wb_rd_data, rt_in);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
    input wire [15:0]Binput;
    input wire [15:0]Xcomp; 
 
+   input wire [15:0]rt_in;
    input wire RegWrt_in;
    input wire [2:0]wb_rd;
    input wire [15:0]wb_rd_data;
@@ -65,8 +66,10 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    //////////////////////
    // FORWARDING LOGIC //
    //////////////////////
-      assign forward_M =   (instruction[7:5] == wb_rd) ? wb_rd_data : ( 
-                  (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : (instruction[7:5] == wb_rd_delayed1) ? wb_rd_data_delayed1 : write_data);
+      //assign forward_M =   (instruction[7:5] == wb_rd) ? wb_rd_data : ( 
+      //            (instruction[7:5] == wb_rd_delayed) ? wb_rd_data_delayed : (instruction[7:5] == wb_rd_delayed1) ? wb_rd_data_delayed1 : write_data);
+	assign forward_M = rt_in; //write_data;
+
 
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //

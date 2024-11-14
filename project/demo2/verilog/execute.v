@@ -7,7 +7,7 @@
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
    RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, 
-   WData, forward_A, forward_B, rs, rt, rs_v, rt_v);
+   WData, forward_A, forward_B, rs, rt, rs_v, rt_v, rt_out);
 
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
@@ -30,6 +30,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    output wire [15:0] incrPC_out;   // PC for next instruction.
    output wire [15:0] Binput_out;   // B input to ALU. Will be assigned via Mux.
    output wire [15:0] RegData_out;
+   output wire [15:0] rt_out;
    
    //Forwarding signals
    output wire [2:0]rs;
@@ -69,8 +70,10 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    assign A =  (forward_A == 2'b01) ? WData : 
                ((forward_A == 2'b10) ? Xcomp_out : A_reg );
 
-   assign RegData =  (forward_B == 2'b01) ? WData : 
-                     ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
+   //assign RegData =  (forward_B == 2'b01) ? WData : 
+   //                  ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
+
+   assign RegData = RegData_reg;
 
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
@@ -219,6 +222,8 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d((opcode == 5'b10011) ? RegData :  Binput), .q(Binput_out));
    dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(A), .q(RegData_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
+   
+   dff rt_pipe[15:0](.clk(clk), .rst(rst), .d(RegData), .q(rt_out));
 
 
    ///////////////////

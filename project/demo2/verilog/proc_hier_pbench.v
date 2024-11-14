@@ -174,7 +174,7 @@ module proc_hier_pbench();
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    
-   assign Halt = DUT.p0.iIF.HALT_ACTUAL;
+   assign Halt = DUT.p0.iIF.HALTing[4];
    // Processor halted
    
    

@@ -7,7 +7,7 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1);
+   dst1, valid1, valid2);
    
    //////////////
    //    IO    //
@@ -18,12 +18,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          input wire PCsrc;
          input wire [15:0]jumpPC;
          
-         input wire [2:0]dst1;
-         // input wire [2:0]dst2;
-         // input wire [2:0]dst3;
-         input wire valid1;
-         // input wire valid2;
-         // input wire valid3;
+         input wire [2:0]dst1;   //Destination register from decode 
+         input wire valid1;      //Is this a valid register
+         input wire valid2;
 
 
       //Module Outputs
@@ -45,18 +42,22 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       reg HALT;
 
       //hazard detection signals
-      wire RAW;
+      wire [3:0]RAW, RAW_X;
 
       //Silly signals
       wire halt_halt1, halt_halt2, halt_halt3, halt_halt4, HALT_ACTUAL;
 
       //Internal instruction signals
       wire [15:0]instruction;
-      wire [15:0]instruction_to_pipe;
+      wire [15:0]instruction_to_pipe, instruction_in_X;
       wire [4:0]opcode;
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
-      wire brstall[0:2];
-      assign halt_fetch = halt_halt1 | raw_jmp_hlt; //_delayed
+      
+      wire [3:0]jumping; 
+      wire [2:0]branching;
+      wire [4:0]HALTing;
+	   wire bubble;
+      wire [2:0]dst2;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -73,7 +74,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       dff iPC[15:0](.q(PC_q), .d(halt_fetch ? PC_q : PC_new), .clk(clk), .rst(rst));
 
       //memory2c is Instruction Memory and outputs instruction pointed to by PC
-      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~raw_jmp_hlt & ~jmp_enroute & ~brstall[0])), .wr(1'b0), 
+      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
                   .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
@@ -95,28 +96,14 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          endcase
       end
 
-      assign DUMP = HALT_ACTUAL;
+      assign DUMP = HALTing[4];
 
    //////////
    // PIPE //
    //////////
       dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
+      dff instruction_pipe_inX[15:0](.clk(clk), .rst(rst), .d(instruction_out), .q(instruction_in_X));
       dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
-
-      dff jmp_imminent0(.clk(clk), .rst(rst), .d(jmp_enroute), .q(jmp_out));
-      dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
-      
-      dff br_stall1(.clk(clk), .rst(rst), .d(brstall[0]), .q(brstall[1]));
-      dff br_stall2(.clk(clk), .rst(rst), .d(brstall[1]), .q(brstall[2]));
-
-
-      dff HALT_halt1(.clk(clk), .rst(rst), .d(HALT), .q(halt_halt1));
-      dff HALT_halt2(.clk(clk), .rst(rst), .d(halt_halt1), .q(halt_halt2));
-      dff HALT_halt3(.clk(clk), .rst(rst), .d(halt_halt2), .q(halt_halt3));
-      dff HALT_halt4(.clk(clk), .rst(rst), .d(halt_halt3), .q(halt_halt4));
-      dff HALT_halt5(.clk(clk), .rst(rst), .d(halt_halt4), .q(HALT_ACTUAL));
-
-
 
 
    //////////////////
@@ -126,22 +113,39 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //Parse source registers//
       assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
 
-      assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
+      assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111) | (instruction[15:11] == 5'b10000) | (instruction[15:11] == 5'b10001);
 
       //Let Sherlock find the hazards.
       RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
-                              .dst1(dst1), .valid1(valid1), .RAW(RAW));
+                              .dst1(dst1), .valid1(valid1), .RAW(RAW[0]));
 
-      //Send bubble through pipe if there is a raw
-//      assign instruction_to_pipe = (RAW | jmp_out | brstall[1] ) ? 16'h0800 : instruction;
+      RAW_detective iSherlock(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
+                              .dst1(dst2), .valid1(valid2), .RAW(RAW_X[0]));
 
-      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] | brstall[2] ) ? 16'h0800 : instruction;
+	   dest_parser iPawrseX(.instruction(instruction_in_X), .dest_reg(dst2));
+      
+      //If a br/raw/jmp is in progress, then opcode will default to 0x0800
+      //making these both evaluate to 0. When br/raw/jmp has cleared the
+      //pipe, then opcode is reassigned to the actual instruction.
+      assign jumping[0] = (opcode[4:2] == 3'b001);
+      assign branching[0] = (opcode[4:2] == 3'b011);
 
-      //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (jmp_out | RAW | brstall[0] | brstall[1]);
-      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out;
-      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[1];
+      //Do we need to output NOPs?
+      assign bubble = (|RAW) | (|RAW_X[2:0]) | (jumping[1]) | branching[1] | branching[2]  | jumping[2] | jumping[3];
 
+      //Adjust instruction to process
+      assign instruction_to_pipe = bubble ? 16'h0800 : instruction;
+      
+      //halt pc/fetching one clock after a HALT, or until we are done bubbling
+      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2] | (branching[2] & PCsrc)));
+
+      assign HALTing[0] = HALT;
+      dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(jumping[2:0]), .q(jumping[3:1]));
+      dff br_cnt[1:0](.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
+      dff RAW_cnt[2:0](.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
+      dff RAWX_cnt[2:0](.clk(clk), .rst(rst), .d(RAW_X[2:0]), .q(RAW_X[3:1]));
+      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d(HALTing[3:0]), .q(HALTing[4:1]));
+     
 
 
 endmodule
