@@ -51,7 +51,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
-      wire brstall[0:2];
+      
+      wire [2:0]jumping, branching;
+      wire [3:0]HALTing;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -96,14 +98,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    // PIPE //
    //////////
       dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
-      dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
-
-      dff jmp_imminent0(.clk(clk), .rst(rst), .d(jmp_enroute), .q(jmp_out));
-      dff jmp_imminent2(.clk(clk), .rst(rst), .d(jmp_out), .q(jmp_out_delayed));
-      
-      dff br_stall1(.clk(clk), .rst(rst), .d(brstall[0]), .q(brstall[1]));
-      dff br_stall2(.clk(clk), .rst(rst), .d(brstall[1]), .q(brstall[2]));
-
+      dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));\
 
       dff HALT_halt1(.clk(clk), .rst(rst), .d(HALT), .q(halt_halt1));
       dff HALT_halt2(.clk(clk), .rst(rst), .d(halt_halt1), .q(halt_halt2));
@@ -143,7 +138,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //halt pc/fetching one clock after a HALT, or until we are done bubbling
       assign halt_fetch = HALTing[1] | bubble;
 
-
+      assign HALTing[0] = HALT;
       dff jump_cnt(.clk(clk), .rst(rst), .d(jumping[1:0]), .q(jumping[2:1]));
       dff br_cnt(.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
       dff RAW_cnt(.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
