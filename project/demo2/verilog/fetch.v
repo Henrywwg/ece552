@@ -18,12 +18,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          input wire PCsrc;
          input wire [15:0]jumpPC;
          
-         input wire [2:0]dst1;
-         // input wire [2:0]dst2;
-         // input wire [2:0]dst3;
-         input wire valid1;
-         // input wire valid2;
-         // input wire valid3;
+         input wire [2:0]dst1;   //Destination register from decode 
+         input wire valid1;      //Is this a valid register
 
 
       //Module Outputs
@@ -45,7 +41,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       reg HALT;
 
       //hazard detection signals
-      wire RAW;
+      wire [3:0]RAW;
 
       //Silly signals
       wire halt_halt1, halt_halt2, halt_halt3, halt_halt4, HALT_ACTUAL;
@@ -56,7 +52,6 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [4:0]opcode;
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
       wire brstall[0:2];
-      assign halt_fetch = halt_halt1 | raw_jmp_hlt; //_delayed
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -73,7 +68,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       dff iPC[15:0](.q(PC_q), .d(halt_fetch ? PC_q : PC_new), .clk(clk), .rst(rst));
 
       //memory2c is Instruction Memory and outputs instruction pointed to by PC
-      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~raw_jmp_hlt & ~jmp_enroute & ~brstall[0])), .wr(1'b0), 
+      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
                   .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
@@ -130,18 +125,30 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       //Let Sherlock find the hazards.
       RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
-                              .dst1(dst1), .valid1(valid1), .RAW(RAW));
+                              .dst1(dst1), .valid1(valid1), .RAW(RAW[0]));
 
-      //Send bubble through pipe if there is a raw
-//      assign instruction_to_pipe = (RAW | jmp_out | brstall[1] ) ? 16'h0800 : instruction;
+      
+      //If a br/raw/jmp is in progress, then opcode will default to 0x0800
+      //making these both evaluate to 0. When br/raw/jmp has cleared the
+      //pipe, then opcode is reassigned to the actual instruction.
+      assign jumping[0] = (opcode[4:2] == 3'b001);
+      assign branching[0] = (opcode[4:2] == 3'b011);
 
-      assign instruction_to_pipe = (RAW | jmp_out | jmp_out_delayed | brstall[1] | brstall[2] ) ? 16'h0800 : instruction;
+      //Do we need to output NOPs?
+      assign bubble = (|RAW) | (jumping[1]) | (branching[1]);
 
-      //TODO: CORRECT SETTING OF PROGRAM IF STALLING PROCESSOR
-      assign raw_jmp_hlt = (jmp_out | RAW | brstall[0]);
-      assign jmp_enroute =  (opcode[4:2] == 3'b001) & ~RAW & ~jmp_out;
-      assign brstall[0] =  (opcode[4:2] == 3'b011) & ~RAW & ~brstall[1];
+      //Adjust instruction to process
+      assign instruction_to_pipe = bubble ? 16'h0800 : instruction;
+      
+      //halt pc/fetching one clock after a HALT, or until we are done bubbling
+      assign halt_fetch = HALTing[1] | bubble;
 
+
+      dff jump_cnt(.clk(clk), .rst(rst), .d(jumping[1:0]), .q(jumping[2:1]));
+      dff br_cnt(.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
+      dff RAW_cnt(.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
+      dff HALT_cnt(.clk(clk), .rst(rst), .d(HALTing[2:0]), .q(HALTing[3:1]));
+     
 
 
 endmodule
