@@ -1,0 +1,2 @@
+../verification/mytests/jumpingaround.asm SUCCESS CPI:4.7 CYCLES:7187 ICOUNT:1541 IHITRATE: 100.0 DHITRATE: 100.0
+../verification/mytests/silly.asm SUCCESS CPI:3.5 CYCLES:63 ICOUNT:18 IHITRATE: 100.0 DHITRATE: 100.0
