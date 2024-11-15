@@ -1,8 +1,8 @@
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_1_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_2_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_3_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_4_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_5_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_6_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_7_mem.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_8_mem.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_1_mem.asm SUCCESS CPI:2.1 CYCLES:3188 ICOUNT:1530 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_2_mem.asm SUCCESS CPI:2.1 CYCLES:3338 ICOUNT:1595 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_3_mem.asm SUCCESS CPI:2.0 CYCLES:2909 ICOUNT:1446 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_4_mem.asm SUCCESS CPI:2.0 CYCLES:2682 ICOUNT:1328 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_5_mem.asm SUCCESS CPI:2.1 CYCLES:3151 ICOUNT:1483 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_6_mem.asm SUCCESS CPI:2.1 CYCLES:2998 ICOUNT:1451 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_7_mem.asm SUCCESS CPI:2.1 CYCLES:3240 ICOUNT:1553 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/rand_mem/t_8_mem.asm SUCCESS CPI:2.1 CYCLES:2935 ICOUNT:1403 IHITRATE: 100.0 DHITRATE: 100.0

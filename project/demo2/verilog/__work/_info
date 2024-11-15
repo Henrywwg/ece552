@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/hwysong-grass/private/ece552/ece552/project/demo2/verilog
 valu
-Z1 !s110 1731627033
+Z1 !s110 1731630165
 !i10b 1
 !s100 Of:kGAin[:CdTQ<;6_T=L3
 IlzKJNOAa@fc>RbPTUQd3h1
@@ -23,7 +23,7 @@ Z5 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z6 !s108 1731627033.000000
+Z6 !s108 1731630165.000000
 !s107 xor3.v|xor2.v|wb.v|shifter.v|register.v|regFile.v|regFile_bypass.v|RAW_detective.v|proc.v|proc_hier.v|proc_hier_pbench.v|not1.v|nor2.v|nand2.v|memory.v|memory2c.v|fullAdder_1b.v|forward.v|fetch.v|execute.v|dff.v|dest_parser.v|decode.v|clkrst.v|cla_4b.v|cla_16b.v|alu.v|
 Z7 !s90 +define+RANDSEED=3|-work|__work|alu.v|cla_16b.v|cla_4b.v|clkrst.v|decode.v|dest_parser.v|dff.v|execute.v|fetch.v|forward.v|fullAdder_1b.v|memory2c.v|memory.v|nand2.v|nor2.v|not1.v|proc_hier_pbench.v|proc_hier.v|proc.v|RAW_detective.v|regFile_bypass.v|regFile.v|register.v|shifter.v|wb.v|xor2.v|xor3.v|
 !i113 1
@@ -187,11 +187,11 @@ R10
 vfetch
 R1
 !i10b 1
-!s100 8S_kQS?598V6DTc78VRR82
-I^PY=3@NfYeIha[YZWF`=b1
+!s100 VS5__N5EURICN;XoDPmD62
+I1nAVG3OZzM31:B40RR>J32
 R2
 R0
-w1731626617
+w1731629363
 8fetch.v
 Ffetch.v
 L0 9

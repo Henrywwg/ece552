@@ -113,7 +113,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //Parse source registers//
       assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
 
-      assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111) | (instruction[15:11] == 5'b10000) | (instruction[15:11] == 5'b10001);
+      assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111) | (instruction[15:11] == 5'b10000) | (instruction[15:11] == 5'b10011);
 
       //Let Sherlock find the hazards.
       RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 

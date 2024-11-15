@@ -1,5 +1,5 @@
 Model Technology ModelSim DE vlog 10.7c Compiler 2018.08 Aug 17 2018
-Start time: 17:30:33 on Nov 14,2024
+Start time: 18:22:45 on Nov 14,2024
 vlog "+define+RANDSEED=3" -work __work alu.v cla_16b.v cla_4b.v clkrst.v decode.v dest_parser.v dff.v execute.v fetch.v forward.v fullAdder_1b.v memory2c.v memory.v nand2.v nor2.v not1.v proc_hier_pbench.v proc_hier.v proc.v RAW_detective.v regFile_bypass.v regFile.v register.v shifter.v wb.v xor2.v xor3.v 
 -- Compiling module alu
 -- Compiling module cla_16b
@@ -31,14 +31,14 @@ vlog "+define+RANDSEED=3" -work __work alu.v cla_16b.v cla_4b.v clkrst.v decode.
 
 Top level modules:
 	proc_hier_pbench
-End time: 17:30:33 on Nov 14,2024, Elapsed time: 0:00:00
+End time: 18:22:45 on Nov 14,2024, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Reading pref.tcl
 
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:34 on Nov 14,2024
+# Start time: 18:22:46 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -85,8 +85,8 @@ Reading pref.tcl
 # Hello world...simulation starting
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
-#    Time: 9705 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:34 on Nov 14,2024, Elapsed time: 0:00:00
+#    Time: 10105 ns  Iteration: 0  Instance: /proc_hier_pbench
+# End time: 18:22:46 on Nov 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/stallTest.asm
 Created the following files
@@ -101,7 +101,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:35 on Nov 14,2024
+# Start time: 18:22:47 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -149,7 +149,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 23605 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:35 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:47 on Nov 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm
 Created the following files
@@ -164,7 +164,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:36 on Nov 14,2024
+# Start time: 18:22:48 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -212,7 +212,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 2505 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:36 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:48 on Nov 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-zero.asm
 Created the following files
@@ -227,7 +227,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:37 on Nov 14,2024
+# Start time: 18:22:49 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -275,7 +275,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 2505 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:37 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:50 on Nov 14,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-waw.asm
 Created the following files
@@ -290,7 +290,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:38 on Nov 14,2024
+# Start time: 18:22:50 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -338,7 +338,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 4305 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:38 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:51 on Nov 14,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-all.asm
 Created the following files
@@ -353,7 +353,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:38 on Nov 14,2024
+# Start time: 18:22:51 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -401,7 +401,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 4305 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:39 on Nov 14,2024, Elapsed time: 0:00:01
+# End time: 18:22:52 on Nov 14,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ld.asm
 Created the following files
@@ -416,7 +416,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:39 on Nov 14,2024
+# Start time: 18:22:53 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -464,7 +464,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 3005 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:39 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:53 on Nov 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ldst.asm
 Created the following files
@@ -479,7 +479,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 17:30:40 on Nov 14,2024
+# Start time: 18:22:54 on Nov 14,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -527,5 +527,5 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 2905 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 17:30:40 on Nov 14,2024, Elapsed time: 0:00:00
+# End time: 18:22:54 on Nov 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0

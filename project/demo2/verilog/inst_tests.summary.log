@@ -106,9 +106,9 @@
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/jr_0.asm SUCCESS CPI:5.6 CYCLES:17 ICOUNT:3 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/lbi_0.asm SUCCESS CPI:4.8 CYCLES:29 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/lbi_1.asm SUCCESS CPI:1.8 CYCLES:16 ICOUNT:9 IHITRATE: 100.0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_0.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_1.asm FAILED
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_2.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_0.asm SUCCESS CPI:2.7 CYCLES:16 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_1.asm SUCCESS CPI:2.7 CYCLES:16 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_2.asm SUCCESS CPI:2.7 CYCLES:16 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_3.asm SUCCESS CPI:1.8 CYCLES:18 ICOUNT:10 IHITRATE: 100.0 DHITRATE: 100.0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/rol_0.asm SUCCESS CPI:3.5 CYCLES:38 ICOUNT:11 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/rol_1.asm SUCCESS CPI:3.1 CYCLES:110 ICOUNT:35 IHITRATE: 100.0 DHITRATE: 0
@@ -168,20 +168,20 @@
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/srli_0.asm SUCCESS CPI:4.7 CYCLES:14 ICOUNT:3 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/srli_1.asm SUCCESS CPI:4.7 CYCLES:14 ICOUNT:3 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/srli_2.asm SUCCESS CPI:4.7 CYCLES:14 ICOUNT:3 IHITRATE: 100.0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_0.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_1.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_10.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_2.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_3.asm SUCCESS CPI:3.6 CYCLES:25 ICOUNT:7 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_4.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_5.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_6.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_7.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_8.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_9.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_0.asm SUCCESS CPI:3.2 CYCLES:19 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_1.asm SUCCESS CPI:3.2 CYCLES:19 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_2.asm SUCCESS CPI:3.2 CYCLES:19 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_0.asm SUCCESS CPI:3.5 CYCLES:21 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_1.asm SUCCESS CPI:3.5 CYCLES:21 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_10.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_2.asm SUCCESS CPI:3.5 CYCLES:21 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_3.asm SUCCESS CPI:3.7 CYCLES:26 ICOUNT:7 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_4.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_5.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_6.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_7.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_8.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/st_9.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_0.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_1.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/stu_2.asm SUCCESS CPI:3.3 CYCLES:20 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 100.0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/sub_0.asm SUCCESS CPI:3.0 CYCLES:15 ICOUNT:5 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/sub_1.asm SUCCESS CPI:3.5 CYCLES:21 ICOUNT:6 IHITRATE: 100.0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/sub_2.asm SUCCESS CPI:3.7 CYCLES:15 ICOUNT:4 IHITRATE: 100.0 DHITRATE: 0
