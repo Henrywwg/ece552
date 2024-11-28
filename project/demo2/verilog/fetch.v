@@ -44,14 +44,11 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //hazard detection signals
       wire [3:0]RAW, RAW_X;
 
-      //Silly signals
-      wire halt_halt1, halt_halt2, halt_halt3, halt_halt4, HALT_ACTUAL;
-
       //Internal instruction signals
       wire [15:0]instruction;
       wire [15:0]instruction_to_pipe, instruction_in_X;
       wire [4:0]opcode;
-      wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
+      wire halt_fetch;
       
       wire [3:0]jumping; 
       wire [2:0]branching;

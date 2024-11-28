@@ -45,35 +45,35 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    ////////////////////////////////////
    ///////// INTERNAL WIRES ///////////
    ////////////////////////////////////
-   wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
-   wire [15:0] tempPC; // Result of PC + Imm for branches.
-   wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
-   wire [15:0] Xcomp; // Result from EXECUTION stage.
-   wire [15:0] Binput; // B input to ALU. Will be assigned via Mux.
-   wire SF, ZF, OF; // Signed, Zero, Overflow for Branch Conditions.
-   wire TkBrch; // Signal determined by branching logic
-   wire Cin, InvA, InvB, sign;
-   wire zero_ext;
-   wire immSrc;
-   wire ALUjump;
-   wire [1:0] BSrc;
-   wire [2:0] ALUOpr;
-   wire [2:0] brType;
-   wire [2:0] Oper;
-   wire [4:0] opcode;
-   wire [15:0] instruction;
-   wire [15:0] SLBI;
-   wire [15:0] ext_5, ext_8, ext_11;
+      wire [15:0] ImmBrnch; // Mux output that feeds into PC and Imm adder for branch destination.
+      wire [15:0] tempPC; // Result of PC + Imm for branches.
+      wire [15:0] ALUrslt; // A placeholder for the result of the ALU operation
+      wire [15:0] Xcomp; // Result from EXECUTION stage.
+      wire [15:0] Binput; // B input to ALU. Will be assigned via Mux.
+      wire SF, ZF, OF; // Signed, Zero, Overflow for Branch Conditions.
+      wire TkBrch; // Signal determined by branching logic
+      wire Cin, InvA, InvB, sign;
+      wire zero_ext;
+      wire immSrc;
+      wire ALUjump;
+      wire [1:0] BSrc;
+      wire [2:0] ALUOpr;
+      wire [2:0] brType;
+      wire [2:0] Oper;
+      wire [4:0] opcode;
+      wire [15:0] instruction;
+      wire [15:0] SLBI;
+      wire [15:0] ext_5, ext_8, ext_11;
 
-   wire [15:0] A, RegData;
+      wire [15:0] A, RegData;
 
    assign A =  (forward_A == 2'b01) ? WData : 
                ((forward_A == 2'b10) ? Xcomp_out : A_reg );
 
-   //assign RegData =  (forward_B == 2'b01) ? WData : 
-   //                  ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
+   assign RegData =  (forward_B == 2'b01) ? WData : 
+                    ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
 
-   assign RegData = RegData_reg;
+   //assign RegData = RegData_reg;
 
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
@@ -93,10 +93,6 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       assign ALUjump = ({opcode[4:2], opcode[0]} == 4'b0011);
    
       //immSrc
-      //Pick between 11bit sign extend (1) or 8bit extended (0)
-      //Instructions using immSrc
-      //8 bit ext: BEQ, BNEZ, BLTZ, BGEZ, LBI, SLBI, JR, JALR
-      //11 bit ext: J, JAL
       //If opcode is 001x0, then we need to use sign extend 11 bit,
       //otherwise we can default to 8 bit extended
       assign immSrc = ({opcode[4:2], opcode[0]} == 4'b0010);
@@ -106,7 +102,6 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    /////////////////////
    // CONTROL SIGNALS //
    /////////////////////
-
       /////////////////////////
       // ALU CONTROL SIGNALS //
       /////////////////////////
@@ -156,11 +151,9 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       assign SLBI = {A[7:0], instruction[7:0]};
 
       //Rt (00) used when opcodes starts 1101 opcode or 111
-      assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111) 
-      |              (opcode[4:1] == 4'b0000))                           ?  2'b00 : 
-      ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101)
-      |              ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))  ?  2'b01 : 
-      ((opcode[4:0] == 5'b10010)                                         ?  2'b11 : 2'b10));
+      assign BSrc =  ((opcode[4:1] == 4'b1101) | (opcode[4:2] == 3'b111) | (opcode[4:1] == 4'b0000))                          ?  2'b00 : 
+                     ((opcode[4:2] == 3'b010) | (opcode[4:2] == 3'b101) | ((opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10))  ?  2'b01 : 
+                     ((opcode[4:0] == 5'b10010)                                                                               ?  2'b11 : 2'b10));
 
       //////////////////
       // B select Mux //
