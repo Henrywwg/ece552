@@ -62,17 +62,15 @@ module mem_system(/*AUTOARG*/
       wire cache_dirty_raw;
       wire cache_valid_raw;
 
-      wire 
-
       assign real_hit = cache_hit_raw & cache_valid_raw;
       assign victimize = ~cache_hit_raw & cache_dirty_raw;
       assign cache_en = (cache_rd | cache_wr) & ~cache_force_disable;
 
 
-      //State machine logic
-      wire state;
-      wire next_state_out;
-      wire next_state;
+      //State machine logic signals
+      wire [3:0]state;
+      wire [3:0]next_state_out;
+      wire [3:0]next_state;
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -116,9 +114,19 @@ module mem_system(/*AUTOARG*/
    // State machine sequential logic //
    ////////////////////////////////////
       //Assign next/current states
-      dff state_ff(.q(state), .d(next_state_out), .clk(clk), .rst(rst));
-      dff next_state_ff(.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
+      dff state_ff[3:0](.q(state), .d(next_state_out), .clk(clk), .rst(rst));
+      dff next_state_ff[3:0](.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
    
+
+      //States...
+      // 0000 IDLE
+      // 0001 rd
+      // 0010 wait_rd_wr
+      // 0011 wait_rd_rd
+      // 0100 wr
+      // 0101
+      // 0110
+
    //////////////////////////
    // Combination SM logic //
    //////////////////////////
@@ -130,7 +138,41 @@ module mem_system(/*AUTOARG*/
       DataOut = 16'h0000;
       next_state = state;
 
-      case()
+      case(state)
+         4'b0000: begin
+            stall = Rd | Wr;
+
+            cache_rd = Rd;
+            cache_comp = Rd | Wr;
+            cache_wr = Wr;
+            cache_addr = Addr;
+
+            cache_data_in = data_in;
+
+            next_state =   Rd ? 4'b0001 : (
+                           Wr ? 4'b0100 : 4'b0000);
+         end
+
+         4'b0001: begin
+            //If we hit
+            cache_hit = real_hit;
+            Done = real_hit;
+            data_out = cache_data_out;
+
+            // Miss and victimize (write and read)
+
+            
+            // Miss and no victimize (just read)
+
+            
+            // Set next state
+            next_state =   cache_hit ? 4'b0000: (
+                           victimize ? 4'b0010 : 4'b0011);
+         end
+
+         default: 
+            next_state = 4'b0000;
+
       endcase
    end
 
