@@ -1,12 +1,22 @@
-          // Original test: ./nfischer/hw4/problem6/ld_0.asm
-          // Author: nfischer
-          // Test source code follows
+0000 c101 lbi r1, 1 //r1 = 0x7F
+0002 c20a lbi r2, 10
+0004 c301 lbi r3, 1
+          
+0006 91ff slbi r1, 255 //r1 = (0x7F << 8) + 0xFF = 0x7FFF
           
           
-          //basic load
-0000 c100 lbi  r1, 0     //mem location tests first mem location
-0002 c208 lbi  r2, 8      //value to store
-0004 c300 lbi  r3, 0      //clear r3
-0006 8140 st   r2, r1, 0  //store at mem location
-0008 8960 ld   r3, r1, 0  //load from mem location
-000a 0000 halt
+          
+0008      .ohwoah:
+0008 7108 	BLTZ r1, .wowzas
+000a db25 	SUB r1, r3, r1
+000c da48 	ADD r2, r2, r2
+000e 8140 	ST r2, r1, 0
+0010 27f6 	J .ohwoah
+          
+0012      .wowzas:
+0012 0000 halt
+0014 0000 halt
+0016 0000 halt
+0018 0000 halt
+          
+          
