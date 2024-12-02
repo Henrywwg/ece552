@@ -53,7 +53,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire halt_fetch, raw_jmp_hlt, jmp_enroute, jmp_out, jmp_out_delayed, jmp_out_delayed_delayed, jmp_out_delayed_delayed_delayed;
       
       wire [2:0]jumping, branching;
-      wire [3:0]HALTing;
+      wire [4:0]HALTing;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -80,7 +80,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       cla_16b #(16) PCadder(.sum(PC_p2), .a(PC_q), .b(16'h0002), .c_in(1'b0), .c_out());
 
    ///////////////////////////////////////////////////////////////
-   // Create HALT Singal to stop processor and dump Data Memory //
+   // Create HALT Signal to stop processor and dump Data Memory //
    ///////////////////////////////////////////////////////////////
       always @(opcode) begin
          HALT = 1'b0;
@@ -92,20 +92,13 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          endcase
       end
 
-      assign DUMP = HALT_ACTUAL;
+      assign DUMP = HALTing[4];
 
    //////////
    // PIPE //
    //////////
       dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
       dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));\
-
-      dff HALT_halt1(.clk(clk), .rst(rst), .d(HALT), .q(halt_halt1));
-      dff HALT_halt2(.clk(clk), .rst(rst), .d(halt_halt1), .q(halt_halt2));
-      dff HALT_halt3(.clk(clk), .rst(rst), .d(halt_halt2), .q(halt_halt3));
-      dff HALT_halt4(.clk(clk), .rst(rst), .d(halt_halt3), .q(halt_halt4));
-      dff HALT_halt5(.clk(clk), .rst(rst), .d(halt_halt4), .q(HALT_ACTUAL));
-
 
 
 
@@ -139,10 +132,10 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign halt_fetch = HALTing[1] | bubble;
 
       assign HALTing[0] = HALT;
-      dff jump_cnt(.clk(clk), .rst(rst), .d(jumping[1:0]), .q(jumping[2:1]));
-      dff br_cnt(.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
-      dff RAW_cnt(.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
-      dff HALT_cnt(.clk(clk), .rst(rst), .d(HALTing[2:0]), .q(HALTing[3:1]));
+      dff jump_cnt[1:0](.clk(clk), .rst(rst), .d(jumping[1:0]), .q(jumping[2:1]));
+      dff br_cnt[1:0](.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
+      dff RAW_cnt[2:0](.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
+      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d(HALTing[3:0]), .q(HALTing[4:1]));
      
 
 
