@@ -19,9 +19,9 @@ module mem_system(/*AUTOARG*/
    input wire        rst;
    
    output reg [15:0] DataOut;
-   output reg        Done;       //not in schematic
+   output reg        Done;       // anot in schematic
    output reg        Stall;         
-   output reg        CacheHit;      
+   output reg        CacheHit;   // also not in schematic 
    output reg        err;       
    
    ////////////////////
@@ -29,29 +29,29 @@ module mem_system(/*AUTOARG*/
    ////////////////////
       // Cache Signals
          //Inputs
-         wire cache_en;
-         wire cache_force_disable;
-         wire cache_data_in;
-         wire [15:0]cache_addr;
-         wire cache_comp;
-         wire cache_rd;
-         wire cache_wr;
-         wire cache_valid;
+         wire        cache_en;
+         wire        cache_force_disable;
+         wire        cache_data_in;
+         wire [15:0] cache_addr;
+         wire        cache_comp;
+         wire        cache_rd;
+         wire        cache_wr;
+         wire        cache_valid;
 
          // Outputs
-         wire [15:0]cache_data_out
-         wire real_hit;
-         wire victimize;
-         wire [4:0]actual_tag;
+         wire [15:0] cache_data_out
+         wire        real_hit;
+         wire        victimize;
+         wire [4:0]  actual_tag;
 
       // Mem signals
-      wire [15:0]mem_data_in;
-      wire [15:0]mem_data_out;
-      wire [15:0]mem_addr;
-      wire mem_write;
-      wire mem_read;
-      wire mem_stall;
-      wire [3:0]mem_busy;
+      wire [15:0] mem_data_in;
+      wire [15:0] mem_data_out;
+      wire [15:0] mem_addr;
+      wire        mem_write;
+      wire        mem_read;
+      wire        mem_stall;
+      wire [3:0]  mem_busy;
 
       //DEBUG err sig
       wire ERR_mem;
@@ -67,6 +67,12 @@ module mem_system(/*AUTOARG*/
       assign real_hit = cache_hit_raw & cache_valid_raw;
       assign victimize = ~cache_hit_raw & cache_dirty_raw;
       assign cache_en = (cache_rd | cache_wr) & ~cache_force_disable;
+
+
+      //State machine logic
+      wire state;
+      wire next_state_out;
+      wire next_state;
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -106,9 +112,31 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
 
+   ////////////////////////////////////
+   // State machine sequential logic //
+   ////////////////////////////////////
+      //Assign next/current states
+      dff state_ff(.q(state), .d(next_state_out), .clk(clk), .rst(rst));
+      dff next_state_ff(.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
+   
+   //////////////////////////
+   // Combination SM logic //
+   //////////////////////////
+      always @(*) begin
+      //Default signals to prevent latches
+      Done = 0;
+      Stall = 0;
+      CacheHit = 0;
+      DataOut = 16'h0000;
+      next_state = state;
+
+      case()
+      endcase
+   end
 
 
-                     
+
+
    /////////////////
    // ERROR LOGIC //
    /////////////////
