@@ -68,10 +68,24 @@ module mem_system(/*AUTOARG*/
 
 
       //State machine logic signals
-      wire [3:0]state;
-      wire [3:0]next_state_out;
-      wire [3:0]next_state;
+      wire [3:0]  state;
+      wire [3:0]  next_state_out;
+      wire [3:0]  next_state;
+      wire        inc_cntr;
+      wire        clr_cntr;
 
+      //Counter for storing and loading from imperfect memory
+      wire [3:0]  cntr, next_cnt;   //counter for store and load from mem
+      dff three_bit_cntr(.q(cntr), .d(inc_cntr ? next_cnt : cntr), .clk(clk), .rst(clr_cntr));
+      cla_4b cntr_inc(.sum(next_cnt), .a(cntr), .b(4'h1), .cout(/*Unused*/), .c_in(1'b0));
+
+      //Signals for internal registers
+      wire [15:0] addr_internal;
+      wire        en_int_reg;
+      wire        clr_int_reg;
+
+
+      dff requested_addr_reg[15:0](.q(addr_internal), .d(en_int_reg ? Addr : addr_internal), .clk(clk), .rst(rst));
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
@@ -110,6 +124,7 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
 
+   
    ////////////////////////////////////
    // State machine sequential logic //
    ////////////////////////////////////
@@ -137,10 +152,15 @@ module mem_system(/*AUTOARG*/
       CacheHit = 0;
       DataOut = 16'h0000;
       next_state = state;
+      inc_cntr = 1'b0;
+      clr_cntr = 1'b0;
+      clr_int_reg = 1'b0;
+      en_int_reg = 1'b0;
 
       case(state)
          4'b0000: begin
             stall = Rd | Wr;
+            clr_cntr = 1'b1;
 
             cache_rd = Rd;
             cache_comp = Rd | Wr;
@@ -149,26 +169,97 @@ module mem_system(/*AUTOARG*/
 
             cache_data_in = data_in;
 
+            en_int_reg = 1'b1;
+
             next_state =   Rd ? 4'b0001 : (
                            Wr ? 4'b0100 : 4'b0000);
          end
 
+         //READ base state
          4'b0001: begin
-            //If we hit
-            cache_hit = real_hit;
-            Done = real_hit;
-            data_out = cache_data_out;
 
             // Miss and victimize (write and read)
+            mem_write = victimize;                 //mem_wr = 1;
+            mem_addr = victimize ? 
 
-            
             // Miss and no victimize (just read)
+            mem_read = ~victimize;                 //mem_rd = 1;
+
+
+            Stall = ~cache_hit;                    //If accessing mem then stall
 
             
             // Set next state
-            next_state =   cache_hit ? 4'b0000: (
-                           victimize ? 4'b0010 : 4'b0011);
+            next_state =   cache_hit ? 4'b0010 : (
+                           victimize ? 4'b0011 : 4'b0101);
          end
+
+         //If we hit
+         4'b0010: begin
+            cache_hit = 1;
+            Done = 1;
+            data_out = cache_data_out;
+
+            next_state = 4'b0000;
+         end
+
+         //If we miss and line is dirty - store and replace line
+         4'b0011: begin
+            //Request first word we're evicting from cache
+            cache_addr = {addr_internal[15:3], 3'b000}
+            cache_rd = 1'b1;
+            cache_comp = 1'b0;
+
+            next_state = 4'b0101;
+         end
+
+         //Store line to memory (dirty bit write)
+         4'b0101: begin
+            inc_cntr = (cntr != 4'h3);
+            clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
+
+            mem_addr = {actual_tag, addr_internal[9:2], cntr[1:0], 1'b0};
+            mem_wr = 1'b1;
+            mem_data_in = cache_data_out;
+
+            cache_addr = {addr_internal[15:3], next_cnt[1:0], 1'b0};
+            
+            cache_rd = 1'b1;
+            cache_comp = 1'b0;
+
+
+            next_state = (cntr == 4'h3) ? 4'b0110 : 4'b0101;   //If done with 4 writes get new data from mem
+         end
+
+         //Retrieve line from memory 
+         4'b0110: begin
+            inc_cntr = 1'b1;
+            mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
+            mem_rd = 1'b1;
+
+            
+            cache_data_in = mem_data_out; 
+            cache_addr = {addr_internal[15:2], cntr[2], cntr[0], 1'b0}; //im so fucking smart
+            cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
+
+
+            next_state = (cntr == 4'h5) ? 4'b0111 : 4'b0110;   //If done with 4 retrieves then move to MISS Request
+         end
+
+         //MISS Request and Return
+         4'b0111: begin
+            cache_rd = 1;
+            cache_addr = addr_internal;
+
+            next_state = 4'b1000;   //Proceed to MISS return (4'b1000)
+         end
+         4'b1000: begin
+            Done = 1;
+            data_out = cache_data_out;
+
+            next_state = 4'b0000;   //Return to IDLE
+         end
+
 
          default: 
             next_state = 4'b0000;
