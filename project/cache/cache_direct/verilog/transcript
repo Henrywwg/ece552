@@ -1,0 +1,50 @@
+# ** Warning: License feature 'msimviewer' will expire in 1 days.
+# dump.wlf opened as dataset "dataset"
+add wave -position insertpoint  \
+dataset:/mem_system_perfbench/DUT/m0/Addr \
+dataset:/mem_system_perfbench/DUT/m0/DataIn \
+dataset:/mem_system_perfbench/DUT/m0/Rd \
+dataset:/mem_system_perfbench/DUT/m0/Wr \
+dataset:/mem_system_perfbench/DUT/m0/createdump \
+dataset:/mem_system_perfbench/DUT/m0/clk \
+dataset:/mem_system_perfbench/DUT/m0/rst \
+dataset:/mem_system_perfbench/DUT/m0/DataOut \
+dataset:/mem_system_perfbench/DUT/m0/Done \
+dataset:/mem_system_perfbench/DUT/m0/Stall \
+dataset:/mem_system_perfbench/DUT/m0/CacheHit \
+dataset:/mem_system_perfbench/DUT/m0/err \
+dataset:/mem_system_perfbench/DUT/m0/cache_en \
+dataset:/mem_system_perfbench/DUT/m0/cache_force_disable \
+dataset:/mem_system_perfbench/DUT/m0/cache_data_in \
+dataset:/mem_system_perfbench/DUT/m0/cache_addr \
+dataset:/mem_system_perfbench/DUT/m0/cache_comp \
+dataset:/mem_system_perfbench/DUT/m0/cache_rd \
+dataset:/mem_system_perfbench/DUT/m0/cache_wr \
+dataset:/mem_system_perfbench/DUT/m0/cache_valid \
+dataset:/mem_system_perfbench/DUT/m0/cache_data_out \
+dataset:/mem_system_perfbench/DUT/m0/real_hit \
+dataset:/mem_system_perfbench/DUT/m0/victimize \
+dataset:/mem_system_perfbench/DUT/m0/actual_tag \
+dataset:/mem_system_perfbench/DUT/m0/mem_data_in \
+dataset:/mem_system_perfbench/DUT/m0/mem_data_out \
+dataset:/mem_system_perfbench/DUT/m0/mem_addr \
+dataset:/mem_system_perfbench/DUT/m0/mem_write \
+dataset:/mem_system_perfbench/DUT/m0/mem_read \
+dataset:/mem_system_perfbench/DUT/m0/mem_stall \
+dataset:/mem_system_perfbench/DUT/m0/mem_busy \
+dataset:/mem_system_perfbench/DUT/m0/ERR_mem \
+dataset:/mem_system_perfbench/DUT/m0/ERR_cache \
+dataset:/mem_system_perfbench/DUT/m0/cache_hit_raw \
+dataset:/mem_system_perfbench/DUT/m0/cache_dirty_raw \
+dataset:/mem_system_perfbench/DUT/m0/cache_valid_raw \
+dataset:/mem_system_perfbench/DUT/m0/state \
+dataset:/mem_system_perfbench/DUT/m0/next_state_out \
+dataset:/mem_system_perfbench/DUT/m0/next_state \
+dataset:/mem_system_perfbench/DUT/m0/inc_cntr \
+dataset:/mem_system_perfbench/DUT/m0/clr_cntr \
+dataset:/mem_system_perfbench/DUT/m0/cntr \
+dataset:/mem_system_perfbench/DUT/m0/next_cnt \
+dataset:/mem_system_perfbench/DUT/m0/addr_internal \
+dataset:/mem_system_perfbench/DUT/m0/data_internal \
+dataset:/mem_system_perfbench/DUT/m0/en_int_reg \
+dataset:/mem_system_perfbench/DUT/m0/clr_int_reg

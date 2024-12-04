@@ -31,7 +31,7 @@ module mem_system(/*AUTOARG*/
          //Inputs
          wire        cache_en;
          reg        cache_force_disable;
-         reg        cache_data_in;
+         reg [15:0] cache_data_in;
          reg [15:0] cache_addr;
          reg        cache_comp;
          reg        cache_rd;
@@ -45,13 +45,13 @@ module mem_system(/*AUTOARG*/
          wire [4:0]  actual_tag;
 
       // Mem signals
-      reg [15:0] mem_data_in;
-      reg [15:0] mem_data_out;
-      reg [15:0] mem_addr;
-      reg        mem_write;
-      reg        mem_read;
-      reg        mem_stall;
-      reg [3:0]  mem_busy;
+      reg  [15:0] mem_data_in;
+      wire [15:0] mem_data_out;
+      reg  [15:0] mem_addr;
+      reg         mem_write;
+      reg         mem_read;
+      wire        mem_stall;
+      wire [3:0]  mem_busy;
 
       //DEBUG err sig
       wire ERR_mem;
@@ -68,16 +68,16 @@ module mem_system(/*AUTOARG*/
 
 
       //State machine logic signals
-      reg [3:0]  state;
-      reg [3:0]  next_state_out;
-      reg [3:0]  next_state;
+      wire [3:0] state;
+      wire [3:0] next_state_out;
+      reg  [3:0] next_state;
       reg        inc_cntr;
       reg        clr_cntr;
 
       //Counter for storing and loading from imperfect memory
       wire [3:0]  cntr, next_cnt;   //counter for store and load from mem
-      dff three_bit_cntr(.q(cntr), .d(inc_cntr ? next_cnt : cntr), .clk(clk), .rst(clr_cntr));
-      cla_4b cntr_inc(.sum(next_cnt), .a(cntr), .b(4'h1), .cout(/*Unused*/), .c_in(1'b0));
+      dff three_bit_cntr[3:0](.q(cntr), .d(inc_cntr ? next_cnt : cntr), .clk(clk), .rst(clr_cntr));
+      cla_4b cntr_inc(.sum(next_cnt), .a(cntr), .b(4'h1), .c_out(/*Unused*/), .c_in(1'b0));
 
       //Signals for internal registers
       wire [15:0] addr_internal;
@@ -160,11 +160,21 @@ module mem_system(/*AUTOARG*/
       clr_int_reg = 1'b0;
       en_int_reg = 1'b0;
       cache_comp = 1'b0;
-
+	  mem_data_in = 16'h0000;
+	  mem_addr = 16'h0000;
+	  cache_addr = 16'h0000;
+	  cache_force_disable = 1'b1;
+	  mem_read = 1'b0;
+	  mem_write = 1'b0;
+	  cache_data_in = 16'h0000;
+	  cache_rd = 1'b0;
+	  cache_wr = 1'b0;
+	  cache_valid = ~cache_comp & cache_wr;
       case(state)
          4'b0000: begin
             Stall = 1'b0;
             clr_cntr = 1'b1;
+			cache_force_disable = 1'b0;
 
             //Set address...
             cache_addr = Addr;
@@ -185,11 +195,13 @@ module mem_system(/*AUTOARG*/
 
             //If read go to rd base, if write go to wr base otherwise stay in IDLE
             next_state =   Rd ? 4'b0001 : (
-                           Wr ? 4'b0100 : 4'b0000);
+                           Wr ? 4'b1000 : 4'b0000);
          end
 
          //READ base state
          4'b0001: begin
+
+			cache_force_disable = 1'b0;
 
             // Miss and victimize (write and read)
             mem_write = victimize;                 //mem_wr = 1;
@@ -211,6 +223,7 @@ module mem_system(/*AUTOARG*/
          //If we hit
          4'b0010: begin
             CacheHit = 1;
+			cache_force_disable = 1'b0;
             Done = 1;
             DataOut = cache_data_out;
 
@@ -233,6 +246,7 @@ module mem_system(/*AUTOARG*/
          //Store line to memory (dirty bit write)
          4'b0101: begin
             inc_cntr = (cntr != 4'h3);
+			cache_force_disable = 1'b0;
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
             mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
@@ -248,6 +262,7 @@ module mem_system(/*AUTOARG*/
 
          //Retrieve line from memory  
          4'b0110: begin
+			cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;
@@ -263,6 +278,7 @@ module mem_system(/*AUTOARG*/
 
          //MISS Request and Return
          4'b0111: begin
+			cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_rd = 1;
 
@@ -288,6 +304,7 @@ module mem_system(/*AUTOARG*/
 
          //Store victimized data and then write new data to cache
          4'b1001: begin
+			cache_force_disable = 1'b0;
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
@@ -304,6 +321,7 @@ module mem_system(/*AUTOARG*/
 
          //Get new cache data from mem and write to cache (duplicate of an above state)
          4'b1010: begin 
+			cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;
@@ -321,6 +339,7 @@ module mem_system(/*AUTOARG*/
          //Miss write and return
          4'b1011: begin
             //Write to the saved addr with data
+			cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_data_in = data_internal;
             cache_wr = 1;
@@ -340,7 +359,7 @@ module mem_system(/*AUTOARG*/
    end
 
 
-
+	/*
 
    /////////////////
    // ERROR LOGIC //
@@ -355,7 +374,7 @@ module mem_system(/*AUTOARG*/
       endcase
    end
 
-
+    */
    
 endmodule // mem_system
 `default_nettype wire
