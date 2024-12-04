@@ -160,16 +160,16 @@ module mem_system(/*AUTOARG*/
       clr_int_reg = 1'b0;
       en_int_reg = 1'b0;
       cache_comp = 1'b0;
-	  mem_data_in = 16'h0000;
-	  mem_addr = 16'h0000;
-	  cache_addr = 16'h0000;
-	  cache_force_disable = 1'b1;
-	  mem_read = 1'b0;
-	  mem_write = 1'b0;
-	  cache_data_in = 16'h0000;
-	  cache_rd = 1'b0;
-	  cache_wr = 1'b0;
-	  cache_valid = 0;
+      mem_data_in = 16'h0000;
+      mem_addr = 16'h0000;
+      cache_addr = 16'h0000;
+      cache_force_disable = 1'b1;
+      mem_read = 1'b0;
+      mem_write = 1'b0;
+      cache_data_in = 16'h0000;
+      cache_rd = 1'b0;
+      cache_wr = 1'b0;
+      cache_valid = cache_wr & ~cache_comp;
       case(state)
          4'b0000: begin
             Stall = 1'b0;
