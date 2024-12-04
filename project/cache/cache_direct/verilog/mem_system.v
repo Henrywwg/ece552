@@ -283,7 +283,7 @@ module mem_system(/*AUTOARG*/
 
             //I'm leaving this state simple so the rest can suffer
             next_state =   real_hit ? 4'b0000 : (
-                           victimize ? STATE : STATE );   //Return to IDLE
+                           victimize ? 4'b1001 : 4'b1010 );
          end
 
          //Store victimized data and then write new data to cache
