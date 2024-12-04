@@ -81,11 +81,14 @@ module mem_system(/*AUTOARG*/
 
       //Signals for internal registers
       wire [15:0] addr_internal;
+      wire [15:0] data_internal;
       wire        en_int_reg;
       wire        clr_int_reg;
 
-
+      //Internal registers hold data given by the CPU in case this data changes while the cache is operating
       dff requested_addr_reg[15:0](.q(addr_internal), .d(en_int_reg ? Addr : addr_internal), .clk(clk), .rst(rst));
+      dff given_data_reg[15:0](.q(data_internal), .d(en_int_reg ? DataIn : data_internal), .clk(clk), .rst(rst));
+
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
@@ -274,12 +277,61 @@ module mem_system(/*AUTOARG*/
 
          // ST/ RETRIEVE base state
          4'b1000: begin
+            //Easiest state thank god
+            // set done and return to idle if we hit in cache
+            Done = real_hit;
 
-            
-
-            next_state =  4'b0000;   //Return to IDLE
+            //I'm leaving this state simple so the rest can suffer
+            next_state =   real_hit ? 4'b0000 : (
+                           victimize ? STATE : STATE );   //Return to IDLE
          end
 
+         //Store victimized data and then write new data to cache
+         4'b1001: begin
+            inc_cntr = (cntr != 4'h3);
+            clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
+
+            mem_addr = {actual_tag, addr_internal[9:2], cntr[1:0], 1'b0};
+            mem_write = 1'b1;
+            mem_data_in = cache_data_out;
+
+            cache_addr = {addr_internal[15:3], next_cnt[1:0], 1'b0};
+            
+            cache_rd = 1'b1;
+
+            next_state = (cntr == 4'h3) ? 4'1010 : 4'b1001;   //If done with 4 writes get new data from mem
+         end
+
+         //Get new cache data from mem and write to cache (duplicate of an above state)
+         4'b1010: begin 
+            inc_cntr = 1'b1;
+            mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
+            mem_read = 1'b1;
+
+            
+            cache_data_in = mem_data_out; 
+            cache_addr = {addr_internal[15:2], cntr[2], cntr[0], 1'b0}; //im so fucking smart
+            cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
+
+
+            next_state = (cntr == 4'h5) ? 4'b1011 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
+
+         end
+
+         //Miss write and return
+         4'b1011: begin
+            //Write to the saved addr with data
+            cache_addr = addr_internal;
+            cache_data_in = data_internal;
+            cache_wr = 1;
+
+            next_state = 4'b1100;   //Proceed to MISS write (4'b1100)
+         end
+         4'b1100: begin
+            Done = 1;
+
+            next_state = 4'b0000;   //Return to IDLE
+         end
 
          default: 
             next_state = 4'b0000;
