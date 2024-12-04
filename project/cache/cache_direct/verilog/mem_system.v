@@ -299,7 +299,7 @@ module mem_system(/*AUTOARG*/
             
             cache_rd = 1'b1;
 
-            next_state = (cntr == 4'h3) ? 4'1010 : 4'b1001;   //If done with 4 writes get new data from mem
+            next_state = (cntr == 4'h3) ? 4'b1010 : 4'b1001;   //If done with 4 writes get new data from mem
          end
 
          //Get new cache data from mem and write to cache (duplicate of an above state)
