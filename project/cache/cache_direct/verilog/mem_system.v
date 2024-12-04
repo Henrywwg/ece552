@@ -156,19 +156,28 @@ module mem_system(/*AUTOARG*/
       clr_cntr = 1'b0;
       clr_int_reg = 1'b0;
       en_int_reg = 1'b0;
+      cache_comp = 1'b0;
 
       case(state)
          4'b0000: begin
-            stall = Rd | Wr;
+            Stall = 1'b0;
             clr_cntr = 1'b1;
 
-            cache_rd = Rd;
-            cache_comp = Rd | Wr;
-            cache_wr = Wr;
+            //Set address...
             cache_addr = Addr;
 
+            //Prepare data if needed
             cache_data_in = data_in;
 
+            //Only one should be asserted at a time
+            cache_rd = Rd;
+            cache_wr = Wr;
+
+            //If doing anything with cache in this state
+            // cache_comp should be high
+            cache_comp = Rd | Wr;
+
+            //Store Addr internally in case it changes
             en_int_reg = 1'b1;
 
             next_state =   Rd ? 4'b0001 : (
@@ -180,18 +189,16 @@ module mem_system(/*AUTOARG*/
 
             // Miss and victimize (write and read)
             mem_write = victimize;                 //mem_wr = 1;
-            mem_addr = victimize ? 
 
             // Miss and no victimize (just read)
             mem_read = ~victimize;                 //mem_rd = 1;
 
-
-            Stall = ~cache_hit;                    //If accessing mem then stall
-
+            //Set cache addr in case needed
+            cache_addr = {addr_internal[15:3], 3'b000}
             
             // Set next state
             next_state =   cache_hit ? 4'b0010 : (
-                           victimize ? 4'b0011 : 4'b0101);
+                           victimize ? 4'b0101 : 4'b0101);
          end
 
          //If we hit
@@ -204,11 +211,13 @@ module mem_system(/*AUTOARG*/
          end
 
          //If we miss and line is dirty - store and replace line
+         //    This step 'pre-loads' the first cache word so 
+         //    when we store the line to memory in next state
+         //    less delay and complexity is needed.
          4'b0011: begin
             //Request first word we're evicting from cache
             cache_addr = {addr_internal[15:3], 3'b000}
             cache_rd = 1'b1;
-            cache_comp = 1'b0;
 
             next_state = 4'b0101;
          end
@@ -248,14 +257,22 @@ module mem_system(/*AUTOARG*/
 
          //MISS Request and Return
          4'b0111: begin
-            cache_rd = 1;
             cache_addr = addr_internal;
+            cache_rd = 1;
 
             next_state = 4'b1000;   //Proceed to MISS return (4'b1000)
          end
          4'b1000: begin
             Done = 1;
             data_out = cache_data_out;
+
+            next_state = 4'b0000;   //Return to IDLE
+         end
+
+         // ST/ RETRIEVE
+         4'b1000: begin
+
+            
 
             next_state = 4'b0000;   //Return to IDLE
          end
