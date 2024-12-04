@@ -29,7 +29,7 @@ module mem_system(/*AUTOARG*/
    ////////////////////
       // Cache Signals
          //Inputs
-         reg        cache_en;
+         wire        cache_en;
          reg        cache_force_disable;
          reg        cache_data_in;
          reg [15:0] cache_addr;
