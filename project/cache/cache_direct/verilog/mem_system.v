@@ -235,7 +235,7 @@ module mem_system(/*AUTOARG*/
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
-            mem_addr = {actual_tag, addr_internal[9:2], cntr[1:0], 1'b0};
+            mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
             mem_write = 1'b1;
             mem_data_in = cache_data_out;
 
@@ -249,12 +249,12 @@ module mem_system(/*AUTOARG*/
          //Retrieve line from memory  
          4'b0110: begin
             inc_cntr = 1'b1;
-            mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
+            mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;
 
             
             cache_data_in = mem_data_out; 
-            cache_addr = {addr_internal[15:2], cntr[2], cntr[0], 1'b0}; //im so fucking smart
+            cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
             cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
 
 
@@ -291,7 +291,7 @@ module mem_system(/*AUTOARG*/
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
-            mem_addr = {actual_tag, addr_internal[9:2], cntr[1:0], 1'b0};
+            mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
             mem_write = 1'b1;
             mem_data_in = cache_data_out;
 
@@ -305,12 +305,12 @@ module mem_system(/*AUTOARG*/
          //Get new cache data from mem and write to cache (duplicate of an above state)
          4'b1010: begin 
             inc_cntr = 1'b1;
-            mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
+            mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;
 
             
             cache_data_in = mem_data_out; 
-            cache_addr = {addr_internal[15:2], cntr[2], cntr[0], 1'b0}; //im so fucking smart
+            cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
             cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
 
 
