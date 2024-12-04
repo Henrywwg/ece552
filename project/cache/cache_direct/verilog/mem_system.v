@@ -147,9 +147,9 @@ module mem_system(/*AUTOARG*/
    //////////////////////////
       always @(*) begin
       //Default signals to prevent latches
-      Done = 0;
-      Stall = 0;
-      CacheHit = 0;
+      Done = 1'b0;
+      Stall = 1'b1;
+      CacheHit = 1'b0;
       DataOut = 16'h0000;
       next_state = state;
       inc_cntr = 1'b0;
@@ -209,7 +209,7 @@ module mem_system(/*AUTOARG*/
          4'b0010: begin
             CacheHit = 1;
             Done = 1;
-            data_out = cache_data_out;
+            DataOut = cache_data_out;
 
             next_state = 4'b0000;
          end
@@ -243,7 +243,7 @@ module mem_system(/*AUTOARG*/
             next_state = (cntr == 4'h3) ? 4'b0110 : 4'b0101;   //If done with 4 writes get new data from mem
          end
 
-         //Retrieve line from memory 
+         //Retrieve line from memory  
          4'b0110: begin
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
@@ -272,12 +272,12 @@ module mem_system(/*AUTOARG*/
             next_state = 4'b0000;   //Return to IDLE
          end
 
-         // ST/ RETRIEVE
+         // ST/ RETRIEVE base state
          4'b1000: begin
 
             
 
-            next_state = 4'b0000;   //Return to IDLE
+            next_state =  4'b0000;   //Return to IDLE
          end
 
 
