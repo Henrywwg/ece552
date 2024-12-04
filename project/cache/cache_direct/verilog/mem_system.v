@@ -39,7 +39,7 @@ module mem_system(/*AUTOARG*/
          wire        cache_valid;
 
          // Outputs
-         wire [15:0] cache_data_out
+         wire [15:0] cache_data_out;
          wire        real_hit;
          wire        victimize;
          wire [4:0]  actual_tag;
@@ -167,7 +167,7 @@ module mem_system(/*AUTOARG*/
             cache_addr = Addr;
 
             //Prepare data if needed
-            cache_data_in = data_in;
+            cache_data_in = DataIn;
 
             //Only one should be asserted at a time
             cache_rd = Rd;
@@ -180,6 +180,7 @@ module mem_system(/*AUTOARG*/
             //Store Addr internally in case it changes
             en_int_reg = 1'b1;
 
+            //If read go to rd base, if write go to wr base otherwise stay in IDLE
             next_state =   Rd ? 4'b0001 : (
                            Wr ? 4'b0100 : 4'b0000);
          end
@@ -191,32 +192,36 @@ module mem_system(/*AUTOARG*/
             mem_write = victimize;                 //mem_wr = 1;
 
             // Miss and no victimize (just read)
-            mem_read = ~victimize;                 //mem_rd = 1;
+            mem_read = ~victimize & ~real_hit;     //mem_rd = 1;
 
-            //Set cache addr in case needed
-            cache_addr = {addr_internal[15:3], 3'b000}
+            //If we are victimizing the line then read from cache.
+            // in next state the first word should be available for 
+            // mem to write. (preload first cache word)
+            cache_addr = {addr_internal[15:3], 3'b000};
+            cache_rd = victimize;
             
             // Set next state
-            next_state =   cache_hit ? 4'b0010 : (
-                           victimize ? 4'b0101 : 4'b0101);
+            next_state =   real_hit ? 4'b0010 : (
+                           victimize ? 4'b0101 : 4'b0110);
          end
 
          //If we hit
          4'b0010: begin
-            cache_hit = 1;
+            CacheHit = 1;
             Done = 1;
             data_out = cache_data_out;
 
             next_state = 4'b0000;
          end
 
+         // NOTE: UNUSED STATE - CAN TENTATIVELY BE REMOVED
          //If we miss and line is dirty - store and replace line
          //    This step 'pre-loads' the first cache word so 
          //    when we store the line to memory in next state
          //    less delay and complexity is needed.
          4'b0011: begin
             //Request first word we're evicting from cache
-            cache_addr = {addr_internal[15:3], 3'b000}
+            cache_addr = {addr_internal[15:3], 3'b000};
             cache_rd = 1'b1;
 
             next_state = 4'b0101;
@@ -228,14 +233,12 @@ module mem_system(/*AUTOARG*/
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
             mem_addr = {actual_tag, addr_internal[9:2], cntr[1:0], 1'b0};
-            mem_wr = 1'b1;
+            mem_write = 1'b1;
             mem_data_in = cache_data_out;
 
             cache_addr = {addr_internal[15:3], next_cnt[1:0], 1'b0};
             
             cache_rd = 1'b1;
-            cache_comp = 1'b0;
-
 
             next_state = (cntr == 4'h3) ? 4'b0110 : 4'b0101;   //If done with 4 writes get new data from mem
          end
@@ -244,7 +247,7 @@ module mem_system(/*AUTOARG*/
          4'b0110: begin
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:2], cntr[1:0], 1'b0};
-            mem_rd = 1'b1;
+            mem_read = 1'b1;
 
             
             cache_data_in = mem_data_out; 
