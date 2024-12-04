@@ -132,8 +132,8 @@ module mem_system(/*AUTOARG*/
    // State machine sequential logic //
    ////////////////////////////////////
       //Assign next/current states
-      dff state_ff[3:0](.q(state), .d(next_state_out), .clk(clk), .rst(rst));
-      dff next_state_ff[3:0](.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
+      dff state_ff[3:0](.q(state), .d(next_state), .clk(clk), .rst(rst));
+//      dff next_state_ff[3:0](.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
    
 
       //States...
@@ -195,7 +195,7 @@ module mem_system(/*AUTOARG*/
 
             //If read go to rd base, if write go to wr base otherwise stay in IDLE
             next_state =   Rd ? 4'b0001 : (
-                           Wr ? 4'b1000 : 4'b0000);
+                           Wr ? 4'b0100 : 4'b0000);
          end
 
          //READ base state
@@ -292,7 +292,7 @@ module mem_system(/*AUTOARG*/
          end
 
          // ST/ RETRIEVE base state
-         4'b1000: begin
+         4'b0100: begin
             //Easiest state thank god
             // set done and return to idle if we hit in cache
             Done = real_hit;
