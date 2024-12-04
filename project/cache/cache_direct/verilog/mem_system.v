@@ -36,7 +36,7 @@ module mem_system(/*AUTOARG*/
          reg        cache_comp;
          reg        cache_rd;
          reg        cache_wr;
-         reg        cache_valid;
+         wire       cache_valid;
 
          // Outputs
          wire [15:0] cache_data_out;
@@ -65,7 +65,7 @@ module mem_system(/*AUTOARG*/
       assign real_hit = cache_hit_raw & cache_valid_raw;
       assign victimize = ~cache_hit_raw & cache_dirty_raw;
       assign cache_en = (cache_rd | cache_wr) & ~cache_force_disable;
-
+	  assign cache_valid = cache_wr & ~cache_comp;
 
       //State machine logic signals
       wire [3:0] state;
@@ -169,7 +169,7 @@ module mem_system(/*AUTOARG*/
       cache_data_in = 16'h0000;
       cache_rd = 1'b0;
       cache_wr = 1'b0;
-      cache_valid = cache_wr & ~cache_comp;
+      //cache_valid = cache_wr & ~cache_comp;
       case(state)
          4'b0000: begin
             Stall = 1'b0;
@@ -287,7 +287,7 @@ module mem_system(/*AUTOARG*/
          4'b1000: begin
             Done = 1;
             DataOut = cache_data_out;
-            cache_valid = 1'b1;
+            //cache_valid = 1'b1;
 
             next_state = 4'b0000;   //Return to IDLE
          end
@@ -297,7 +297,7 @@ module mem_system(/*AUTOARG*/
             //Easiest state thank god
             // set done and return to idle if we hit in cache
             Done = real_hit;
-
+			CacheHit = real_hit;
 
             //I'm leaving this state simple so the rest can suffer
             next_state =   real_hit ? 4'b0000 : (
@@ -323,8 +323,8 @@ module mem_system(/*AUTOARG*/
 
          //Get new cache data from mem and write to cache (duplicate of an above state)
          4'b1010: begin 
-            cache_valid = 1'b1;
-			   cache_force_disable = 1'b0;
+            //cache_valid = 1'b1;
+			cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;

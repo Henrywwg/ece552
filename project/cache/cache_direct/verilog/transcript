@@ -5,14 +5,19 @@ dataset:/mem_system_perfbench/DUT/m0/rst
 add wave -position insertpoint  \
 dataset:/mem_system_perfbench/DUT/m0/clk
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/Addr
+dataset:/mem_system_perfbench/DUT/m0/DataOut
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/DataIn
+dataset:/mem_system_perfbench/DUT/m0/Done
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/Rd
+dataset:/mem_system_perfbench/DUT/m0/Stall
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/Wr
+dataset:/mem_system_perfbench/DUT/m0/CacheHit
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/state
+dataset:/mem_system_perfbench/DUT/m0/cache_valid
+# Can't move the Now cursor.
 add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/next_state
+dataset:/mem_system_perfbench/DUT/m0/cache_hit_raw
+add wave -position insertpoint  \
+dataset:/mem_system_perfbench/DUT/m0/cache_valid_raw
+add wave -position insertpoint  \
+dataset:/mem_system_perfbench/DUT/m0/cache_dirty_raw
