@@ -169,7 +169,7 @@ module mem_system(/*AUTOARG*/
 	  cache_data_in = 16'h0000;
 	  cache_rd = 1'b0;
 	  cache_wr = 1'b0;
-	  cache_valid = ~cache_comp & cache_wr;
+	  cache_valid = 0;
       case(state)
          4'b0000: begin
             Stall = 1'b0;
@@ -287,6 +287,7 @@ module mem_system(/*AUTOARG*/
          4'b1000: begin
             Done = 1;
             DataOut = cache_data_out;
+            cache_valid = 1'b1;
 
             next_state = 4'b0000;   //Return to IDLE
          end
@@ -296,6 +297,7 @@ module mem_system(/*AUTOARG*/
             //Easiest state thank god
             // set done and return to idle if we hit in cache
             Done = real_hit;
+
 
             //I'm leaving this state simple so the rest can suffer
             next_state =   real_hit ? 4'b0000 : (
@@ -321,7 +323,8 @@ module mem_system(/*AUTOARG*/
 
          //Get new cache data from mem and write to cache (duplicate of an above state)
          4'b1010: begin 
-			cache_force_disable = 1'b0;
+            cache_valid = 1'b1;
+			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = 1'b1;
