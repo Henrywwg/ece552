@@ -29,14 +29,14 @@ module mem_system(/*AUTOARG*/
    ////////////////////
       // Cache Signals
          //Inputs
-         wire        cache_en;
-         wire        cache_force_disable;
-         wire        cache_data_in;
-         wire [15:0] cache_addr;
-         wire        cache_comp;
-         wire        cache_rd;
-         wire        cache_wr;
-         wire        cache_valid;
+         reg        cache_en;
+         reg        cache_force_disable;
+         reg        cache_data_in;
+         reg [15:0] cache_addr;
+         reg        cache_comp;
+         reg        cache_rd;
+         reg        cache_wr;
+         reg        cache_valid;
 
          // Outputs
          wire [15:0] cache_data_out;
@@ -45,13 +45,13 @@ module mem_system(/*AUTOARG*/
          wire [4:0]  actual_tag;
 
       // Mem signals
-      wire [15:0] mem_data_in;
-      wire [15:0] mem_data_out;
-      wire [15:0] mem_addr;
-      wire        mem_write;
-      wire        mem_read;
-      wire        mem_stall;
-      wire [3:0]  mem_busy;
+      reg [15:0] mem_data_in;
+      reg [15:0] mem_data_out;
+      reg [15:0] mem_addr;
+      reg        mem_write;
+      reg        mem_read;
+      reg        mem_stall;
+      reg [3:0]  mem_busy;
 
       //DEBUG err sig
       wire ERR_mem;
@@ -68,11 +68,11 @@ module mem_system(/*AUTOARG*/
 
 
       //State machine logic signals
-      wire [3:0]  state;
-      wire [3:0]  next_state_out;
-      wire [3:0]  next_state;
-      wire        inc_cntr;
-      wire        clr_cntr;
+      reg [3:0]  state;
+      reg [3:0]  next_state_out;
+      reg [3:0]  next_state;
+      reg        inc_cntr;
+      reg        clr_cntr;
 
       //Counter for storing and loading from imperfect memory
       wire [3:0]  cntr, next_cnt;   //counter for store and load from mem
@@ -82,8 +82,8 @@ module mem_system(/*AUTOARG*/
       //Signals for internal registers
       wire [15:0] addr_internal;
       wire [15:0] data_internal;
-      wire        en_int_reg;
-      wire        clr_int_reg;
+      reg        en_int_reg;
+      reg        clr_int_reg;
 
       //Internal registers hold data given by the CPU in case this data changes while the cache is operating
       dff requested_addr_reg[15:0](.q(addr_internal), .d(en_int_reg ? Addr : addr_internal), .clk(clk), .rst(rst));
@@ -270,7 +270,7 @@ module mem_system(/*AUTOARG*/
          end
          4'b1000: begin
             Done = 1;
-            data_out = cache_data_out;
+            DataOut = cache_data_out;
 
             next_state = 4'b0000;   //Return to IDLE
          end
