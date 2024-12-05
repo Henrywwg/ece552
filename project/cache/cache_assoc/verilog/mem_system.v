@@ -39,6 +39,24 @@ module mem_system(/*AUTOARG*/
       reg cache0_en;
       reg cache1_en;
 
+      //Signals for internal registers
+      wire [15:0] addr_internal;
+      wire [15:0] data_internal;
+      reg        en_int_reg;
+      reg        clr_int_reg;
+
+      reg        inc_cntr;
+      reg        clr_cntr;
+
+      //Internal registers hold data given by the CPU in case this data changes while the cache is operating
+      dff requested_addr_reg[15:0](.q(addr_internal), .d(en_int_reg ? Addr : addr_internal), .clk(clk), .rst(rst));
+      dff given_data_reg[15:0](.q(data_internal), .d(en_int_reg ? DataIn : data_internal), .clk(clk), .rst(rst));
+
+      //Counter for storing and loading from imperfect memory
+      wire [3:0]  cntr, next_cnt;   //counter for store and load from mem
+      dff three_bit_cntr[3:0](.q(cntr), .d(inc_cntr ? next_cnt : cntr), .clk(clk), .rst(clr_cntr));
+      cla_4b cntr_inc(.sum(next_cnt), .a(cntr), .b(4'h1), .c_out(/*Unused*/), .c_in(1'b0));
+
       // mem
       reg [15:0] mem_data_in;
       reg [15:0] mem_addr;
@@ -326,7 +344,7 @@ module mem_system(/*AUTOARG*/
          // MEMORY WRITEBACK (wr) //
          ///////////////////////////
          4'b1001: begin
-            
+
 
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
@@ -387,8 +405,8 @@ module mem_system(/*AUTOARG*/
    /////////////////
    always @(*) begin
       err = 1'b0;
-      case({ERR_cache, ERR_mem})
-         2'b00: 
+      case({c1_err, c0_err, mem_err})
+         3'b000: 
             err = 1'b0;
          default:
             err = 1'b1;

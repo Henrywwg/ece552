@@ -69,7 +69,6 @@ module mem_system(/*AUTOARG*/
 
       //State machine logic signals
       wire [3:0] state;
-      wire [3:0] next_state_out;
       reg  [3:0] next_state;
       reg        inc_cntr;
       reg        clr_cntr;
