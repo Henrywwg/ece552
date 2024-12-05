@@ -36,8 +36,6 @@ module mem_system(/*AUTOARG*/
       reg cache_rd;
       reg cache_wr;
 
-      reg cache0_en;
-      reg cache1_en;
       reg en_v_reg;
 
 
@@ -383,8 +381,8 @@ module mem_system(/*AUTOARG*/
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
 
-            c0_en = (~c0_FLAG          )? 1'b1 :~victim;
-            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
+            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
             
             cache_data_in = mem_data_out; 
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
