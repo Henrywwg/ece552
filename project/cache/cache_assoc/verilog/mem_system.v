@@ -106,7 +106,7 @@ module mem_system(/*AUTOARG*/
 
       assign real_hit = (c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw);
 
-      assign victimize = (c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~ c1_hit_raw);
+      assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG);
 
       assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
 
