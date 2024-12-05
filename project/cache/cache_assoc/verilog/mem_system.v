@@ -73,9 +73,9 @@ module mem_system(/*AUTOARG*/
 
       assign victimize = (c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~ c1_hit_raw);
 
-      assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : 
+      assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
 
-      assign cache_data_out = 
+      assign cache_data_out = (c0_tag_out == cache_addr[15:11]) ? c0_data_out : c1_data_out;
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // victim automatically selects cache to use during eviction
