@@ -36,6 +36,9 @@ module mem_system(/*AUTOARG*/
       reg cache_rd;
       reg cache_wr;
 
+      reg cache0_en;
+      reg cache1_en;
+
       // mem
       reg [15:0] mem_data_in;
       reg [15:0] mem_addr;
@@ -64,8 +67,19 @@ module mem_system(/*AUTOARG*/
       wire [4:0] actual_tag;
       wire [15:0] cache_data_out;
 
-      assign c0_en = (cache_rd | cache_wr) & (~cache_comp & ~victim) & ~force_enable;
-      assign c1_en = (cache_rd | cache_wr) & victim;
+      // Flags
+      wire c0_hit, c1_hit;
+      reg c0_FLAG, c1_FLAG;
+
+      assign c0_hit = c0_hit_raw & c0_valid_raw;
+      assign c1_hit = c1_hit_raw & c1_valid_raw;
+
+      // assign c0_en = ((cache_rd | cache_wr) & (~cache_comp & ~victim)) | force_enable;
+      // assign c1_en = ((cache_rd | cache_wr) & victim) | force_enable;
+
+      assign c0_en = (force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
+      assign c1_en = (force_enable | ~c1_FLAG) ? 1'b1 : victim;
+
 
       assign cache_valid = cache_wr & ~cache_comp;
 
@@ -162,12 +176,15 @@ module mem_system(/*AUTOARG*/
       mem_data_in = 16'h0000;
       mem_addr = 16'h0000;
       cache_addr = 16'h0000;
-      cache_force_disable = 1'b1;
+      force_enable = 1'b0;
       mem_read = 1'b0;
       mem_write = 1'b0;
       cache_data_in = 16'h0000;
       cache_rd = 1'b0;
       cache_wr = 1'b0;
+      toggle_victim_way = 1'b0;
+      c0_FLAG = c0_FLAG;
+      c1_FLAG = c1_FLAG;
 
       case(state)
 
@@ -178,12 +195,16 @@ module mem_system(/*AUTOARG*/
             //Don't stall in IDLE - we want new requests!
             Stall = 1'b0;
 
-            //Ensure counters are ready for rd/wr
+            //Ensure counters are ready for rd/wr  
             clr_cntr = 1'b1;
             cache_rd = 1'b1;
 
             //Store Addr internally in case CPU changes it
             en_int_reg = 1'b1;
+
+            //Clear flags
+            c0_FLAG = 1'b0;
+            c1_FLAG = 1'b0;
 
             //If read go to rd base, if write go to wr base otherwise stay in IDLE
             next_state =   Rd ? 4'b0001 : (
@@ -194,10 +215,11 @@ module mem_system(/*AUTOARG*/
          // rd BASE STATE //
          ///////////////////
          4'b0001: begin
+            force_enable = 1'b1;
             // Use our internal signals to
             // do a compare read.
+            toggle_victim_way = 1'b1;
             cache_addr = addr_internal;
-			   cache_force_disable = 1'b0;
             cache_comp = 1'b1;
             cache_rd = 1'b1;
 
@@ -205,6 +227,10 @@ module mem_system(/*AUTOARG*/
             Done = real_hit;
             CacheHit = real_hit;
             DataOut = cache_data_out;
+
+            //Assign flags
+            c0_FLAG = c0_valid_raw;
+            c1_FLAG = c1_valid_raw;
 
             // If hit return to IDLE otherwise depending on
             // victimize value we write-back to mem or 
@@ -220,7 +246,6 @@ module mem_system(/*AUTOARG*/
             //Stop counter at 3
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3); //Clear cntr bwhen it stops so its ready for next step
-			   cache_force_disable = 1'b0;
 
             mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
             mem_write = 1'b1;
@@ -237,7 +262,6 @@ module mem_system(/*AUTOARG*/
          // READ MEM-'LINE' WRITE TO CACHE (rd) //
          /////////////////////////////////////////
          4'b0110: begin
-			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
@@ -256,7 +280,6 @@ module mem_system(/*AUTOARG*/
          //////////////////////////
          4'b0111: begin
             //Do access read
-            cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_rd = 1;
 
@@ -267,7 +290,6 @@ module mem_system(/*AUTOARG*/
             next_state = 4'b0000;   
          end
 
-
          ////////////////////////////
          //    END OF rd STATES    //
          // BEGINNING OF wr STATES //
@@ -277,13 +299,19 @@ module mem_system(/*AUTOARG*/
          // wr BASE STATE //
          ///////////////////
          4'b0100: begin
+            //Toggle victim way
+            toggle_victim_way = 1'b1;
+
             // Do compare write
-            cache_force_disable = 1'b0;
             cache_comp = 1'b1;
             cache_wr = 1'b1;
 
             cache_addr = addr_internal;
             cache_data_in = data_internal;
+
+            //Assign flags
+            c0_FLAG = c0_valid_raw;
+            c1_FLAG = c1_valid_raw;
 
             // On hit we're done - return to IDLE
             Done = real_hit;
@@ -298,7 +326,8 @@ module mem_system(/*AUTOARG*/
          // MEMORY WRITEBACK (wr) //
          ///////////////////////////
          4'b1001: begin
-			   cache_force_disable = 1'b0;
+            
+
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
@@ -316,7 +345,6 @@ module mem_system(/*AUTOARG*/
          // READ MEM-'LINE' WRITE TO CACHE (wr) //
          /////////////////////////////////////////
          4'b1010: begin 
-			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
@@ -334,8 +362,7 @@ module mem_system(/*AUTOARG*/
          4'b1011: begin
             // Do compare write of the CPU data
             // to set dirty bit 
-            // NOTE: (This little POS took me 4 hours to fix ~ Henry ^w^)
-			   cache_force_disable = 1'b0;
+            // NOTE: (This dirty little POS took me 4 hours to fix ~ Henry ^w^)
             cache_addr = addr_internal;
             cache_data_in = data_internal;
             cache_wr = 1'b1;
