@@ -443,10 +443,3 @@ module mem_system(/*AUTOARG*/
 endmodule // mem_system
 `default_nettype wire
 // DUMMY LINE FOR REV CONTROL :9:
-
-
-if force enable
-   en both caches
-else if en
-   c0_en = ~victim;
-   c1_en = victim;
