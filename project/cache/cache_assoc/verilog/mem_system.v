@@ -91,17 +91,13 @@ module mem_system(/*AUTOARG*/
       wire [15:0] cache_data_out;
 
       // Flags
-      wire c0_hit, c1_hit;
-      reg c0_FLAG, c1_FLAG;
-
-      assign c0_hit = c0_hit_raw & c0_valid_raw;
-      assign c1_hit = c1_hit_raw & c1_valid_raw;
+      wire c0_FLAG, c1_FLAG;
 
       // assign c0_en = ((cache_rd | cache_wr) & (~cache_comp & ~victim)) | force_enable;
       // assign c1_en = ((cache_rd | cache_wr) & victim) | force_enable;
 
-      assign c0_en = (force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
-      assign c1_en = (force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
+      assign c0_en = 1'b1;//(force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
+      assign c1_en = 1'b1;//(force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
 
 
       assign cache_valid = cache_wr & ~cache_comp;
@@ -117,6 +113,11 @@ module mem_system(/*AUTOARG*/
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // victim automatically selects cache to use during eviction
       dff victim_FF (.q(victim), .d(toggle_victim_way ? ~victim : victim), .clk(clk), .rst(rst));
+
+      //Flag reg
+      dff FLAG1 (.q(c0_FLAG), .d(en_int_reg ? c0_hit_raw : c0_FLAG), .clk(clk), .rst(rst));
+      dff FLAG2 (.q(c1_FLAG), .d(en_int_reg ? c1_hit_raw : c1_FLAG), .clk(clk), .rst(rst));
+
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -206,8 +207,6 @@ module mem_system(/*AUTOARG*/
       cache_rd = 1'b0;
       cache_wr = 1'b0;
       toggle_victim_way = 1'b0;
-      c0_FLAG = c0_FLAG;
-      c1_FLAG = c1_FLAG;
 
       case(state)
 
@@ -224,10 +223,6 @@ module mem_system(/*AUTOARG*/
 
             //Store Addr internally in case CPU changes it
             en_int_reg = 1'b1;
-
-            //Clear flags
-            c0_FLAG = 1'b0;
-            c1_FLAG = 1'b0;
 
             //If read go to rd base, if write go to wr base otherwise stay in IDLE
             next_state =   Rd ? 4'b0001 : (
@@ -250,10 +245,6 @@ module mem_system(/*AUTOARG*/
             Done = real_hit;
             CacheHit = real_hit;
             DataOut = cache_data_out;
-
-            //Assign flags
-            c0_FLAG = c0_valid_raw;
-            c1_FLAG = c1_valid_raw;
 
             // If hit return to IDLE otherwise depending on
             // victimize value we write-back to mem or 
@@ -331,10 +322,6 @@ module mem_system(/*AUTOARG*/
 
             cache_addr = addr_internal;
             cache_data_in = data_internal;
-
-            //Assign flags
-            c0_FLAG = c0_valid_raw;
-            c1_FLAG = c1_valid_raw;
 
             // On hit we're done - return to IDLE
             Done = real_hit;
@@ -425,3 +412,10 @@ module mem_system(/*AUTOARG*/
 endmodule // mem_system
 `default_nettype wire
 // DUMMY LINE FOR REV CONTROL :9:
+
+
+if force enable
+   en both caches
+else if en
+   c0_en = ~victim;
+   c1_en = victim;
