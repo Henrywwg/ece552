@@ -132,9 +132,7 @@ module mem_system(/*AUTOARG*/
    // State machine sequential logic //
    ////////////////////////////////////
       //Assign next/current states
-      dff state_ff[3:0](.q(state), .d(next_state), .clk(clk), .rst(rst));
-//      dff next_state_ff[3:0](.q(next_state_out), .d(next_state), .clk(clk), .rst(rst));
-   
+      dff state_ff[3:0](.q(state), .d(next_state), .clk(clk), .rst(rst));   
 
       //States...
       // 0000 IDLE
