@@ -339,6 +339,7 @@ module mem_system(/*AUTOARG*/
             cache_addr = addr_internal;
             cache_data_in = data_internal;
             cache_wr = 1'b1;
+            cache_comp = 1'b1;
             //Done = 1'b1;
 
             next_state = 4'b1100;   //Proceed to IDLE write (4'b1100)
