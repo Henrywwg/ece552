@@ -38,6 +38,8 @@ module mem_system(/*AUTOARG*/
 
       reg cache0_en;
       reg cache1_en;
+      reg en_v_reg;
+
 
       //Signals for internal registers
       wire [15:0] addr_internal;
@@ -82,7 +84,7 @@ module mem_system(/*AUTOARG*/
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // assigned signals
-      wire c0_en, c1_en;
+      reg c0_en, c1_en;
       wire victim;
       wire cache_valid;
       wire real_hit;
@@ -96,8 +98,10 @@ module mem_system(/*AUTOARG*/
       // assign c0_en = ((cache_rd | cache_wr) & (~cache_comp & ~victim)) | force_enable;
       // assign c1_en = ((cache_rd | cache_wr) & victim) | force_enable;
 
-      assign c0_en = 1'b1;//(force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
-      assign c1_en = 1'b1;//(force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
+      // assign c0_en = 1'b1; //(force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
+      // assign c1_en = 1'b1; //(force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
+
+      // assign c0_en = force_enable | (en & ~victim) | 
 
 
       assign cache_valid = cache_wr & ~cache_comp;
@@ -115,8 +119,8 @@ module mem_system(/*AUTOARG*/
       dff victim_FF (.q(victim), .d(toggle_victim_way ? ~victim : victim), .clk(clk), .rst(rst));
 
       //Flag reg
-      dff FLAG1 (.q(c0_FLAG), .d(en_int_reg ? c0_hit_raw : c0_FLAG), .clk(clk), .rst(rst));
-      dff FLAG2 (.q(c1_FLAG), .d(en_int_reg ? c1_hit_raw : c1_FLAG), .clk(clk), .rst(rst));
+      dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_hit_raw : c0_FLAG), .clk(clk), .rst(rst));
+      dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c1_hit_raw : c1_FLAG), .clk(clk), .rst(rst));
 
 
 
@@ -207,6 +211,9 @@ module mem_system(/*AUTOARG*/
       cache_rd = 1'b0;
       cache_wr = 1'b0;
       toggle_victim_way = 1'b0;
+      c0_en = 1'b0;
+      c1_en = 1'b0;  
+      en_v_reg = 1'b0;
 
       case(state)
 
@@ -241,6 +248,10 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b1;
             cache_rd = 1'b1;
 
+            c0_en = 1'b1;
+            c1_en = 1'b1;
+            en_v_reg = 1'b1;
+
             // On hit set outputs
             Done = real_hit;
             CacheHit = real_hit;
@@ -265,6 +276,9 @@ module mem_system(/*AUTOARG*/
             mem_write = 1'b1;
             mem_data_in = cache_data_out;
 
+            c0_en = ~victim;
+            c1_en = victim;
+
             cache_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             
             cache_rd = 1'b1;
@@ -280,6 +294,8 @@ module mem_system(/*AUTOARG*/
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
 
+            c0_en = (          ~c0_FLAG)? 1'b1 :~victim;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
             
             cache_data_in = mem_data_out; 
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
@@ -296,6 +312,9 @@ module mem_system(/*AUTOARG*/
             //Do access read
             cache_addr = addr_internal;
             cache_rd = 1;
+
+            c0_en = (          ~c0_FLAG)? 1'b1 :~victim;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
 
             //Done now -> IDLE
             DataOut = cache_data_out;
@@ -315,6 +334,10 @@ module mem_system(/*AUTOARG*/
          4'b0100: begin
             //Toggle victim way
             toggle_victim_way = 1'b1;
+
+            c0_en = 1'b1;
+            c1_en = 1'b1;
+            en_v_reg = 1'b1;
 
             // Do compare write
             cache_comp = 1'b1;
@@ -336,7 +359,8 @@ module mem_system(/*AUTOARG*/
          // MEMORY WRITEBACK (wr) //
          ///////////////////////////
          4'b1001: begin
-
+            c0_en = ~victim;
+            c1_en = victim;
 
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
@@ -358,6 +382,9 @@ module mem_system(/*AUTOARG*/
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
+
+            c0_en = (~c0_FLAG          )? 1'b1 :~victim;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
             
             cache_data_in = mem_data_out; 
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
@@ -373,6 +400,10 @@ module mem_system(/*AUTOARG*/
             // Do compare write of the CPU data
             // to set dirty bit 
             // NOTE: (This dirty little POS took me 4 hours to fix ~ Henry ^w^)
+
+            c0_en = (          ~c0_FLAG)? 1'b1 :~victim;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
+
             cache_addr = addr_internal;
             cache_data_in = data_internal;
             cache_wr = 1'b1;
