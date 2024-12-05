@@ -48,6 +48,9 @@ module mem_system(/*AUTOARG*/
       reg        inc_cntr;
       reg        clr_cntr;
 
+      wire [3:0] state;
+      reg  [3:0] next_state;
+
       //Internal registers hold data given by the CPU in case this data changes while the cache is operating
       dff requested_addr_reg[15:0](.q(addr_internal), .d(en_int_reg ? Addr : addr_internal), .clk(clk), .rst(rst));
       dff given_data_reg[15:0](.q(data_internal), .d(en_int_reg ? DataIn : data_internal), .clk(clk), .rst(rst));
