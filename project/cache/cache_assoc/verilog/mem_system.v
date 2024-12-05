@@ -101,7 +101,7 @@ module mem_system(/*AUTOARG*/
       // assign c1_en = ((cache_rd | cache_wr) & victim) | force_enable;
 
       assign c0_en = (force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
-      assign c1_en = (force_enable | (~c1_FLAG & ~c0_FLAG)) ? 1'b1 : victim;
+      assign c1_en = (force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
 
 
       assign cache_valid = cache_wr & ~cache_comp;
