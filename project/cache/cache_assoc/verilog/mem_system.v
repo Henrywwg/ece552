@@ -75,8 +75,8 @@ module mem_system(/*AUTOARG*/
       wire [15:0] mem_data_out;
 
       // caches
-      wire c0_valid_raw, c0_dirty_raw, c0_hit_raw, c0_data_out, c0_err;
-      wire c1_valid_raw, c1_dirty_raw, c1_hit_raw, c1_data_out, c1_err;
+      wire c0_valid_raw, c0_dirty_raw, c0_hit_raw, c0_err;
+      wire c1_valid_raw, c1_dirty_raw, c1_hit_raw, c1_err;
       wire [4:0] c0_tag_out, c1_tag_out;
       wire [15:0] c0_data_out, c1_data_out;
 
