@@ -1,23 +1,86 @@
-# ** Warning: License feature 'msimviewer' will expire in 1 days.
-# dump.wlf opened as dataset "dataset"
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/rst
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/clk
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/DataOut
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/Done
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/Stall
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/CacheHit
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/cache_valid
-# Can't move the Now cursor.
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/cache_hit_raw
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/cache_valid_raw
-add wave -position insertpoint  \
-dataset:/mem_system_perfbench/DUT/m0/cache_dirty_raw
+# vsim -c mem_system_randbench_student -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 17:56:48 on Dec 04,2024
+# ** Warning: License feature 'msimpevsimvlog' will expire in 1 days.
+# Loading __work.mem_system_randbench_student
+# Loading __work.mem_system_hier
+# Loading __work.clkrst
+# Loading __work.mem_system
+# Loading __work.cla_4b
+# Loading __work.cache
+# Loading __work.memc
+# Loading __work.memv
+# Loading __work.four_bank_mem
+# Loading __work.final_memory
+# Loading __work.dff
+# Loading __work.mem_system_ref
+# Loading __work.fullAdder_1b
+# Loading __work.xor3
+# Loading __work.nand2
+# Loading __work.xor2
+# Loading __work.not1
+# log -howmany -rec /* 
+# 1759
+#  run -all
+# LOG: ReqNum  151 Cycle     1683 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  151 Cycle     1684 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  151 Cycle     1684 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# POSSIBLE ERRadd wave -position insertpoint  \
+dataset:/mem_system_randbench_student/DUT/m0/victimize
+686 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  151 Cycle     1686 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# ERROR ERROR ERROR VALUE MISREAD FROM MEM ON READ ERROR ERROR ERROR 0x2770
+# 
+# LOG: ReqNum  151 Cycle     1688 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# POSSIBLE ERROR 
+# mem in: 0x0000 
+# mem data out:  
+# Write?:47800
+# 0
+# LOG: ReqNum  151 Cycle     1690 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  151 Cycle     1691 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  152 Cycle     1692 ReqCycle     1682 Wr Addr 0x2770 Value 0xd7f7 ValueRef 0xd7f7 Hit: 0
+# 
+# LOG: ReqNum  634 Cycle     6944 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# LOG: ReqNum  634 Cycle     6945 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# LOG: ReqNum  634 Cycle     6945 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# POSSIBLE ERROR 
+# mem in: 0x0000 
+# mem data out:  
+# Write?:    0
+# 0
+# LOG: ReqNum  634 Cycle     6947 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# LOG: ReqNum  634 Cycle     6947 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# ERROR ERROR ERROR VALUE MISREAD FROM MEM ON READ ERROR ERROR ERROR 0x2770
+# 
+# LOG: ReqNum  634 Cycle     6949 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# POSSIBLE ERROR 
+# mem in: 0x0000 
+# mem data out:  
+# Write?:47800
+# 0
+# LOG: ReqNum  635 Cycle     6951 ReqCycle     6943 Rd Addr 0x2770 Value 0x7d42 ValueRef 0xd7f7 Hit: 0
+# 
+# ERROR ABOVE
+# LOG: ReqNum  635 Cycle     6951 ReqCycle     6943 Wr Addr 0x2770 Value 0x1baf ValueRef 0x1baf Hit: 0
+# 
+# LOG: Done full_random, Requests:        701, Cycles:       7661 Hits:         13
+# LOG: Done Requests:        701 Replies:        701 Cycles:       7662 Hits:         13
+# Test status: FAIL
+# ** Note: $finish    : mem_system_randbench_student.v(377)
+#    Time: 766187 ns  Iteration: 0  Instance: /mem_system_randbench_student
+# End time: 17:56:48 on Dec 04,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

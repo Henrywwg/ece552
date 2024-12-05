@@ -65,7 +65,7 @@ module mem_system(/*AUTOARG*/
       assign real_hit = cache_hit_raw & cache_valid_raw;
       assign victimize = ~cache_hit_raw & cache_dirty_raw;
       assign cache_en = (cache_rd | cache_wr) & ~cache_force_disable;
-	  assign cache_valid = cache_wr & ~cache_comp;
+	   assign cache_valid = cache_wr & ~cache_comp;
 
       //State machine logic signals
       wire [3:0] state;
@@ -174,7 +174,7 @@ module mem_system(/*AUTOARG*/
          4'b0000: begin
             Stall = 1'b0;
             clr_cntr = 1'b1;
-			   cache_force_disable = 1'b0;
+            cache_rd = 1'b1;
 
             // //Set address...
             // cache_addr = Addr;
@@ -202,8 +202,8 @@ module mem_system(/*AUTOARG*/
          4'b0001: begin
             cache_addr = addr_internal;
 			   cache_force_disable = 1'b0;
-            cache_rd = 1'b1;
             cache_comp = 1'b1;
+            cache_rd = 1'b1;
 
             // Miss and victimize (write and read)
             //mem_write = victimize;                 //mem_wr = 1;
@@ -235,7 +235,6 @@ module mem_system(/*AUTOARG*/
             next_state = 4'b0000;
          end
 
-
          //Store line to memory (dirty bit write)
          4'b0101: begin
             inc_cntr = (cntr != 4'h3);
@@ -258,7 +257,7 @@ module mem_system(/*AUTOARG*/
 			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
-            mem_read = 1'b1;
+            mem_read = ~|cntr[3:2];
 
             
             cache_data_in = mem_data_out; 
@@ -271,21 +270,27 @@ module mem_system(/*AUTOARG*/
 
          //MISS Request and Return
          4'b0111: begin
-            Done = 1;
-            DataOut = cache_data_out;
-			   cache_force_disable = 1'b0;
+            cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_rd = 1;
+
+            DataOut = cache_data_out;
+
+            Done = 1;
+            
             next_state = 4'b0000;   //Proceed to MISS return (4'b1000)
          end
 
          // ST/ RETRIEVE base state
          4'b0100: begin
-			cache_wr = 1'b1;
-			cache_addr = addr_internal;
          cache_force_disable = 1'b0;
          cache_comp = 1'b1;
+			cache_wr = 1'b1;
+
+         cache_addr = addr_internal;
          cache_data_in = data_internal;
+
+
 			//Easiest state thank god
          // set done and return to idle if we hit in cache
          
@@ -299,37 +304,32 @@ module mem_system(/*AUTOARG*/
 
          //Store victimized data and then write new data to cache
          4'b1001: begin
-			cache_force_disable = 1'b0;
+			   cache_force_disable = 1'b0;
             inc_cntr = (cntr != 4'h3);
             clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
+
+            cache_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
+            cache_rd = 1'b1;
 
             mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
             mem_write = 1'b1;
             mem_data_in = cache_data_out;
-
-            cache_addr = {addr_internal[15:3], next_cnt[1:0], 1'b0};
-            
-            cache_rd = 1'b1;
 
             next_state = (cntr == 4'h3) ? 4'b1010 : 4'b1001;   //If done with 4 writes get new data from mem
          end
 
          //Get new cache data from mem and write to cache (duplicate of an above state)
          4'b1010: begin 
-            //cache_valid = 1'b1;
 			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
-            mem_read = 1'b1;
-
+            mem_read = ~|cntr[3:2];
             
             cache_data_in = mem_data_out; 
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
             cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
 
-
             next_state = (cntr == 4'h5) ? 4'b1011 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
-
          end
 
          //Miss write and return
@@ -338,10 +338,27 @@ module mem_system(/*AUTOARG*/
 			   cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_data_in = data_internal;
-            cache_wr = 1;
-            Done = 1;
+            cache_wr = 1'b1;
+            //Done = 1'b1;
 
-            next_state = 4'b0000;   //Proceed to MISS write (4'b1100)
+            next_state = 4'b1100;   //Proceed to IDLE write (4'b1100)
+         end
+         4'b1100: begin
+            cache_force_disable = 1'b0;
+            cache_addr = addr_internal;
+            //cache_addr = addr_internal;
+            //cache_data_in = data_internal;
+            cache_rd = 1'b1;
+            next_state = 4'b1101;
+         end
+         4'b1101: begin
+            cache_force_disable = 1'b0;
+            cache_addr = addr_internal;
+            //cache_addr = addr_internal;
+            //cache_data_in = data_internal;
+            cache_rd = 1'b1;
+            Done = 1'b1;
+            next_state = 4'b0000;
          end
 
          default: 
