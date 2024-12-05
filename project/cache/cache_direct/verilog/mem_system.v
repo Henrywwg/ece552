@@ -132,16 +132,7 @@ module mem_system(/*AUTOARG*/
    // State machine sequential logic //
    ////////////////////////////////////
       //Assign next/current states
-      dff state_ff[3:0](.q(state), .d(next_state), .clk(clk), .rst(rst));   
-
-      //States...
-      // 0000 IDLE
-      // 0001 rd
-      // 0010 wait_rd_wr
-      // 0011 wait_rd_rd
-      // 0100 wr
-      // 0101
-      // 0110
+      dff state_ff[3:0](.q(state), .d(next_state), .clk(clk), .rst(rst));
 
    //////////////////////////
    // Combination SM logic //
@@ -167,28 +158,21 @@ module mem_system(/*AUTOARG*/
       cache_data_in = 16'h0000;
       cache_rd = 1'b0;
       cache_wr = 1'b0;
-      //cache_valid = cache_wr & ~cache_comp;
+
       case(state)
+
+         ///////////////////////
+         // IDLE (reset here) //
+         ///////////////////////
          4'b0000: begin
+            //Don't stall in IDLE - we want new requests!
             Stall = 1'b0;
+
+            //Ensure counters are ready for rd/wr
             clr_cntr = 1'b1;
             cache_rd = 1'b1;
 
-            // //Set address...
-            // cache_addr = Addr;
-
-            // //Prepare data if needed
-            // cache_data_in = DataIn;
-
-            // //Only one should be asserted at a time
-            // cache_rd = Rd;
-            // cache_wr = Wr;
-
-            // //If doing anything with cache in this state
-            // // cache_comp should be high
-            // cache_comp = Rd | Wr;
-
-            //Store Addr internally in case it changes
+            //Store Addr internally in case CPU changes it
             en_int_reg = 1'b1;
 
             //If read go to rd base, if write go to wr base otherwise stay in IDLE
@@ -196,48 +180,37 @@ module mem_system(/*AUTOARG*/
                            Wr ? 4'b0100 : 4'b0000);
          end
 
-         //READ base state
+         ///////////////////
+         // rd BASE STATE //
+         ///////////////////
          4'b0001: begin
+            // Use our internal signals to
+            // do a compare read.
             cache_addr = addr_internal;
 			   cache_force_disable = 1'b0;
             cache_comp = 1'b1;
             cache_rd = 1'b1;
 
-            // Miss and victimize (write and read)
-            //mem_write = victimize;                 //mem_wr = 1;
+            // On hit set outputs
+            Done = real_hit;
+            CacheHit = real_hit;
+            DataOut = cache_data_out;
 
-            // Miss and no victimize (just read)
-            //mem_read = ~victimize & ~real_hit   ;     //mem_rd = 1;
-
-            //If we are victimizing the line then read from cache.
-            // in next state the first word should be available for 
-            // mem to write. (preload first cache word)
-            //cache_addr = {addr_internal[15:3], 3'b000};
-            //cache_rd = victimize;
-            
-            // Set next state
-            next_state =   real_hit ? 4'b0010 : (
+            // If hit return to IDLE otherwise depending on
+            // victimize value we write-back to mem or 
+            // just fetch new cache line
+            next_state =   real_hit ? 4'b0000 : (
                            victimize ? 4'b0101 : 4'b0110);
          end
 
-         //If we hit
-         4'b0010: begin
-            CacheHit = 1;
-			   cache_force_disable = 1'b0;
-            Done = 1;
-            cache_rd = 1'b1;
-            cache_comp = 1'b1;
-            cache_addr = addr_internal;
-            DataOut = cache_data_out;
-
-            next_state = 4'b0000;
-         end
-
-         //Store line to memory (dirty bit write)
+         ///////////////////////////
+         // MEMORY WRITEBACK (rd) //
+         ///////////////////////////
          4'b0101: begin
+            //Stop counter at 3
             inc_cntr = (cntr != 4'h3);
+            clr_cntr = (cntr == 4'h3); //Clear cntr bwhen it stops so its ready for next step
 			   cache_force_disable = 1'b0;
-            clr_cntr = (cntr == 4'h3);//Clear cntr before retrieving data from memory
 
             mem_addr = {actual_tag, addr_internal[10:3], cntr[1:0], 1'b0};
             mem_write = 1'b1;
@@ -250,7 +223,9 @@ module mem_system(/*AUTOARG*/
             next_state = (cntr == 4'h3) ? 4'b0110 : 4'b0101;   //If done with 4 writes get new data from mem
          end
 
-         //Retrieve line from memory  
+         /////////////////////////////////////////
+         // READ MEM-'LINE' WRITE TO CACHE (rd) //
+         /////////////////////////////////////////
          4'b0110: begin
 			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
@@ -266,41 +241,52 @@ module mem_system(/*AUTOARG*/
             next_state = (cntr == 4'h5) ? 4'b0111 : 4'b0110;   //If done with 4 retrieves then move to MISS Request
          end
 
-         //MISS Request and Return
+         //////////////////////////
+         // READ AND RETURN (rd) //
+         //////////////////////////
          4'b0111: begin
+            //Do access read
             cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_rd = 1;
 
+            //Done now -> IDLE
             DataOut = cache_data_out;
-
             Done = 1;
             
-            next_state = 4'b0000;   //Proceed to MISS return (4'b1000)
+            next_state = 4'b0000;   
          end
 
-         // ST/ RETRIEVE base state
+
+         ////////////////////////////
+         //    END OF rd STATES    //
+         // BEGINNING OF wr STATES //
+         ////////////////////////////
+
+         ///////////////////
+         // wr BASE STATE //
+         ///////////////////
          4'b0100: begin
-         cache_force_disable = 1'b0;
-         cache_comp = 1'b1;
-			cache_wr = 1'b1;
+            // Do compare write
+            cache_force_disable = 1'b0;
+            cache_comp = 1'b1;
+            cache_wr = 1'b1;
 
-         cache_addr = addr_internal;
-         cache_data_in = data_internal;
+            cache_addr = addr_internal;
+            cache_data_in = data_internal;
 
+            // On hit we're done - return to IDLE
+            Done = real_hit;
+            CacheHit = real_hit;
 
-			//Easiest state thank god
-         // set done and return to idle if we hit in cache
-         
-         Done = real_hit;
-			CacheHit = real_hit;
-
-            //I'm leaving this state simple so the rest can suffer
+            //Victimized determines next state (disregarding a hit)
             next_state =   real_hit ? 4'b0000 : (
                            victimize ? 4'b1001 : 4'b1010 );
          end
 
-         //Store victimized data and then write new data to cache
+         ///////////////////////////
+         // MEMORY WRITEBACK (wr) //
+         ///////////////////////////
          4'b1001: begin
 			   cache_force_disable = 1'b0;
             inc_cntr = (cntr != 4'h3);
@@ -316,7 +302,9 @@ module mem_system(/*AUTOARG*/
             next_state = (cntr == 4'h3) ? 4'b1010 : 4'b1001;   //If done with 4 writes get new data from mem
          end
 
-         //Get new cache data from mem and write to cache (duplicate of an above state)
+         /////////////////////////////////////////
+         // READ MEM-'LINE' WRITE TO CACHE (wr) //
+         /////////////////////////////////////////
          4'b1010: begin 
 			   cache_force_disable = 1'b0;
             inc_cntr = 1'b1;
@@ -330,44 +318,32 @@ module mem_system(/*AUTOARG*/
             next_state = (cntr == 4'h5) ? 4'b1011 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
          end
 
-         //Miss write and return
+         ///////////////////////////
+         // WRITE AND RETURN (wr) //
+         ///////////////////////////
          4'b1011: begin
-            //Write to the saved addr with data
+            // Do compare write of the CPU data
+            // to set dirty bit 
+            // NOTE: (This little POS took me 4 hours to fix ~ Henry ^w^)
 			   cache_force_disable = 1'b0;
             cache_addr = addr_internal;
             cache_data_in = data_internal;
             cache_wr = 1'b1;
             cache_comp = 1'b1;
-            //Done = 1'b1;
-
-            next_state = 4'b1100;   //Proceed to IDLE write (4'b1100)
-         end
-         4'b1100: begin
-            cache_force_disable = 1'b0;
-            cache_addr = addr_internal;
-            //cache_addr = addr_internal;
-            //cache_data_in = data_internal;
-            cache_rd = 1'b1;
-            next_state = 4'b1101;
-         end
-         4'b1101: begin
-            cache_force_disable = 1'b0;
-            cache_addr = addr_internal;
-            //cache_addr = addr_internal;
-            //cache_data_in = data_internal;
-            cache_rd = 1'b1;
             Done = 1'b1;
-            next_state = 4'b0000;
+
+            next_state = 4'b0000;   //Proceed to IDLE write (4'b1100)
          end
 
+         /////////////////////
+         // DEFAULT TO IDLE //
+         /////////////////////
          default: 
             next_state = 4'b0000;
 
       endcase
    end
 
-
-	/*
 
    /////////////////
    // ERROR LOGIC //
@@ -382,7 +358,7 @@ module mem_system(/*AUTOARG*/
       endcase
    end
 
-    */
+    
    
 endmodule // mem_system
 `default_nettype wire
