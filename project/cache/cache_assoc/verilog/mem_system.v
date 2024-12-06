@@ -134,8 +134,8 @@ module mem_system(/*AUTOARG*/
       dff victim_FF (.q(victim), .d(toggle_victim_way ? ~victim : victim), .clk(clk), .rst(rst));
 
       //Flag reg
-      dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_hit_raw : c0_FLAG), .clk(clk), .rst(rst));
-      dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c1_hit_raw : c1_FLAG), .clk(clk), .rst(rst));
+      dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_valid_raw : c0_FLAG), .clk(clk), .rst(rst));
+      dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c0_valid_raw : c1_FLAG), .clk(clk), .rst(rst));
 
 
 
@@ -256,6 +256,7 @@ module mem_system(/*AUTOARG*/
          ///////////////////
          4'b0001: begin
             force_enable = 1'b1;
+
             // Use our internal signals to
             // do a compare read.
             toggle_victim_way = 1'b1;
@@ -309,7 +310,7 @@ module mem_system(/*AUTOARG*/
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
 
-            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
+            c0_en = (~c0_FLAG          )? 1'b1 : ~victim & c0_FLAG & c1_FLAG;
             c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
             
             cache_data_in = mem_data_out; 
