@@ -328,8 +328,8 @@ module mem_system(/*AUTOARG*/
             cache_addr = addr_internal;
             cache_rd = 1;
 
-            c0_en = (          ~c0_FLAG)? 1'b1 :~victim;
-            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
+            c0_en = (          ~c0_FLAG)? 1'b1 : ~victim & c0_FLAG & c1_FLAG;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
 
             //Done now -> IDLE
             DataOut = cache_data_out;
@@ -416,8 +416,8 @@ module mem_system(/*AUTOARG*/
             // to set dirty bit 
             // NOTE: (This dirty little POS took me 4 hours to fix ~ Henry ^w^)
 
-            c0_en = (          ~c0_FLAG)? 1'b1 :~victim;
-            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim;
+            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
 
             cache_addr = addr_internal;
             cache_data_in = data_internal;
