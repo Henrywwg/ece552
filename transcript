@@ -1,0 +1,8 @@
+# vsim "+addr_trace_file_name=..//verification//mem6.addr" -c mem_system_perfbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 14:10:51 on Dec 05,2024
+# ** Error: (vsim-3170) Could not find 'mem_system_perfbench'.
+#         Searched libraries:
+#             /home/cadiena/CS_552/ece552/__work
+# Error loading design
+# End time: 14:10:53 on Dec 05,2024, Elapsed time: 0:00:02
+# Errors: 1, Warnings: 0
