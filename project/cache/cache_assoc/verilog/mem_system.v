@@ -106,7 +106,8 @@ module mem_system(/*AUTOARG*/
 
       assign real_hit = (c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw);
 
-      assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG);
+      assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_valid_raw & c1_valid_raw);
+      //assign victimize = (c0_FLAG & c1_FLAG);
 
       //assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
 
@@ -137,6 +138,7 @@ module mem_system(/*AUTOARG*/
       dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_valid_raw : c0_FLAG), .clk(clk), .rst(rst));
       dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c1_valid_raw : c1_FLAG), .clk(clk), .rst(rst));
 
+      //dff FLAG3 (.q(victimize), .d(en_v_reg ? ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG) : victimize), .clk(clk), .rst(rst));
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -395,9 +397,10 @@ module mem_system(/*AUTOARG*/
          // READ MEM-'LINE' WRITE TO CACHE (wr) //
          /////////////////////////////////////////
          4'b1010: begin 
-            inc_cntr = 1'b1;
+            inc_cntr = 1'b1; //mem_busy[];
             mem_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             mem_read = ~|cntr[3:2];
+
 
             c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
             c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
@@ -406,8 +409,19 @@ module mem_system(/*AUTOARG*/
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
             cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
 
-            next_state = (cntr == 4'h5) ? 4'b1011 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
+            next_state = (cntr == 4'h5) ? 4'b1111 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
          end
+
+		4'b1111: begin
+			
+            cache_data_in = data_internal;
+            cache_comp = 1'b1;
+            cache_wr = 1'b1;
+            cache_addr = addr_internal;
+            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
+            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
+			next_state = 4'b1011;
+		end
 
          ///////////////////////////
          // WRITE AND RETURN (wr) //
