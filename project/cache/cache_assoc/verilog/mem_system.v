@@ -28,7 +28,6 @@ module mem_system(/*AUTOARG*/
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // state machine signals  
       // caches 
-      reg force_enable;
       reg [15:0] cache_data_in;
       reg [15:0] cache_addr;
       reg cache_comp;
@@ -93,38 +92,16 @@ module mem_system(/*AUTOARG*/
       // Flags
       wire c0_FLAG, c1_FLAG;
 
-      // assign c0_en = ((cache_rd | cache_wr) & (~cache_comp & ~victim)) | force_enable;
-      // assign c1_en = ((cache_rd | cache_wr) & victim) | force_enable;
-
-      // assign c0_en = 1'b1; //(force_enable | ~c0_FLAG) ? 1'b1 : ~victim;
-      // assign c1_en = 1'b1; //(force_enable | (~c1_FLAG & c0_FLAG)) ? 1'b1 : victim;
-
-      // assign c0_en = force_enable | (en & ~victim) | 
-
-
       assign cache_valid = cache_wr & ~cache_comp;
 
       assign real_hit = (c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw);
 
       assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_valid_raw & c1_valid_raw);
-      //assign victimize = (c0_FLAG & c1_FLAG);
-
-      //assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
 
       assign actual_tag =  (c0_tag_out == cache_addr[15:11])   ? c0_tag_out : 
                            ((c1_tag_out == cache_addr[15:11])  ? c1_tag_out : (
                               victim ? c1_tag_out : c0_tag_out));
 
-      // if c0_tag == real_tag
-      //    tag = c0_tag
-      // else if c1_tag == real_tag
-      //    tag = c1_tag
-      // else if ~victim   //c0 is victim
-      //    tag = c0_tag
-      // else              //c1 is victim
-      //    tag = c1_tag
-
-      //assign cache_data_out = (c0_tag_out == cache_addr[15:11]) ? c0_data_out : c1_data_out;
 
       assign cache_data_out = (c0_tag_out == cache_addr[15:11])   ? c0_data_out : 
                               ((c1_tag_out == cache_addr[15:11])  ? c1_data_out : (
@@ -137,8 +114,6 @@ module mem_system(/*AUTOARG*/
       //Flag reg
       dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_valid_raw : c0_FLAG), .clk(clk), .rst(rst));
       dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c1_valid_raw : c1_FLAG), .clk(clk), .rst(rst));
-
-      //dff FLAG3 (.q(victimize), .d(en_v_reg ? ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG) : victimize), .clk(clk), .rst(rst));
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -221,7 +196,6 @@ module mem_system(/*AUTOARG*/
       mem_data_in = 16'h0000;
       mem_addr = 16'h0000;
       cache_addr = 16'h0000;
-      force_enable = 1'b0;
       mem_read = 1'b0;
       mem_write = 1'b0;
       cache_data_in = 16'h0000;
@@ -257,7 +231,6 @@ module mem_system(/*AUTOARG*/
          // rd BASE STATE //
          ///////////////////
          4'b0001: begin
-            force_enable = 1'b1;
 
             // Use our internal signals to
             // do a compare read.
@@ -409,19 +382,8 @@ module mem_system(/*AUTOARG*/
             cache_addr = {addr_internal[15:3], cntr[2], cntr[0], 1'b0}; //im so fucking smart
             cache_wr = (|cntr[3:1]);   //if in second cycle or later then we are writing to cache
 
-            next_state = (cntr == 4'h5) ? 4'b1111 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
+            next_state = (cntr == 4'h5) ? 4'b1011 : 4'b1010;   //If done with 4 retrieves then move to MISS Write and return
          end
-
-		4'b1111: begin
-			
-            cache_data_in = data_internal;
-            cache_comp = 1'b1;
-            cache_wr = 1'b1;
-            cache_addr = addr_internal;
-            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
-            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
-			next_state = 4'b1011;
-		end
 
          ///////////////////////////
          // WRITE AND RETURN (wr) //

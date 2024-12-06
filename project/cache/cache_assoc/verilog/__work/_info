@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/cadiena/CS_552/ece552/project/cache/cache_assoc/verilog
 vcache
-Z1 !s110 1733452310
+Z1 !s110 1733453596
 !i10b 1
 !s100 Wegio_bBhn^FdMBJ0jXY^2
 I5`>U<[dZjLX[zA0R@Ci9i3
@@ -23,7 +23,7 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1733452310.000000
+Z5 !s108 1733453596.000000
 !s107 xor3.v|xor2.v|not1.v|nor2.v|nand2.v|memv.v|mem_system.v|mem_system_ref.v|mem_system_randbench.v|mem_system_perfbench.v|mem_system_hier.v|memc.v|fullAdder_1b.v|four_bank_mem.v|final_memory.v|dff.v|clkrst.v|cla_4b.v|cache.v|
 Z6 !s90 +define+RANDSEED=3|-work|__work|cache.v|cla_4b.v|clkrst.v|dff.v|final_memory.v|four_bank_mem.v|fullAdder_1b.v|memc.v|mem_system_hier.v|mem_system_perfbench.v|mem_system_randbench.v|mem_system_ref.v|mem_system.v|memv.v|nand2.v|nor2.v|not1.v|xor2.v|xor3.v|
 !i113 1
@@ -166,11 +166,11 @@ nfull@adder_1b
 vmem_system
 R1
 !i10b 1
-!s100 Zo<n6KYRN^<@dX?:V=dIX1
-I<QKN^cV`5M<z?HzV5]oTM0
+!s100 OeMnf<a8YF39<0;ngSjm61
+I_M25?^_Z2SZ:mLgFf6];=2
 R2
 R0
-w1733452303
+w1733453591
 8mem_system.v
 Fmem_system.v
 L0 6
@@ -276,11 +276,11 @@ R9
 vmemc
 R1
 !i10b 1
-!s100 W=EjOo85[7XR?TP[o<TN=1
-I^I@>O;?75hSTbV;@0YYG<1
+!s100 Bd7YJ88=[HE0Pgf;MU^1J3
+I5OOgbJ9k5BnTK=F:joGfe1
 R2
 R0
-w1733448554
+w1733452446
 8memc.v
 Fmemc.v
 L0 7
