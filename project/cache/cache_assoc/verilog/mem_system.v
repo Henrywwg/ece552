@@ -106,11 +106,28 @@ module mem_system(/*AUTOARG*/
 
       assign real_hit = (c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw);
 
-      assign victimize = 1'b1; //((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG);
+      assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_FLAG & c1_FLAG);
 
-      assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
+      //assign actual_tag = (c0_tag_out == cache_addr[15:11]) ? c0_tag_out : c1_tag_out;
 
-      assign cache_data_out = (c0_tag_out == cache_addr[15:11]) ? c0_data_out : c1_data_out;
+      assign actual_tag =  (c0_tag_out == cache_addr[15:11])   ? c0_tag_out : 
+                           ((c1_tag_out == cache_addr[15:11])  ? c1_tag_out : (
+                              victim ? c1_tag_out : c0_tag_out));
+
+      // if c0_tag == real_tag
+      //    tag = c0_tag
+      // else if c1_tag == real_tag
+      //    tag = c1_tag
+      // else if ~victim   //c0 is victim
+      //    tag = c0_tag
+      // else              //c1 is victim
+      //    tag = c1_tag
+
+      //assign cache_data_out = (c0_tag_out == cache_addr[15:11]) ? c0_data_out : c1_data_out;
+
+      assign cache_data_out = (c0_tag_out == cache_addr[15:11])   ? c0_data_out : 
+                              ((c1_tag_out == cache_addr[15:11])  ? c1_data_out : (
+                              victim ? c1_data_out : c0_data_out));
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // victim automatically selects cache to use during eviction
@@ -275,7 +292,7 @@ module mem_system(/*AUTOARG*/
             mem_data_in = cache_data_out;
 
             c0_en = ~victim;
-            c1_en = victim;
+            c1_en =  victim;
 
             cache_addr = {addr_internal[15:3], cntr[1:0], 1'b0};
             
