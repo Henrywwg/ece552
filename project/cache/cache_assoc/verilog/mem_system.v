@@ -135,7 +135,7 @@ module mem_system(/*AUTOARG*/
 
       //Flag reg
       dff FLAG1 (.q(c0_FLAG), .d(en_v_reg ? c0_valid_raw : c0_FLAG), .clk(clk), .rst(rst));
-      dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c0_valid_raw : c1_FLAG), .clk(clk), .rst(rst));
+      dff FLAG2 (.q(c1_FLAG), .d(en_v_reg ? c1_valid_raw : c1_FLAG), .clk(clk), .rst(rst));
 
 
 
@@ -238,7 +238,7 @@ module mem_system(/*AUTOARG*/
          4'b0000: begin
             //Don't stall in IDLE - we want new requests!
             Stall = 1'b0;
-
+			en_v_reg = 1'b1; //Clear register
             //Ensure counters are ready for rd/wr  
             clr_cntr = 1'b1;
             cache_rd = 1'b1;
