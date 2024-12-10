@@ -128,13 +128,13 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign branching[0] = (opcode[4:2] == 3'b011);
 
       //Do we need to output NOPs?
-      assign bubble = (|RAW) | (|RAW_X[2:0]) | (jumping[1]) | branching[1] | branching[2]  | jumping[2] | jumping[3];
+      assign bubble = (|RAW) | (|RAW_X[2:0]) | (jumping[1])  | jumping[2] | jumping[3];// | branching[1] | branching[2];
 
       //Adjust instruction to process
       assign instruction_to_pipe = bubble ? 16'h0800 : instruction;
       
       //halt pc/fetching one clock after a HALT, or until we are done bubbling
-      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2] | (branching[2] & PCsrc)));
+      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2]  ));// | (branching[2] & PCsrc)));
 
       assign HALTing[0] = HALT;
       dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(jumping[2:0]), .q(jumping[3:1]));

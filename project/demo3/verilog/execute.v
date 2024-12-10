@@ -80,7 +80,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    assign opcode = instruction[15:11];
 
    //Squash logic 
-   assign squash[0] = incrPC != newPC; //flush 3 NOPs into proc
+   assign squash[0] = (incrPC != newPC) && (opcode[4:2] != 3'b001); //flush 3 NOPs into proc
 
 
    /////////////////////////////////////
