@@ -1,0 +1,10 @@
+Line 22: Bad keyword integer
+Line 24: Bad keyword initial
+Line 25: begin without always/case
+Line 32: Expected '@' after 'always'
+Line 34: Bad keyword if
+Line 32: Always without case(x)
+Line 39: Bad keyword posedge
+Line 47: Bad keyword if
+Line 39: Always without case(x)
+End of file /home/cadiena/CS_552/ece552/project/cache/cache_assoc/verilog/clkrst.v. Hash = 1766918249

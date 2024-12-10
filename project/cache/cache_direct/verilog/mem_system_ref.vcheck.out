@@ -1,0 +1,12 @@
+Line 31: Bad keyword integer
+Line 33: Bad keyword initial
+Line 34: begin without always/case
+Line 35: Bad keyword for
+Line 36: begin without always/case
+Line 41: Bad keyword if
+Line 42: Bad keyword if
+Line 46: Bad keyword else
+Line 47: Bad keyword if
+Line 50: Bad keyword if
+Line 40: Always without case(x)
+End of file /home/cadiena/CS_552/ece552/project/cache/cache_direct/verilog/mem_system_ref.v. Hash = 1092512727

@@ -1,0 +1,8 @@
+Line 20: Bad keyword integer
+Line 21: Bad keyword integer
+Line 25: Bad keyword posedge
+Line 26: Bad keyword if
+Line 33: Bad keyword if
+Line 33: Bad keyword &&
+Line 25: Always without case(x)
+End of file /home/cadiena/CS_552/ece552/project/cache/cache_assoc/verilog/memv.syn.v. Hash = 1894326768
