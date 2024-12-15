@@ -82,11 +82,12 @@ module stallmem (DataOut, Done, Stall, CacheHit, err, Addr, DataIn, Rd, Wr, crea
    initial begin
       loaded = 0;
       largest = 0;
+      rand_pat = 32'h77777777;
 //      rand_pat = 32'b01010010011000101001111000001010;
       seed = 0;
       $value$plusargs("seed=%d", seed);
       $display("Using seed %d", seed);
-      rand_pat = $random(seed);
+      //rand_pat = $random(seed);
       $display("rand_pat=%08x %32b", rand_pat, rand_pat);
       // initialize memories to 0 first
       for (i=0; i<=65535; i=i+1) begin

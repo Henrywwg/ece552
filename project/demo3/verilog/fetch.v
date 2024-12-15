@@ -96,10 +96,10 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    ///////////////////////////////////////////////////////////////
    // Create HALT Singal to stop processor and dump Data Memory //
    ///////////////////////////////////////////////////////////////
-      always @(opcode, squash, unaligned_error_in) begin
+      always @(opcode, squash) begin
          HALT = 1'b0;
          case({instruction_to_pipe[15:11], squash})
-            7'b0000000: 
+            6'b000000: 
                HALT = 1'b1;
 
             default: 
@@ -146,7 +146,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign instruction_to_pipe = (bubble | squash)? 16'h0800 : instruction;
       
       //halt pc/fetching one clock after a HALT, or until we are done bubbling
-      assign halt_fetch = ((HALTing[1] | bubble)  & ~jumping[2]) | mem_stall;
+      assign halt_fetch = ((|HALTing[1:0] | bubble)  & ~jumping[2]) | mem_stall;
 
       assign HALTing[0] = HALT | unaligned_error_in;
       dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(mem_stall ? jumping[3:1] : ({3{~squash}} & jumping[2:0])), .q(jumping[3:1]));
