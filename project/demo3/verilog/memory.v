@@ -74,17 +74,12 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
 
 	assign forward_M = rt_in; //write_data;
 
-
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
 
-   //memory2c is Memory and outputs values pointed to be address
-   // memory2c_align iIM(.data_out(read_data), .data_in(forward_M), .addr(address), .enable(en), 
-   //              .wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst), .err(memory_error));
-
    stallmem iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out), .CacheHit(d_cache_hit), .err(memory_error), 
-                   .Addr(address), .DataIn(forward_M), .Rd(en ), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
+                   .Addr(address), .DataIn(forward_M), .Rd(en), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
 
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0800 : instruction), .q(instruction_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? incrPC_out : incrPC), .q(incrPC_out));
@@ -93,6 +88,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0000 : read_data), .q(read_data_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : RegWrt_in), .q(RegWrt_out));
    dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : (unaligned_error_in | memory_error)), .q(unaligned_error_out));
+   dff done_fancy_ff(.clk(clk), .rst(rst), .d(mem_stall_out), .q(mem_stall_flopped));
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
 
