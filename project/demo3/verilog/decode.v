@@ -6,7 +6,8 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt_in, RegWrt_pipeline, RegWrt_out, rd, squash, unaligned_error_in, unaligned_error_out);
+   write_reg, write_data, R1_out, R2_out, RegWrt_in, RegWrt_pipeline, RegWrt_out, rd, 
+   squash, unaligned_error_in, unaligned_error_out, mem_stall);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
@@ -20,6 +21,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    input wire [2:0]write_reg;
    input wire [15:0]write_data;
    input wire squash;
+   input wire mem_stall;
 
    output wire [15:0]R1_out, R2_out; 
    output wire err_out;
@@ -55,13 +57,13 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    ////////////////////////
    // Pipeline Registers //
    ////////////////////////
-   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
-   dff reg1[15:0](.clk(clk), .rst(rst), .d(R1), .q(R1_out));
-   dff reg2[15:0](.clk(clk), .rst(rst), .d(R2), .q(R2_out));
-   dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
-   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(squash ? 1'b0 : RegWrt_pipeline), .q(RegWrt_out));
-   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(unaligned_error_in), .q(unaligned_error_out));
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? instruction_out : instruction), .q(instruction_out));
+   dff reg1[15:0](.clk(clk), .rst(rst), .d(mem_stall ? R1_out : R1), .q(R1_out));
+   dff reg2[15:0](.clk(clk), .rst(rst), .d(mem_stall ? R2_out : R2), .q(R2_out));
+   dff error(.clk(clk), .rst(rst), .d(mem_stall ? err_out : err), .q(err_out));
+   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? incrPC_out : incrPC), .q(incrPC_out));
+   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(mem_stall ? RegWrt_out : (squash ? 1'b0 : RegWrt_pipeline)), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : unaligned_error_in), .q(unaligned_error_out));
 
 
    ///////////////////

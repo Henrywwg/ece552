@@ -7,7 +7,8 @@
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
    RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, 
-   WData, forward_A, forward_B, rs, rt, rs_v, rt_v, rt_out, squash, unaligned_error_in, unaligned_error_out);
+   WData, forward_A, forward_B, rs, rt, rs_v, rt_v, rt_out, squash, unaligned_error_in, 
+   unaligned_error_out, mem_stall);
 
    input wire [15:0]    instruction_in;
    output wire [15:0]   instruction_out;
@@ -19,6 +20,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    input wire [15:0]    WData;
    input wire [1:0]     forward_A;
    input wire [1:0]     forward_B;
+   input wire           mem_stall;
 
    input wire           clk;
    input wire           rst;
@@ -216,15 +218,17 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    //////////
    // Pipe //
    //////////
-   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(squash ? 16'h0800 : instruction), .q(instruction_out));  //NOP if squashing
-   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
-   dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d((opcode == 5'b10011) ? RegData :  Binput), .q(Binput_out));
-   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(A), .q(RegData_out));
-   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(squash ? 1'b0 : RegWrt_in), .q(RegWrt_out));
-   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(unaligned_error_in), .q(unaligned_error_out));
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? instruction_out : (squash ? 16'h0800 : instruction)), .q(instruction_out));  //NOP if squashing
+   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Xcomp_out : Xcomp), .q(Xcomp_out));
+   dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? incrPC_out : incrPC), .q(incrPC_out));
+   dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Binput_out : ((opcode == 5'b10011) ? RegData :  Binput)), .q(Binput_out));
+   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? RegData_out : A), .q(RegData_out));
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall ? RegWrt_out : (squash ? 1'b0 : RegWrt_in)), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : unaligned_error_in), .q(unaligned_error_out));
 
-   dff rt_pipe[15:0](.clk(clk), .rst(rst), .d(RegData), .q(rt_out));
+   dff rt_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? rt_out : RegData), .q(rt_out));
+
+   
   
    ///////////////////
    // RAW DETECTION //

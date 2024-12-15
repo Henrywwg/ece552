@@ -7,7 +7,8 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1, valid2, instruction_in_X, squash, unaligned_error_in, unaligned_error_out);
+   dst1, valid1, valid2, instruction_in_X, squash, unaligned_error_in, 
+   unaligned_error_out, mem_stall);
    
    //////////////
    //    IO    //
@@ -17,6 +18,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
          input wire        rst;
          input wire        PCsrc;
          input wire [15:0] jumpPC;
+         input wire mem_stall;
          
          input wire [2:0]  dst1;   //Destination register from decode Jjjj
          input wire        valid1;      //Is this a valid register
@@ -62,6 +64,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [2:0]dst2;
       wire memory_error;
       wire actual_halt;
+      wire i_cache_hit;
+      wire cache_done;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -78,8 +82,11 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       dff iPC[15:0](.q(PC_q), .d(halt_fetch & ~squash ? PC_q : PC_new), .clk(clk), .rst(rst));
 
       //memory2c is Instruction Memory and outputs instruction pointed to by PC
-      memory2c_align iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
-                  .createdump(1'b0), .clk(clk), .rst(rst), .err(memory_error));
+      //stallmem iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
+      //            .createdump(1'b0), .clk(clk), .rst(rst), .err(memory_error));
+
+      stallmem iIM(.DataOut(instruction), .Done(cache_done), .Stall(), .CacheHit(i_cache_hit), .err(memory_error), 
+                   .Addr(PC_q), .DataIn(16'h0000), .Rd(1'b1), .Wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
    // LOGIC // 
@@ -106,8 +113,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    //////////
    // PIPE //
    //////////
-      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(squash ? 16'h0800 : instruction_to_pipe), .q(instruction_out));
-      dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
+      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? instruction_out : (squash ? 16'h0800 : instruction_to_pipe)), .q(instruction_out));
+      dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? incrPC : PC_p2), .q(incrPC));
 
 
    //////////////////
@@ -135,19 +142,19 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign branching[0] = (opcode[4:2] == 3'b011);
 
       //Do we need to output NOPs?
-      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3];
+      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3] | ~cache_done;
 
       //Adjust instruction to process
       assign instruction_to_pipe = (bubble | squash)? 16'h0800 : instruction;
       
       //halt pc/fetching one clock after a HALT, or until we are done bubbling
-      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2]));
+      assign halt_fetch = ((HALTing[1] | bubble)  & ~jumping[2]) | mem_stall;
 
       assign HALTing[0] = HALT | unaligned_error_in;
       dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(jumping[2:0]), .q(jumping[3:1]));
       dff br_cnt[1:0](.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
       dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d((HALTing[3:0] & {4{~squash}})), .q(HALTing[4:1]));
-      dff unaligned_error_dff(.clk(clk), .rst(rst), .d(memory_error), .q(unaligned_error_out));
+      dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : memory_error), .q(unaligned_error_out));
      
       assign actual_halt = HALTing[4] | unaligned_error_in;
 

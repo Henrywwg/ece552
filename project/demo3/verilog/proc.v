@@ -33,6 +33,7 @@ module proc (/*AUTOARG*/
    wire [15:0]execute_rt;
    wire squashing;
    wire unaligned_error[0:3];
+   wire mem_stall;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -48,13 +49,16 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    fetch iIF (.clk(clk), .rst(rst), .jumpPC(jumpPC), .DUMP(createDump), .incrPC(incrPC_F2D), 
-      .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(rd), .valid1(decode_rd_valid), .valid2(RegWrt_D2X), .instruction_in_X(inst_D2X), .squash(squashing), .unaligned_error_in(unaligned_error[3]), .unaligned_error_out(unaligned_error[0]));
+      .PCsrc(PCsrc), .instruction_out(inst_F2D), .dst1(rd), .valid1(decode_rd_valid), .valid2(RegWrt_D2X),
+       .instruction_in_X(inst_D2X), .squash(squashing), .unaligned_error_in(unaligned_error[3]), 
+       .unaligned_error_out(unaligned_error[0]), .mem_stall(mem_stall));
 
    decode iD (.clk(clk), .rst(rst), .err_out(regFileErr), .instruction_in(inst_F2D), 
       .instruction_out(inst_D2X), .incrPC(incrPC_F2D), .incrPC_out(incrPC_D2X), 
       .write_reg(write_reg), .write_data(write_data_reg), .RegWrt_in(RegWrt_mem), 
       .RegWrt_out(RegWrt_D2X), .RegWrt_pipeline(decode_rd_valid),
-      .R1_out(R1), .R2_out(R2_D2X), .rd(rd), .squash(squashing), .unaligned_error_in(unaligned_error[0]), .unaligned_error_out(unaligned_error[1]));
+      .R1_out(R1), .R2_out(R2_D2X), .rd(rd), .squash(squashing), .unaligned_error_in(unaligned_error[0]),
+      .unaligned_error_out(unaligned_error[1]), .mem_stall(mem_stall));
 
    execute iX (.clk(clk), .rst(rst), .instruction_in(inst_D2X), .instruction_out(inst_X2M), 
       .incrPC(incrPC_D2X), .incrPC_out(incrPC_X2M), .newPC(jumpPC), .A_reg(R1), 
@@ -62,13 +66,17 @@ module proc (/*AUTOARG*/
       .Binput_out(Binput_X2M), .RegData_out(R2_X2M), .PCsrc(PCsrc),
       .RegWrt_in(RegWrt_D2X), .RegWrt_out(RegWrt_X2M), .WData(write_data_reg), 
       .forward_A(forward_A), .forward_B(forward_B),
-      .rs(rs), .rt(rt), .rs_v(rs_v), .rt_v(rt_v), .rt_out(execute_rt), .squash(squashing), .unaligned_error_in(unaligned_error[1]), .unaligned_error_out(unaligned_error[2]));
+      .rs(rs), .rt(rt), .rs_v(rs_v), .rt_v(rt_v), .rt_out(execute_rt), .squash(squashing), 
+      .unaligned_error_in(unaligned_error[1]), .unaligned_error_out(unaligned_error[2]),
+      .mem_stall(mem_stall));
 
    memory iM (.clk(clk), .rst(rst), .instruction_in(inst_X2M), .instruction_out(inst_M2W), 
       .address(Xcomp_X2M), .write_data(R2_X2M), .DUMP(createDump),
       .incrPC(incrPC_X2M), .incrPC_out(incrPC_M2W), .Binput(Binput_X2M), .Binput_out(Binput_M2W), 
       .Xcomp(Xcomp_X2M), .Xcomp_out(Xcomp_M2W), .read_data_out(read_data),
-      .RegWrt_in(RegWrt_X2M), .RegWrt_out(RegWrt_mem), .xm_rd(xm_rd), .wb_rd_data(write_data_reg), .wb_rd(mwb_rd), .rt_in(execute_rt), .unaligned_error_in(unaligned_error[2]), .unaligned_error_out(unaligned_error[3]));
+      .RegWrt_in(RegWrt_X2M), .RegWrt_out(RegWrt_mem), .xm_rd(xm_rd), .wb_rd_data(write_data_reg), 
+      .wb_rd(mwb_rd), .rt_in(execute_rt), .unaligned_error_in(unaligned_error[2]), 
+      .unaligned_error_out(unaligned_error[3]), .mem_stall_out(mem_stall));
 
    wb iWB (.incrPC(incrPC_M2W), .MemData(read_data), .ALUData(Xcomp_M2W), .RegData(Binput_M2W),
       .WData(write_data_reg), .instruction_in(inst_M2W), .WRegister(write_reg), .mwb_rd(mwb_rd));

@@ -11,7 +11,8 @@
 `default_nettype none
 module memory (instruction_in, instruction_out, clk, rst, address, write_data, DUMP, 
    read_data_out, incrPC, incrPC_out, Binput, Binput_out, Xcomp, Xcomp_out, RegWrt_in, 
-   RegWrt_out, xm_rd, wb_rd, wb_rd_data, rt_in, unaligned_error_in, unaligned_error_out);
+   RegWrt_out, xm_rd, wb_rd, wb_rd_data, rt_in, unaligned_error_in, unaligned_error_out,
+   mem_stall_out);
    //Module Inputs
    input wire [15:0]instruction_in;
    input wire [15:0]incrPC;
@@ -30,6 +31,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    input wire DUMP;
    input wire        unaligned_error_in;
    output wire        unaligned_error_out;
+   output wire mem_stall_out;
    
    //Module Outputs
    output wire [15:0]incrPC_out;
@@ -47,6 +49,9 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    wire en;
    wire [15:0]forward_M;
    wire memory_error;
+   wire cache_done;
+   wire d_cache_hit;
+   wire mem_stall_immed, mem_stall_flopped;
 
    wire [4:0]opcode;
    wire [15:0]instruction;
@@ -60,7 +65,8 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
       // Check first 3 bits, and then check the lower 2 bits of the opcode
       // are the same using nots and xor.
       assign MemWrt = ((opcode[4:2] == 3'b100) & (~^opcode[1:0]));
-      assign en = (opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10);
+      assign en = (opcode[4:0] == 5'b10001); //(opcode[4:0] == 5'b10000) | (opcode[4:0] == 5'b10011);
+      //(opcode[4:2] == 3'b100) & (opcode[1:0] != 2'b10);
 
    //////////////////////
    // FORWARDING LOGIC //
@@ -74,18 +80,21 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    /////////////////////////////////
 
    //memory2c is Memory and outputs values pointed to be address
-   memory2c_align iIM(.data_out(read_data), .data_in(forward_M), .addr(address), .enable(en), 
-                .wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst), .err(memory_error));
+   // memory2c_align iIM(.data_out(read_data), .data_in(forward_M), .addr(address), .enable(en), 
+   //              .wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst), .err(memory_error));
 
-   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(instruction_out));
-   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff B_input[15:0](.clk(clk), .rst(rst), .d(Binput), .q(Binput_out));
-   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
-   dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(read_data), .q(read_data_out));
-   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
-   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(unaligned_error_in | memory_error), .q(unaligned_error_out));
+   stallmem iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out), .CacheHit(d_cache_hit), .err(memory_error), 
+                   .Addr(address), .DataIn(forward_M), .Rd(en ), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
 
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? instruction_out : instruction), .q(instruction_out));
+   dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? incrPC_out : incrPC), .q(incrPC_out));
+   dff B_input[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? Binput_out : Binput), .q(Binput_out));
+   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? Xcomp_out : Xcomp), .q(Xcomp_out));
+   dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? read_data_out : read_data), .q(read_data_out));
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall_out ? RegWrt_out : RegWrt_in), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall_out ? unaligned_error_out : (unaligned_error_in | memory_error)), .q(unaligned_error_out));
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
+
 endmodule
 `default_nettype wire
