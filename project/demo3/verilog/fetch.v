@@ -58,7 +58,6 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire halt_fetch;
       
       wire [3:0]jumping; 
-      wire [2:0]branching;
       wire [4:0]HALTing;
 	   wire bubble;
       wire [2:0]dst2;
@@ -139,7 +138,6 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //making these both evaluate to 0. When br/raw/jmp has cleared the
       //pipe, then opcode is reassigned to the actual instruction.
       assign jumping[0] = (opcode[4:2] == 3'b001);
-      assign branching[0] = (opcode[4:2] == 3'b011);
 
       //Do we need to output NOPs?
       assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3] | ~cache_done;
@@ -151,8 +149,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign halt_fetch = ((HALTing[1] | bubble)  & ~jumping[2]) | mem_stall;
 
       assign HALTing[0] = HALT | unaligned_error_in;
-      dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(mem_stall ? jumping[3:1] : jumping[2:0]), .q(jumping[3:1]));
-      dff br_cnt[1:0](.clk(clk), .rst(rst), .d(mem_stall ? branching[2:1] : branching[1:0]), .q(branching[2:1]));
+      dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(mem_stall ? jumping[3:1] : ({3{~squash}} & jumping[2:0])), .q(jumping[3:1]));
       dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d(mem_stall ? HALTing[4:1] : ((HALTing[3:0] & {4{~squash}}))), .q(HALTing[4:1]));
       dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : memory_error), .q(unaligned_error_out));
      
