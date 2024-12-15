@@ -6,18 +6,20 @@
 */
 `default_nettype none
 module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instruction_out, 
-   write_reg, write_data, R1_out, R2_out, RegWrt_in, RegWrt_pipeline, RegWrt_out, rd);
+   write_reg, write_data, R1_out, R2_out, RegWrt_in, RegWrt_pipeline, RegWrt_out, rd, squash, unaligned_error_in, unaligned_error_out);
 
    input wire [15:0]incrPC;
    input wire [15:0]instruction_in;
    output wire [15:0]instruction_out;
    output wire [15:0]incrPC_out;
-
+   input wire        unaligned_error_in;
+   output wire        unaligned_error_out;
    input wire clk;
    input wire rst;
    input wire RegWrt_in;
    input wire [2:0]write_reg;
    input wire [15:0]write_data;
+   input wire squash;
 
    output wire [15:0]R1_out, R2_out; 
    output wire err_out;
@@ -33,7 +35,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    wire [15:0]R1, R2;
    wire [4:0]opcode;
    wire [15:0]instruction;
-   assign instruction = instruction_in;
+   assign instruction = squash ? 16'h0800 : instruction_in;
    assign opcode = instruction[15:11];
 
    ///////////////////
@@ -58,7 +60,8 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    dff reg2[15:0](.clk(clk), .rst(rst), .d(R2), .q(R2_out));
    dff error(.clk(clk), .rst(rst), .d(err), .q(err_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
-   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(RegWrt_pipeline), .q(RegWrt_out));
+   dff pipe_RegWrt(.clk(clk), .rst(rst), .d(squash ? 1'b0 : RegWrt_pipeline), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(unaligned_error_in), .q(unaligned_error_out));
 
 
    ///////////////////

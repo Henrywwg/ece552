@@ -7,22 +7,24 @@
 `default_nettype none
 module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A_reg, 
    RegData_reg, RegData_out, Xcomp_out, newPC, Binput_out, PCsrc, RegWrt_in, RegWrt_out, 
-   WData, forward_A, forward_B, rs, rt, rs_v, rt_v, rt_out);
+   WData, forward_A, forward_B, rs, rt, rs_v, rt_v, rt_out, squash, unaligned_error_in, unaligned_error_out);
 
-   input wire [15:0] instruction_in;
-   output wire [15:0]instruction_out;
+   input wire [15:0]    instruction_in;
+   output wire [15:0]   instruction_out;
+   input wire        unaligned_error_in;
+   output wire        unaligned_error_out;
 
-   input wire        RegWrt_in;
-   output wire       RegWrt_out;
-   input wire [15:0] WData;
-   input wire [1:0]  forward_A;
-   input wire [1:0]  forward_B;
+   input wire           RegWrt_in;
+   output wire          RegWrt_out;
+   input wire [15:0]    WData;
+   input wire [1:0]     forward_A;
+   input wire [1:0]     forward_B;
 
-   input wire clk;
-   input wire rst;
-   input wire [15:0] incrPC;
-   input wire [15:0] A_reg;             // A input to ALU from Read Data 1.
-   input wire [15:0] RegData_reg;       // B input 0 from Read Data 2.
+   input wire           clk;
+   input wire           rst;
+   input wire [15:0]    incrPC;
+   input wire [15:0]    A_reg;             // A input to ALU from Read Data 1.
+   input wire [15:0]    RegData_reg;       // B input 0 from Read Data 2.
 
    output wire          PCsrc;               // IF branch or jump instruction set high
    output wire [15:0]   Xcomp_out;    // Result from EXECUTION stage.
@@ -31,10 +33,11 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    output wire [15:0]   Binput_out;   // B input to ALU. Will be assigned via Mux.
    output wire [15:0]   RegData_out;
    output wire [15:0]   rt_out;
+   output wire          squash;
    
    //Forwarding signals
-   output wire [2:0]rs;
-   output wire [2:0]rt;
+   output wire [2:0]    rs;
+   output wire [2:0]    rt;
 
    output wire rs_v;
    output wire rt_v;
@@ -64,7 +67,6 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
       wire [15:0] instruction;
       wire [15:0] SLBI;
       wire [15:0] ext_5, ext_8, ext_11;
-      wire [2:0]  squash;
 
       wire [15:0] A, RegData;
 
@@ -80,7 +82,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    assign opcode = instruction[15:11];
 
    //Squash logic 
-   assign squash[0] = (incrPC != newPC) && (opcode[4:2] != 3'b001); //flush 3 NOPs into proc
+   assign squash = (incrPC != newPC) & (instruction_in[15:13] != 3'b001); //flush 3 NOPs into proc
 
 
    /////////////////////////////////////
@@ -206,21 +208,23 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    ////////////////////
    // Assign Outputs //
    ////////////////////
-   assign newPC = ALUjump ? ALUrslt : (TkBrch ? tempPC : incrPC);
+   //assign newPC = {(ALUjump ? ALUrslt[15:1] : (TkBrch ? tempPC[15:1] : incrPC[15:1])), 1'b0};
+   assign newPC = (ALUjump ? ALUrslt : (TkBrch ? tempPC : incrPC));
+
    assign Xcomp = result;
 
    //////////
    // Pipe //
    //////////
-   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction), .q(squash ? 16'h0800: instruction_out));  //NOP if squashing
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(squash ? 16'h0800 : instruction), .q(instruction_out));  //NOP if squashing
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(Xcomp), .q(Xcomp_out));
    dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(incrPC), .q(incrPC_out));
    dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d((opcode == 5'b10011) ? RegData :  Binput), .q(Binput_out));
    dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(A), .q(RegData_out));
-   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(RegWrt_in), .q(RegWrt_out));
-   
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(squash ? 1'b0 : RegWrt_in), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(unaligned_error_in), .q(unaligned_error_out));
+
    dff rt_pipe[15:0](.clk(clk), .rst(rst), .d(RegData), .q(rt_out));
-   dff squash[2:0](.clk(clk), .rst(rst), .d(squash[1:0]), .q(squash[2:1]));
   
    ///////////////////
    // RAW DETECTION //

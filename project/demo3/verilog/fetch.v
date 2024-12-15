@@ -7,46 +7,51 @@
 */
 `default_nettype none
 module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP, 
-   dst1, valid1, valid2);
+   dst1, valid1, valid2, instruction_in_X, squash, unaligned_error_in, unaligned_error_out);
    
    //////////////
    //    IO    //
    //////////////
       //Module Inputs
-         input wire clk;
-         input wire rst;
-         input wire PCsrc;
-         input wire [15:0]jumpPC;
+         input wire        clk;
+         input wire        rst;
+         input wire        PCsrc;
+         input wire [15:0] jumpPC;
          
-         input wire [2:0]dst1;   //Destination register from decode 
-         input wire valid1;      //Is this a valid register
-         input wire valid2;
+         input wire [2:0]  dst1;   //Destination register from decode Jjjj
+         input wire        valid1;      //Is this a valid register
+         input wire        valid2;
+         input wire [15:0] instruction_in_X;
+         input wire        squash;
+         input wire        unaligned_error_in;
+         output wire        unaligned_error_out;
 
 
       //Module Outputs
          output wire [15:0]incrPC;
          output wire [15:0]instruction_out;
-         output wire DUMP;
-         wire [2:0]rs;
-         wire [2:0]rt;
-         wire rs_v;
-         wire rt_v;
+         output wire       DUMP;
+         
+         wire [2:0]  rs;
+         wire [2:0]  rt;
+         wire        rs_v;
+         wire        rt_v;
 
    ///////////////////////
    // INTERNAL SIGNALS  //
    ///////////////////////
       //PC signals
-      wire [15:0]PC_new;
-      wire [15:0]PC_q;
-      wire [15:0]PC_p2;
-      reg HALT;
+      wire [15:0] PC_new;
+      wire [15:0] PC_q;
+      wire [15:0] PC_p2;
+      reg         HALT;
 
       //hazard detection signals
-      wire [3:0]RAW, RAW_X;
+      wire [3:0]  RAW, RAW_X;
 
       //Internal instruction signals
       wire [15:0]instruction;
-      wire [15:0]instruction_to_pipe, instruction_in_X;
+      wire [15:0]instruction_to_pipe;
       wire [4:0]opcode;
       wire halt_fetch;
       
@@ -55,6 +60,8 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire [4:0]HALTing;
 	   wire bubble;
       wire [2:0]dst2;
+      wire memory_error;
+      wire actual_halt;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -68,11 +75,11 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       assign PC_new = PCsrc ? jumpPC : PC_p2;         
       //DFFs hold value of PC
-      dff iPC[15:0](.q(PC_q), .d(halt_fetch ? PC_q : PC_new), .clk(clk), .rst(rst));
+      dff iPC[15:0](.q(PC_q), .d(halt_fetch & ~squash ? PC_q : PC_new), .clk(clk), .rst(rst));
 
       //memory2c is Instruction Memory and outputs instruction pointed to by PC
-      memory2c iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
-                  .createdump(1'b0), .clk(clk), .rst(rst));
+      memory2c_align iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
+                  .createdump(1'b0), .clk(clk), .rst(rst), .err(memory_error));
 
    ///////////
    // LOGIC // 
@@ -83,23 +90,23 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
    ///////////////////////////////////////////////////////////////
    // Create HALT Singal to stop processor and dump Data Memory //
    ///////////////////////////////////////////////////////////////
-      always @(opcode) begin
+      always @(opcode, squash, unaligned_error_in) begin
          HALT = 1'b0;
-         case(instruction_to_pipe[15:11])
-            5'b00000: 
+         case({instruction_to_pipe[15:11], squash})
+            7'b0000000: 
                HALT = 1'b1;
+
             default: 
                HALT = 1'b0;
          endcase
       end
 
       assign DUMP = HALTing[4];
-
+//(instruction_out[15:13] != 3'b011) & (instruction_in_X[15:13] != 3'b011)
    //////////
    // PIPE //
    //////////
-      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(instruction_to_pipe), .q(instruction_out));
-      dff instruction_pipe_inX[15:0](.clk(clk), .rst(rst), .d(instruction_out), .q(instruction_in_X));
+      dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(squash ? 16'h0800 : instruction_to_pipe), .q(instruction_out));
       dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(PC_p2), .q(incrPC));
 
 
@@ -128,22 +135,21 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign branching[0] = (opcode[4:2] == 3'b011);
 
       //Do we need to output NOPs?
-      assign bubble = (|RAW) | (|RAW_X[2:0]) | (jumping[1])  | jumping[2] | jumping[3];// | branching[1] | branching[2];
+      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3];
 
       //Adjust instruction to process
-      assign instruction_to_pipe = bubble ? 16'h0800 : instruction;
+      assign instruction_to_pipe = (bubble | squash)? 16'h0800 : instruction;
       
       //halt pc/fetching one clock after a HALT, or until we are done bubbling
-      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2]  ));// | (branching[2] & PCsrc)));
+      assign halt_fetch = (HALTing[1] | bubble)  & ~((jumping[2]));
 
-      assign HALTing[0] = HALT;
+      assign HALTing[0] = HALT | unaligned_error_in;
       dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(jumping[2:0]), .q(jumping[3:1]));
       dff br_cnt[1:0](.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
-      dff RAW_cnt[2:0](.clk(clk), .rst(rst), .d(RAW[2:0]), .q(RAW[3:1]));
-      dff RAWX_cnt[2:0](.clk(clk), .rst(rst), .d(RAW_X[2:0]), .q(RAW_X[3:1]));
-      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d(HALTing[3:0]), .q(HALTing[4:1]));
+      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d((HALTing[3:0] & {4{~squash}})), .q(HALTing[4:1]));
+      dff unaligned_error_dff(.clk(clk), .rst(rst), .d(memory_error), .q(unaligned_error_out));
      
-
+      assign actual_halt = HALTing[4] | unaligned_error_in;
 
 endmodule
 `default_nettype wire
