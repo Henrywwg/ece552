@@ -151,9 +151,9 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign halt_fetch = ((HALTing[1] | bubble)  & ~jumping[2]) | mem_stall;
 
       assign HALTing[0] = HALT | unaligned_error_in;
-      dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(jumping[2:0]), .q(jumping[3:1]));
-      dff br_cnt[1:0](.clk(clk), .rst(rst), .d(branching[1:0]), .q(branching[2:1]));
-      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d((HALTing[3:0] & {4{~squash}})), .q(HALTing[4:1]));
+      dff jump_cnt[2:0](.clk(clk), .rst(rst), .d(mem_stall ? jumping[3:1] : jumping[2:0]), .q(jumping[3:1]));
+      dff br_cnt[1:0](.clk(clk), .rst(rst), .d(mem_stall ? branching[2:1] : branching[1:0]), .q(branching[2:1]));
+      dff HALT_cnt[3:0](.clk(clk), .rst(rst), .d(mem_stall ? HALTing[4:1] : ((HALTing[3:0] & {4{~squash}}))), .q(HALTing[4:1]));
       dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : memory_error), .q(unaligned_error_out));
      
       assign actual_halt = HALTing[4] | unaligned_error_in;

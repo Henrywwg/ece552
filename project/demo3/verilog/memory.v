@@ -86,13 +86,13 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    stallmem iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out), .CacheHit(d_cache_hit), .err(memory_error), 
                    .Addr(address), .DataIn(forward_M), .Rd(en ), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
 
-   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? instruction_out : instruction), .q(instruction_out));
+   dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0800 : instruction), .q(instruction_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? incrPC_out : incrPC), .q(incrPC_out));
-   dff B_input[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? Binput_out : Binput), .q(Binput_out));
-   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? Xcomp_out : Xcomp), .q(Xcomp_out));
-   dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? read_data_out : read_data), .q(read_data_out));
-   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall_out ? RegWrt_out : RegWrt_in), .q(RegWrt_out));
-   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall_out ? unaligned_error_out : (unaligned_error_in | memory_error)), .q(unaligned_error_out));
+   dff B_input[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0000 : Binput), .q(Binput_out));
+   dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0000 : Xcomp), .q(Xcomp_out));
+   dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0000 : read_data), .q(read_data_out));
+   dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : RegWrt_in), .q(RegWrt_out));
+   dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : (unaligned_error_in | memory_error)), .q(unaligned_error_out));
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
 

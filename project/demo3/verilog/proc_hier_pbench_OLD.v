@@ -158,19 +158,19 @@ module proc_hier_pbench_OLD();
 /////////////////////////////////////////////////////////////////////////////////
 
    // new added 05/03
-   assign ICacheReq = 1'b1; //DUT.p0.readData;
+   assign ICacheReq = DUT.p0.iIF.cache_done;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
-   assign ICacheHit = DUT.p0.iIF.i_cache_hit; //= DUT.p0.readData;
+   assign ICacheHit = DUT.p0.iIF.i_cache_hit;
    // Signal indicating a valid instruction cache hit
    // Above assignment is a dummy example
 
-   assign DCacheReq = MemWrite | MemRead; //DUT.p0.readData;
+   assign DCacheReq = DUT.p0.iM.cache_done;
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
-   assign DCacheHit = MemWrite | MemRead; //DUT.p0.readData;
+   assign DCacheHit = DUT.p0.iM.d_cache_hit;
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    
