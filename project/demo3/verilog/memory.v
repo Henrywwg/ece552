@@ -84,7 +84,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
    
-   mem_system_sc#(1) iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out_pre), .CacheHit(d_cache_hit), .err(memory_error), 
+   mem_system #(1) iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out_pre), .CacheHit(d_cache_hit), .err(memory_error), 
                    .Addr(address), .DataIn(forward_M), .Rd(en), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
 
    assign mem_stall_out = mem_stall_out_pre & ~cache_done;

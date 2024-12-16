@@ -65,6 +65,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       wire actual_halt;
       wire i_cache_hit;
       wire cache_done;
+      wire i_cache_stall;
 
       assign opcode = instruction_to_pipe[15:11];
 
@@ -84,7 +85,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       //stallmem iIM(.data_out(instruction), .data_in(16'h0000), .addr(PC_q), .enable(~(HALT & ~bubble)), .wr(1'b0), 
       //            .createdump(1'b0), .clk(clk), .rst(rst), .err(memory_error));
 
-      stallmem iIM(.DataOut(instruction), .Done(cache_done), .Stall(), .CacheHit(i_cache_hit), .err(memory_error), 
+      mem_system #(0) iIM(.DataOut(instruction), .Done(cache_done), .Stall(i_cache_stall), .CacheHit(i_cache_hit), .err(memory_error), 
                    .Addr(PC_q), .DataIn(16'h0000), .Rd(1'b1), .Wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
 
    ///////////
@@ -140,7 +141,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign jumping[0] = (opcode[4:2] == 3'b001);
 
       //Do we need to output NOPs?
-      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3] | ~cache_done;
+      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3] | i_cache_stall;
 
       //Adjust instruction to process
       assign instruction_to_pipe = (bubble | squash)? 16'h0800 : instruction;
