@@ -32,6 +32,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    input wire        unaligned_error_in;
    output wire        unaligned_error_out;
    output wire mem_stall_out;
+   wire mem_stall_out_pre;
    
    //Module Outputs
    output wire [15:0]incrPC_out;
@@ -51,13 +52,17 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    wire memory_error;
    wire cache_done;
    wire d_cache_hit;
-   wire mem_stall_immed, mem_stall_flopped;
+   wire TENT_write;
 
    wire [4:0]opcode;
    wire [15:0]instruction;
    wire [15:0]read_data;
    assign instruction = instruction_in;
    assign opcode = instruction[15:11];
+
+   //assign cache_missed = (en | MemWrt) & ~cache_done
+
+   assign TENT_write = mem_stall_out & MemWrt;
 
    /////////////////////////
    // MEM CONTROL SIGNALS //
@@ -77,9 +82,11 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    /////////////////////////////////
    // INSTANTIATE EXTERN. MODULES //
    /////////////////////////////////
-
-   stallmem iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out), .CacheHit(d_cache_hit), .err(memory_error), 
+   
+   mem_system_sc#(1) iIM(.DataOut(read_data), .Done(cache_done), .Stall(mem_stall_out_pre), .CacheHit(d_cache_hit), .err(memory_error), 
                    .Addr(address), .DataIn(forward_M), .Rd(en), .Wr(MemWrt), .createdump(DUMP), .clk(clk), .rst(rst));
+
+   assign mem_stall_out = mem_stall_out_pre & ~cache_done;
 
    dff instruction_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0800 : instruction), .q(instruction_out));
    dff PC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? incrPC_out : incrPC), .q(incrPC_out));
@@ -88,7 +95,6 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    dff read_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall_out ? 16'h0000 : read_data), .q(read_data_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : RegWrt_in), .q(RegWrt_out));
    dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall_out ? 1'b0 : (unaligned_error_in | memory_error)), .q(unaligned_error_out));
-   dff done_fancy_ff(.clk(clk), .rst(rst), .d(mem_stall_out), .q(mem_stall_flopped));
 
    dest_parser iParser(.instruction(instruction), .dest_reg(xm_rd));
 
