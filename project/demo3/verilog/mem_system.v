@@ -213,7 +213,7 @@ module mem_system(/*AUTOARG*/
          ///////////////////////
          4'b0000: begin
             //Don't stall in IDLE - we want new requests!
-            Stall = 1'b0;
+            Stall = Rd | Wr;
 			   en_v_reg = 1'b1; //Clear register
             //Ensure counters are ready for rd/wr  
             clr_cntr = 1'b1;

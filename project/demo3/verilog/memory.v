@@ -53,6 +53,7 @@ module memory (instruction_in, instruction_out, clk, rst, address, write_data, D
    wire cache_done;
    wire d_cache_hit;
    wire TENT_write;
+   wire actual_hit;
 
    wire [4:0]opcode;
    wire [15:0]instruction;

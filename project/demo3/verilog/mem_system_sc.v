@@ -94,7 +94,7 @@ module mem_system_sc(/*AUTOARG*/
 
       assign cache_valid = cache_wr & ~cache_comp;
 
-      assign real_hit = ((c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw));// & (Rd | Wr);
+      assign real_hit = ((c0_hit_raw & c0_valid_raw) | (c1_hit_raw & c1_valid_raw)) & (Rd | Wr);
 
       assign victimize = ((c0_dirty_raw & ~c0_hit_raw) | (c1_dirty_raw & ~c1_hit_raw)) & (c0_valid_raw & c1_valid_raw);
 
@@ -103,9 +103,10 @@ module mem_system_sc(/*AUTOARG*/
                               victim ? c1_tag_out : c0_tag_out));
 
 
-      assign cache_data_out = (c0_tag_out == cache_addr[15:11])   ? c0_data_out : 
-                              ((c1_tag_out == cache_addr[15:11])  ? c1_data_out : (
-                              victim ? c1_data_out : c0_data_out));
+      assign cache_data_out = (c0_hit_raw & c0_valid_raw) ? c0_data_out : c1_data_out;
+                              // (c0_tag_out == cache_addr[15:11])   ? c0_data_out : 
+                              // ((c1_tag_out == cache_addr[15:11])  ? c1_data_out : (
+                              // victim ? c1_data_out : c0_data_out));
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
       // victim automatically selects cache to use during eviction
@@ -172,7 +173,7 @@ module mem_system_sc(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
    
-////////////////////////////////////
+   ////////////////////////////////////
    // State machine sequential logic //
    ////////////////////////////////////
       //Assign next/current states
@@ -212,12 +213,12 @@ module mem_system_sc(/*AUTOARG*/
          // IDLE (reset here) //
          ///////////////////////
          4'b0000: begin
+            toggle_victim_way = Rd | Wr;
             //Don't stall in IDLE - we want new requests!
             Stall = ~real_hit & (Rd | Wr);
 			   en_v_reg = 1'b1; //Clear register
             //Ensure counters are ready for rd/wr  
             clr_cntr = 1'b1;
-            cache_rd = 1'b1;
 
             //Store Addr internally in case CPU changes it
             en_int_reg = 1'b1;
@@ -225,9 +226,9 @@ module mem_system_sc(/*AUTOARG*/
 
             // Use our internal signals to
             // do a compare read.
-            toggle_victim_way = Rd | Wr;
-            cache_addr = addr_internal;
+            cache_addr = Addr;
             cache_comp = 1'b1;
+            
 
             c0_en = 1'b1;
             c1_en = 1'b1;
@@ -240,7 +241,7 @@ module mem_system_sc(/*AUTOARG*/
             cache_wr = Wr;
             cache_rd = Rd;
 
-            cache_data_in = data_internal;
+            cache_data_in = DataIn;
 
 
             //Victimized determines next state (disregarding a hit)
