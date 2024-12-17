@@ -396,11 +396,14 @@ module mem_system(/*AUTOARG*/
             // to set dirty bit 
             // NOTE: (This dirty little POS took me 4 hours to fix ~ Henry ^w^)
 
-            c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
-            c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
+            //c0_en = (~c0_FLAG          )? 1'b1 :~victim & c0_FLAG & c1_FLAG;
+            //c1_en = (c0_FLAG & ~c1_FLAG)? 1'b1 : victim & c0_FLAG & c1_FLAG;
 
-            cache_addr = addr_internal;
-            cache_data_in = data_internal;
+            c0_en = 1'b1;
+            c1_en = 1'b1;
+
+            cache_addr = Addr;
+            cache_data_in = Data;
             cache_wr = 1'b1;
             cache_comp = 1'b1;
             Done = 1'b1;

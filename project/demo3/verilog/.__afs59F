@@ -1,0 +1,37 @@
+# vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 23:03:37 on Dec 16,2024
+# ** Warning: License feature 'msimpevsimvlog' will expire in 4 days.
+# Loading __work.proc_hier_pbench
+# Loading __work.proc_hier
+# Loading __work.clkrst
+# Loading __work.proc
+# Loading __work.fetch
+# Loading __work.mem_system
+# Loading __work.cla_4b
+# Loading __work.dff
+# Loading __work.cache
+# Loading __work.memc
+# Loading __work.memv
+# Loading __work.four_bank_mem
+# Loading __work.final_memory
+# Loading __work.cla_16b
+# Loading __work.RAW_detective
+# Loading __work.dest_parser
+# Loading __work.decode
+# Loading __work.regFile_bypass
+# Loading __work.regFile
+# Loading __work.execute
+# Loaadd wave -position insertpoint  \
+view:/proc_hier_pbench/DUT/p0/iM/iIM/c1/mem_w1/write
+add wave -position insertpoint  \
+view:/proc_hier_pbench/DUT/p0/iM/iIM/c1/mem_w2/write
+add wave -position insertpoint  \
+view:/proc_hier_pbench/DUT/p0/iM/iIM/c1/mem_w3/write
+add wave -position insertpoint  \
+view:/proc_hier_pbench/DUT/p0/iM/iIM/mem_data_out
+add wave -position insertpoint  \
+view:/proc_hier_pbench/DUT/p0/iM/iIM/c1/mem_w0/data_out
+roc_hier_pbench.v(114)
+#    Time: 2563105 ns  Iteration: 0  Instance: /proc_hier_pbench
+# End time: 23:03:39 on Dec 16,2024, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 0
