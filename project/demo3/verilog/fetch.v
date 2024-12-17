@@ -49,7 +49,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       reg         HALT;
 
       //hazard detection signals
-      wire [3:0]  RAW, RAW_X;
+      wire        RAW, RAW_X;
 
       //Internal instruction signals
       wire [15:0]instruction;
@@ -128,10 +128,10 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
 
       //Let Sherlock find the hazards.
       RAW_detective iHolmes(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
-                              .dst1(dst1), .valid1(valid1), .RAW(RAW[0]));
+                              .dst1(dst1), .valid1(valid1), .RAW(RAW));
 
       RAW_detective iSherlock(.clk(clk), .rst(rst), .src1(rs), .src2(rt), .src_cnt({rt_v, rs_v}), 
-                              .dst1(dst2), .valid1(valid2), .RAW(RAW_X[0]));
+                              .dst1(dst2), .valid1(valid2), .RAW(RAW_X));
 
 	   dest_parser iPawrseX(.instruction(instruction_in_X), .dest_reg(dst2));
       
@@ -141,7 +141,7 @@ module fetch (clk, rst, jumpPC, incrPC, PCsrc, instruction_out, DUMP,
       assign jumping[0] = (opcode[4:2] == 3'b001);
 
       //Do we need to output NOPs?
-      assign bubble = (|RAW[0]) | (|RAW_X[0]) | (jumping[1])  | jumping[2] | jumping[3] | i_cache_stall;
+      assign bubble = (RAW & (instruction_out[15:11] == 5'b10001)) | jumping[1] | jumping[2] | i_cache_stall;
 
       //Adjust instruction to process
       assign instruction_to_pipe = (bubble | squash)? 16'h0800 : instruction;

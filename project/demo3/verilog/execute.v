@@ -75,6 +75,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    assign A =  (forward_A == 2'b01) ? WData : 
                ((forward_A == 2'b10) ? Xcomp_out : A_reg );
 
+
    assign RegData =  (forward_B == 2'b01) ? WData : 
                     ((forward_B == 2'b10) ? Xcomp_out : RegData_reg );
 
@@ -191,6 +192,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
             5'b11001: result = {ALUrslt[0], ALUrslt[1], ALUrslt[2], ALUrslt[3], ALUrslt[4], ALUrslt[5], 
                ALUrslt[6], ALUrslt[7], ALUrslt[8], ALUrslt[9], ALUrslt[10], ALUrslt[11], ALUrslt[12], ALUrslt[13], 
                ALUrslt[14], ALUrslt[15]};
+            5'b10010: result = Binput;
             default: result = ALUrslt;
         endcase
         
@@ -235,12 +237,12 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    ///////////////////
    //dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
 
-   assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010));             //indicates validity of register (is this actually a source)
+   assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010)) & (opcode != 5'b10011);             //indicates validity of register (is this actually a source)
 
    assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
 
    assign rs = instruction[10:8];
-   assign rt = instruction[7:5];
+   assign rt = ((opcode == 5'b10011) |  (opcode == 5'b10010)) ? instruction[10:8] : instruction[7:5];
 
 endmodule
 `default_nettype wire
