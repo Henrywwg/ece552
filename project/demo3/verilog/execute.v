@@ -224,7 +224,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Xcomp_out : Xcomp), .q(Xcomp_out));
    dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? incrPC_out : incrPC), .q(incrPC_out));
    dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Binput_out : ((opcode == 5'b10011) ? RegData :  Binput)), .q(Binput_out));
-   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? RegData_out : A), .q(RegData_out));
+   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? RegData_out : RegData), .q(RegData_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall ? RegWrt_out : (squash ? 1'b0 : RegWrt_in)), .q(RegWrt_out));
    dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : unaligned_error_in), .q(unaligned_error_out));
 
