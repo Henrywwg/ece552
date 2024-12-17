@@ -52,7 +52,7 @@ module decode (clk, rst, err_out, incrPC, incrPC_out, instruction_in, instructio
    ////////////////////////  
    regFile_bypass IregFile (.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), 
       .read2RegSel(instruction[7:5]), .writeRegSel(write_reg), .writeData(write_data), 
-      .writeEn(RegWrt_in), .read1Data(R1), .read2Data(R2), .err(err));
+      .writeEn(RegWrt_in & ~mem_stall), .read1Data(R1), .read2Data(R2), .err(err));
 
    ////////////////////////
    // Pipeline Registers //

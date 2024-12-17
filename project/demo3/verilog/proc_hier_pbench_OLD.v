@@ -131,7 +131,7 @@ module proc_hier_pbench_OLD();
    assign PC = DUT.p0.iIF.PC_q;
    assign Inst = DUT.p0.iIF.instruction;
    
-   assign RegWrite = DUT.p0.iM.RegWrt_out;
+   assign RegWrite = DUT.p0.iM.RegWrt_out & ~DUT.p0.iD.mem_stall;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
    assign WriteRegister = DUT.p0.iWB.WRegister;

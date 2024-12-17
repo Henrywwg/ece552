@@ -193,6 +193,7 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
                ALUrslt[6], ALUrslt[7], ALUrslt[8], ALUrslt[9], ALUrslt[10], ALUrslt[11], ALUrslt[12], ALUrslt[13], 
                ALUrslt[14], ALUrslt[15]};
             5'b10010: result = Binput;
+            5'b11000: result = Binput;
             default: result = ALUrslt;
         endcase
         
@@ -224,7 +225,6 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    dff execute_comp[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Xcomp_out : Xcomp), .q(Xcomp_out));
    dff incrPC_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? incrPC_out : incrPC), .q(incrPC_out));
    dff B_input_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? Binput_out : ((opcode == 5'b10011) ? RegData :  Binput)), .q(Binput_out));
-   dff write_data_pipe[15:0](.clk(clk), .rst(rst), .d(mem_stall ? RegData_out : RegData), .q(RegData_out));
    dff RegWrt_pipe(.clk(clk), .rst(rst), .d(mem_stall ? RegWrt_out : (squash ? 1'b0 : RegWrt_in)), .q(RegWrt_out));
    dff unaligned_error_dff(.clk(clk), .rst(rst), .d(mem_stall ? unaligned_error_out : unaligned_error_in), .q(unaligned_error_out));
 
@@ -237,12 +237,12 @@ module execute (clk, rst, instruction_in, instruction_out, incrPC, incrPC_out, A
    ///////////////////
    //dest_parser iParser(.instruction(instruction), .dest_reg_val(rd));
 
-   assign rs_v = ((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010)) & (opcode != 5'b10011);             //indicates validity of register (is this actually a source)
+   assign rs_v = (((instruction[15:13] != 3'b000) & ({instruction[15:13], instruction[11]} != 4'b0010)));             //indicates validity of register (is this actually a source)
 
-   assign rt_v = (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111);
+   assign rt_v = (opcode == 5'b10011) | (instruction[15:12] == 4'b1101) | (instruction[15:13] == 3'b111) | (opcode == 5'b11000) | (opcode == 4'b1001) | (opcode == 5'b10000);
 
    assign rs = instruction[10:8];
-   assign rt = ((opcode == 5'b10011) |  (opcode == 5'b10010)) ? instruction[10:8] : instruction[7:5];
-
+   assign rt = (opcode == 5'b10010) ? instruction[10:8] : instruction[7:5];
+//((opcode == 5'b10011) | 
 endmodule
 `default_nettype wire
